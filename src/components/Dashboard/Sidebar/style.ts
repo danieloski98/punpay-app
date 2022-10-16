@@ -15,8 +15,8 @@ export const Style = StyleSheet.create({
         justifyContent: 'center',
     },
     imgC: {
-        width: 120,
-        height: 120,
+        width: 90,
+        height: 90,
         borderRadius: 75,
         justifyContent: 'center',
         alignItems: 'center'

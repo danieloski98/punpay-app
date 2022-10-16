@@ -71,6 +71,13 @@ const theme = createTheme({
       color: 'blackText',
       fontWeight: "400",
     },
+    xs: {
+      fontFamily: "Jakarta-Sans",
+      fontSize: 13,
+      lineHeight: 24,
+      color: 'blackText',
+      fontWeight: "400",
+    },
   },
 });
 
@@ -121,6 +128,13 @@ export const darkTheme: Theme = createTheme({
     bodylight: {
       fontFamily: "Jakarta-Sans",
       fontSize: 15,
+      lineHeight: 24,
+      color: 'whiteText',
+      fontWeight: "400",
+    },
+    xs: {
+      fontFamily: "Jakarta-Sans",
+      fontSize: 13,
       lineHeight: 24,
       color: 'whiteText',
       fontWeight: "400",

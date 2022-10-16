@@ -1,15 +1,18 @@
 import { StyleSheet } from 'react-native'
+
 export const Style = StyleSheet.create({
-    header: {
+    parent: {
         width: '100%',
         height: '15%',
         flexDirection: 'row',
-        justifyContent: 'space-between',
         alignItems: 'center',
+        justifyContent: 'space-between',
         paddingHorizontal: 20,
-        paddingTop: 20
+        backgroundColor: 'red',
+        paddingTop: 20,
     },
-    backC: {
+    rightSide: {
         flexDirection: 'row',
+        alignItems: 'center'
     }
 });

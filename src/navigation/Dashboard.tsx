@@ -10,21 +10,18 @@ import CryptoPage from '../Screens/Dashboard/CryptoPage';
 import SideBar from '../components/Dashboard/Sidebar';
 import ChangePassword from '../Screens/Dashboard/ChangePassword';
 import ChangePin from '../Screens/Dashboard/ChangePin';
+import HomeNavigation from './Home';
 
 const { Navigator, Screen, Group } = createDrawerNavigator();
 
 export default function DashboardNavigation() {
   return (
     <Navigator drawerContent={({navigation, state}) => <SideBar navigation={navigation} />} screenOptions={{ headerShown: false, drawerStyle: { backgroundColor: 'transparent', borderBottomRightRadius: 10 } }}>
-        <Screen name="home" component={Home}/>
-        <Screen name="kyc" component={KYC} />
+        <Screen name="home" component={HomeNavigation}/>
         <Screen name="settings" component={Settings} />
         <Screen name="history" component={TransactionHistory} />
-        <Screen name="transactiontype" component={TransactionType} />
-        <Screen name="Crypto" component={CryptoPage} />
         <Screen name="changepassword" component={ChangePassword} />
         <Screen name="changepin" component={ChangePin} />
-        {/* <Group></Group> */}
     </Navigator>
   )
 }

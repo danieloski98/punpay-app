@@ -6,6 +6,7 @@ import { useAsyncStorage } from '@react-native-async-storage/async-storage'
 import * as SplashScreen from 'expo-splash-screen'
 import { useFonts } from 'expo-font'
 import { StatusBar } from 'react-native'
+// import { GestureHandlerRootView } from 'react-native-gesture-handler'
 
 // redux
 import { Dispatch } from './src/state/Store'
