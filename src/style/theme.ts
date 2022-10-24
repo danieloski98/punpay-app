@@ -17,6 +17,7 @@ const theme = createTheme({
     blackText: palette.black,
     iconColor: palette.black,
     text: palette.black,
+    modalBg: 'white',
   },
   spacing: {
     s: 8,
@@ -91,6 +92,7 @@ export const darkTheme: Theme = createTheme({
     blackText: palette.black,
     iconColor: palette.white,
     text: palette.white,
+    modalBg: '#242424',
   },
   textInput: {
     height: 56,

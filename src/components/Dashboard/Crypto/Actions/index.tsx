@@ -17,22 +17,26 @@ import ArrowUp from "../../../../res/svgs/arrow-up.svg";
 import Arrows from '../../../../res/svgs/arrows.svg';
 import Wallet from '../../../../res/svgs/wallet.svg';
 import Box from '../../../generalComponents/Box'
+import { BottomSheetModal } from '@gorhom/bottom-sheet'
 
-export default function Actions() {
+interface IProps {
+    recieve: React.Dispatch<React.SetStateAction<boolean>>;
+    swap: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const Actions: React.FC<IProps> = ({ recieve, swap }) => {
     const theme = useTheme<Theme>();
     const navigation = useNavigation<any>();
     const isDrakmode = useSelector((state: RootState) => state.isDarkMode);
 
   return (
-    <Box backgroundColor="mainBackground" style={{...Style.parent, zIndex: 1, borderBottomColor: theme.textInput.backgroundColor }}>
+    <Box backgroundColor="mainBackground" style={{...Style.parent, zIndex: -3, borderBottomColor: theme.textInput.backgroundColor, }}>
       
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', flex: 1, alignItems: 'center', marginTop: 0 }}>
 
         <View style={{ alignItems: 'center' }}>
             <Pressable 
-                onPress={() => navigation.navigate('transactiontype', {
-                    type: 'Recieve'
-                })}
+                onPress={() => recieve(true)}
                 style={{...Style.actionIconContainer, backgroundColor: isDrakmode ? theme.textInput.backgroundColor:'white', shadowColor: 'black' }}>
                 <ArrowDown width={25} height={25} />
             </Pressable>
@@ -41,7 +45,7 @@ export default function Actions() {
 
         <View style={{ alignItems: 'center' }}>
             <Pressable 
-                onPress={() => navigation.navigate('transactiontype', { type: 'Send'})}
+                onPress={() => {}}
                 style={{...Style.actionIconContainer, backgroundColor: isDrakmode ? theme.textInput.backgroundColor:'white', shadowColor: 'black' }}>
                 <ArrowUp width={25} height={25} />
             </Pressable>
@@ -49,7 +53,7 @@ export default function Actions() {
         </View>
 
         <Pressable 
-            onPress={() => navigation.navigate('transactiontype', { type: 'Buy'})}
+            onPress={() => {}}
             style={{ alignItems: 'center' }}>
             <View style={{...Style.actionIconContainer, backgroundColor: isDrakmode ? theme.textInput.backgroundColor:'white', shadowColor: 'black' }}>
                 <Arrows width={25} height={25} />
@@ -58,7 +62,7 @@ export default function Actions() {
         </Pressable>
 
         <Pressable 
-            onPress={() => navigation.navigate('transactiontype', { type: 'Swap'})}
+            onPress={() => swap(true)}
             style={{ alignItems: 'center' }}>
             <View style={{...Style.actionIconContainer, backgroundColor: isDrakmode ? theme.textInput.backgroundColor:'white', shadowColor: 'black' }}>
                 <Wallet width={25} height={25} />
@@ -70,3 +74,5 @@ export default function Actions() {
     </Box>
   )
 }
+
+export default Actions;
