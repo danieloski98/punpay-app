@@ -1,21 +1,20 @@
 import React from 'react'
-import AmountPage from './Pages/AmountPage'
 import { BottomSheetModal, BottomSheetModalProvider, BottomSheetScrollView, BottomSheetBackdrop } from '@gorhom/bottom-sheet'
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../state/Store";
 import { useTheme } from '@shopify/restyle';
 import { Theme } from "../../../../style/theme";
 import { Style } from "./style";
+import AmountPage from './Pages/Amount';
+import AwaitingPaymentPage from './Pages/AwaitingPage';
+import ConfirmPaymentPage from './Pages/ConfirmPayment';
 
-// SVGS
-import VerificationPage from './Pages/VerificationPage';
-import ProcessingPage from './Pages/ProcessingPage';
 
 interface IProps {
     close: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-const Swap: React.FC<IProps> = ({ close }) => {
+const BuyPage: React.FC<IProps> = ({ close }) => {
     const [stage, setStage] = React.useState(1)
     const snapPoint = React.useMemo(() => ['80%'], []);
     const bottomsheetRef = React.useRef<BottomSheetModal>(null);
@@ -32,10 +31,10 @@ const Swap: React.FC<IProps> = ({ close }) => {
                 return <AmountPage next={setStage} />
             }
             case 2: {
-              return <VerificationPage changeStep={setStage} />
+              return <AwaitingPaymentPage next={setStage} />
             }
             case 3: {
-              return <ProcessingPage />
+              return  <ConfirmPaymentPage />
             }
         }
     }, [stage]);
@@ -70,4 +69,4 @@ const Swap: React.FC<IProps> = ({ close }) => {
   )
 }
 
-export default Swap
+export default BuyPage

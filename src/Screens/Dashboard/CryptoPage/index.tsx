@@ -19,7 +19,9 @@ import TransactionHistory from "../../../components/Dashboard/Crypto/Transaction
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import RecieveModal from "../../../components/Dashboard/Modals/Recieve";
 import Swap from '../../../components/Dashboard/Modals/Swap'
+import BuyPage from '../../../components/Dashboard/Modals/Buy'
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import SellPage from "../../../components/Dashboard/Modals/Sell";
 
 const os = Platform.OS;
 export const { width: SIZE } = Dimensions.get("window");
@@ -33,12 +35,14 @@ export default function CryptoPage() {
   // MODAL STATES
   const [showRecieve, setShowRecieve] = React.useState(false);
   const [showSwap, setShowSwap] = React.useState(false);
+  const [showBuy, setShowBuy] = React.useState(false);
+  const [showSell, setShowSell] = React.useState(false)
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <Box backgroundColor="mainBackground" style={{ flex: 1, zIndex: 2 }}>
         <CryptoPageHeader />
-        <Actions recieve={setShowRecieve} swap={setShowSwap} />
+        <Actions recieve={setShowRecieve} swap={setShowSwap} buy={setShowBuy} sell={setShowSell} />
         <CryptoTab tab={tab} setTab={setTab} />
         <View style={Style.scrollContainer}>
           {tab === 1 && <StatsTab />}
@@ -47,6 +51,8 @@ export default function CryptoPage() {
         {/* MODALS */}
         {showRecieve && <RecieveModal close={setShowRecieve} />}
         {showSwap && <Swap close={setShowSwap} />}
+        {showBuy && <BuyPage close={setShowBuy} />}
+        {showSell && <SellPage close={setShowSell} />}
         {/* END MODALS */}
       </Box>
     </GestureHandlerRootView>

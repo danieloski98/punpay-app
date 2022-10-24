@@ -22,9 +22,11 @@ import { BottomSheetModal } from '@gorhom/bottom-sheet'
 interface IProps {
     recieve: React.Dispatch<React.SetStateAction<boolean>>;
     swap: React.Dispatch<React.SetStateAction<boolean>>;
+    buy: React.Dispatch<React.SetStateAction<boolean>>;
+    sell: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const Actions: React.FC<IProps> = ({ recieve, swap }) => {
+const Actions: React.FC<IProps> = ({ recieve, swap, buy, sell }) => {
     const theme = useTheme<Theme>();
     const navigation = useNavigation<any>();
     const isDrakmode = useSelector((state: RootState) => state.isDarkMode);
@@ -45,7 +47,7 @@ const Actions: React.FC<IProps> = ({ recieve, swap }) => {
 
         <View style={{ alignItems: 'center' }}>
             <Pressable 
-                onPress={() => {}}
+                onPress={() => sell(true)}
                 style={{...Style.actionIconContainer, backgroundColor: isDrakmode ? theme.textInput.backgroundColor:'white', shadowColor: 'black' }}>
                 <ArrowUp width={25} height={25} />
             </Pressable>
@@ -53,7 +55,7 @@ const Actions: React.FC<IProps> = ({ recieve, swap }) => {
         </View>
 
         <Pressable 
-            onPress={() => {}}
+            onPress={() => buy(true)}
             style={{ alignItems: 'center' }}>
             <View style={{...Style.actionIconContainer, backgroundColor: isDrakmode ? theme.textInput.backgroundColor:'white', shadowColor: 'black' }}>
                 <Arrows width={25} height={25} />
