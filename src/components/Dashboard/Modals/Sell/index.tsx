@@ -1,21 +1,22 @@
 import React from 'react'
-import AmountPage from './Pages/AmountPage'
 import { BottomSheetModal, BottomSheetModalProvider, BottomSheetScrollView, BottomSheetBackdrop } from '@gorhom/bottom-sheet'
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../state/Store";
 import { useTheme } from '@shopify/restyle';
 import { Theme } from "../../../../style/theme";
 import { Style } from "./style";
+import CustomText from '../../../generalComponents/Text'
+import { View, Pressable } from 'react-native'
 
-// SVGS
-import VerificationPage from './Pages/VerificationPage';
-import ProcessingPage from './Pages/ProcessingPage';
+// svgs
+import CardEdit from '../../../../res/svgs/card-edit.svg'
+import UserO from '../../../../res/svgs/usero.svg'
 
 interface IProps {
     close: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-const Swap: React.FC<IProps> = ({ close }) => {
+const SellPage: React.FC<IProps> = ({ close }) => {
     const [stage, setStage] = React.useState(1)
     const snapPoint = React.useMemo(() => ['80%'], []);
     const bottomsheetRef = React.useRef<BottomSheetModal>(null);
@@ -27,17 +28,6 @@ const Swap: React.FC<IProps> = ({ close }) => {
     });
 
     const switchPages = React.useCallback(() => {
-        switch(stage) {
-            case 1: {
-                return <AmountPage next={setStage} />
-            }
-            case 2: {
-              return <VerificationPage changeStep={setStage} />
-            }
-            case 3: {
-              return <ProcessingPage />
-            }
-        }
     }, [stage]);
 
 
@@ -63,11 +53,26 @@ const Swap: React.FC<IProps> = ({ close }) => {
             handleIndicatorStyle={{ width: 150, backgroundColor: darkmode ?'grey':'lightgrey' }}
         >
             <BottomSheetScrollView scrollEnabled horizontal={false} showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 100 }}>
-                {switchPages()}
+               <>
+                <CustomText variant="subheader" mt="m" style={{ fontSize: 20 }}>Sell Bitcoin</CustomText>
+                <CustomText>What do you want to do ?</CustomText>
+
+                <View style={{ height: 30 }} />
+
+                <Pressable style={{ ...Style.conatiner, backgroundColor: theme.textInput.backgroundColor }}>
+                    <UserO width={30} height={30} />
+                    <CustomText variant="bodylight" ml="m">Sell for FIAT</CustomText>
+                </Pressable>
+
+                <Pressable style={{ ...Style.conatiner, backgroundColor: theme.textInput.backgroundColor, marginTop: 20 }}>
+                    <CardEdit width={30} height={30} />
+                    <CustomText variant="bodylight" ml="m">Transfer to another wallet</CustomText>
+                </Pressable>
+               </>
             </BottomSheetScrollView>
         </BottomSheetModal>
     </BottomSheetModalProvider>
   )
 }
 
-export default Swap
+export default SellPage
