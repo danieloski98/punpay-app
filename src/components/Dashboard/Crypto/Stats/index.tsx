@@ -4,6 +4,8 @@ import {ChartDot, ChartPath, ChartPathProvider, monotoneCubicInterpolation} from
 import CustomText from '../../../generalComponents/Text'
 import { backgroundColor, useTheme } from '@shopify/restyle'
 import { Theme } from '../../../../style/theme';
+import { LineChart } from 'react-native-wagmi-charts';
+
 
 const os = Platform.OS;
 export const {width: SIZE} = Dimensions.get('window');
@@ -12,6 +14,28 @@ const timeline = ['24h', '7d', '2w', '1m', '6m', '1y'];
 const StatsTab = () => {
     const [time, setTime] = React.useState('24h');
     const theme = useTheme<Theme>();
+
+    const data2 = [
+      {
+        timestamp: 1625948100000,
+        value: 33215.25,
+      },
+      {
+        timestamp: 1625947200000,
+        value: 33510.25,
+      },
+      {
+        timestamp: 1625946300000,
+        value: 33545.25,
+      },
+      {
+        timestamp: 1625945400000,
+        value: 33575.25,
+      },
+      
+      
+     
+    ];
 
     const data = [
         {x: 1453075200, y: 1.47}, {x: 1453161600, y: 1.37},
@@ -28,21 +52,31 @@ const StatsTab = () => {
     <ScrollView contentContainerStyle={{ paddingTop: 20, paddingBottom: 100 }}>
           <View style={{ width: '100%', paddingTop: 0, paddingHorizontal: 0, borderBottomWidth: 1, borderBottomColor: theme.textInput.backgroundColor, paddingBottom: 40 }}>
             <View style={{ paddingHorizontal: 20 }}>
-              <CustomText variant="header" fontSize={37} style={{ fontWeight: os === 'android' ? 'bold':'600', color: 'lightgrey' }}>$20,000</CustomText>
+              <CustomText variant="header" fontSize={37} style={{ fontWeight: os === 'android' ? 'bold':'600' }}>$20,000</CustomText>
               <CustomText variant="bodylight" style={{ color: '#0EA581', marginTop: 5 }}>+1.9%</CustomText>
             </View>
-            <View style={{ width: '100%', height: 250, borderBottomWidth: 1, borderBottomColor: theme.textInput.backgroundColor, paddingHorizontal: 20 }}>
+            <View style={{ width: '100%', height: 150, borderBottomWidth: 1, borderBottomColor: theme.textInput.backgroundColor, paddingHorizontal: 20 }}>
               
-            <ChartPathProvider data={{ points, smoothingStrategy: 'bezier' }}>
-              <ChartPath height={200} stroke="#15A7FA" width={SIZE - 40} />
-              <ChartDot style={{ backgroundColor: '#15A7FA' }} />
-            </ChartPathProvider>
+
+            <LineChart.Provider data={data2}>
+              <LineChart height={150} width={SIZE - 40}>
+                <LineChart.Path color="#15A7FA">
+                  <LineChart.Gradient />
+                </LineChart.Path>
+                <LineChart.CursorCrosshair color='#15A7FA' >
+                  <LineChart.Tooltip textStyle={{ color: theme.colors.text }} />
+                  <LineChart.Tooltip position="bottom">
+                    <LineChart.DatetimeText style={{ color: theme.colors.text }} />
+                  </LineChart.Tooltip>
+                </LineChart.CursorCrosshair>
+              </LineChart>
+            </LineChart.Provider>
 
             </View>
 
             <View style={{ width: '100%', height: 60, flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center' }}>
               {timeline.map((item, index) => (
-                <Pressable onPress={() => setTime(item)} key={index.toString()} style={{ width: 63, height: 33, borderRadius: 30, backgroundColor: time === item ? 'whitesmoke':'transparent', justifyContent: 'center', alignItems: 'center' }}>
+                <Pressable onPress={() => setTime(item)} key={index.toString()} style={{ width: 63, height: 33, borderRadius: 30, backgroundColor: time === item ? theme.textInput.backgroundColor:'transparent', justifyContent: 'center', alignItems: 'center' }}>
                   <CustomText variant="body" fontSize={15} >{item}</CustomText>
                 </Pressable>
               ))}

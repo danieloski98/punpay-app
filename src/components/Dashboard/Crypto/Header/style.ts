@@ -14,7 +14,7 @@ export const Style = StyleSheet.create({
         shadowRadius: 8,
         paddingTop: 20,
         elevation: 3,
-        zIndex: 10,
+        zIndex: -2,
     },
     imgCircle: {
         width: 42,
@@ -30,7 +30,7 @@ export const Style = StyleSheet.create({
         height: '100%',
         flexDirection: 'row',
         alignItems:'center',
-        justifyContent: 'space-evenly'
+        justifyContent: 'space-between'
     },
     right: {
         height: '100%',

@@ -11,6 +11,8 @@ import { Theme } from '../../../../style/theme'
 import Checkbox from 'expo-checkbox'
 import { ScrollView } from 'react-native-gesture-handler'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import { useDispatch } from 'react-redux'
+import { Dispatch } from '../../../../state/Store'
 // import { User } from 'react-native-iconly'
 
 interface IProps {
@@ -20,6 +22,7 @@ interface IProps {
 export default function Login({ navigation }: IProps) {
   const [text, setText] = React.useState('');
   const [showPass, setShowPass] =  React.useState(false);
+  const dispatch = useDispatch<Dispatch>();
 
   const theme = useTheme<Theme>();
 
@@ -46,7 +49,7 @@ export default function Login({ navigation }: IProps) {
       <CustomText variant="bodylight" textAlign="right" marginTop="m" onPress={() => navigation.navigate('forgotpassword')}>Forgot Password ?</CustomText>
 
       <View style={Style.btnC}>
-        <PrimaryButton text="Submit" action={() => {}} />
+        <PrimaryButton text="Submit" action={() => dispatch.loggedIn.login()} />
       </View>
 
       <View style={Style.textBox}>

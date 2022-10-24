@@ -1,4 +1,4 @@
-import { View, Text } from 'react-native'
+import { View, Text, Platform } from 'react-native'
 import React from 'react'
 import { Style } from './style'
 import { Feather } from '@expo/vector-icons'
@@ -9,6 +9,8 @@ import CustomText from '../../../generalComponents/Text';
 import theme, { Theme } from '../../../../style/theme';
 import { useTheme } from '@shopify/restyle';
 import Box from '../../../generalComponents/Box';
+
+const os = Platform.OS;
 
 const CryptoPageHeader = () => {
     const theme = useTheme<Theme>();
@@ -21,13 +23,13 @@ const CryptoPageHeader = () => {
             <Bitcoin width={24} height={24} />
         </View>
         <View>
-            <CustomText style={{ fontWeight: 'bold', fontSize: 18 }}>Bitcoin</CustomText>
-            <CustomText style={{ fontWeight: '400', color: theme.colors.text }}>BTC</CustomText>
+            <CustomText variant="subheader" style={{ fontWeight: 'bold', fontSize: 18 }}>Bitcoin</CustomText>
+            <CustomText variant="bodylight" style={{ fontWeight: '400', color: theme.colors.text }}>BTC</CustomText>
         </View>
       </View>
       <View style={Style.right}>
-        <CustomText style={{ fontWeight: '400', color: theme.colors.text }}>YOUR BALANCE</CustomText>
-        <CustomText style={{ fontWeight: 'bold', fontSize: 18, textAlign: 'left' }}>0.034BTC</CustomText>
+        <CustomText style={{ color: theme.colors.text }}>YOUR BALANCE</CustomText>
+        <CustomText variant="subheader" style={{ fontSize: 18, textAlign: 'left' }}>0.034BTC</CustomText>
       </View>
     </Box>
   )
