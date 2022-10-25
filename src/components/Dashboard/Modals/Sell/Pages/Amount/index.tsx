@@ -79,7 +79,7 @@ const AmountPage: React.FC<IProps> = ({ change }) => {
       )}
     {ha && (
         <View style={{ marginTop: 20 }}>
-            <PrimaryButton text='Continue' action={() => {change(2); alert('Paying')}} />
+            <PrimaryButton text='Continue' action={() => change(2)} />
         </View>
     )}
     </View>

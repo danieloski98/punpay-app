@@ -16,6 +16,7 @@ export default function Settings({ navigation }: any) {
   const dispatch = useDispatch<Dispatch>();
   const darkMode = useSelector((state: RootState) => state.isDarkMode);
 
+
   const theme = useTheme<Theme>();
 
   return (
@@ -41,7 +42,8 @@ export default function Settings({ navigation }: any) {
       <View style={{ flex: 1, paddingBottom: 0 }}>
 
       <ScrollView style={{ flex: 1, marginTop: 20, marginBottom: 0 }} showsVerticalScrollIndicator={false}>
-        <Pressable style={{ width: '100%', height: theme.button.height, backgroundColor: '#F4F4FB', borderRadius: 10, justifyContent: 'center', alignItems: 'center' }}>
+        
+        <Pressable onPress={() => navigation.navigate('link-bank')} style={{ width: '100%', height: theme.button.height, backgroundColor: '#F4F4FB', borderRadius: 10, justifyContent: 'center', alignItems: 'center' }}>
           <CustomText variant="body" style={{ color: '#5149F7' }}>LINK</CustomText>
         </Pressable>
 
@@ -62,15 +64,15 @@ export default function Settings({ navigation }: any) {
             <Switch onChange={() => setCheck(prev => !prev)} value={check} />
           </Box>
 
-          <Box backgroundColor="mainBackground" style={{...Style.elevatedBtn, backgroundColor: theme.textInput.backgroundColor, marginTop: 20 }}>
+          <Pressable onPress={() => {navigation.navigate('changepassword')}} style={{...Style.elevatedBtn, backgroundColor: theme.textInput.backgroundColor, marginTop: 20 }}>
             <CustomText variant="bodylight">Change Password</CustomText>
-            <Feather name="chevron-right" size={25} color={theme.colors.text} onPress={() => {navigation.navigate('changepassword')}} />
-          </Box>
+            <Feather name="chevron-right" size={25} color={theme.colors.text}  />
+          </Pressable>
 
-          <Box backgroundColor="mainBackground" style={{...Style.elevatedBtn, backgroundColor: theme.textInput.backgroundColor, marginTop: 20, marginBottom: 100 }}>
+          <Pressable  onPress={() => {navigation.navigate('changepin')}} style={{...Style.elevatedBtn, backgroundColor: theme.textInput.backgroundColor, marginTop: 20, marginBottom: 100 }}>
             <CustomText variant="bodylight">Change PIN</CustomText>
-            <Feather name="chevron-right" size={25} color={theme.colors.text} onPress={() => {navigation.navigate('changepin')}} />
-          </Box>
+            <Feather name="chevron-right" size={25} color={theme.colors.text} />
+          </Pressable>
           
         </View>
 

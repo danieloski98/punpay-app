@@ -15,6 +15,8 @@ import AmountPage from './Pages/Amount';
 import ReviewSellPage from './Pages/Review';
 import VerificationPage from '../Swap/Pages/VerificationPage';
 import ProcessingPage from '../Swap/Pages/ProcessingPage';
+import SendAmountPage from './Pages/SendPages/Amount';
+import ReviewSendPage from './Pages/SendPages/Review';
 
 interface IProps {
     close: React.Dispatch<React.SetStateAction<boolean>>
@@ -51,6 +53,23 @@ const SellPage: React.FC<IProps> = ({ close }) => {
             }
         }
     }, [sellStep]);
+
+    const swicthSendPages = React.useCallback(() => {
+      switch(sendStep) {
+        case 1: {
+          return <SendAmountPage change={setSendStep} />
+        }
+        case 2: {
+          return <ReviewSendPage change={setSendStep} />
+        }
+        case 3: {
+          return <VerificationPage changeStep={() => setSendStep(4)} goBack={() => setSendStep(prev => prev - 1)} />
+      }
+      case 4: {
+          return <ProcessingPage />
+      }
+      }
+    }, [sendStep]);
 
 
   const renderBackdrop = React.useCallback(
@@ -105,9 +124,7 @@ const SellPage: React.FC<IProps> = ({ close }) => {
               {!initial && (
                 <>
                     { step === 1 && switchPages()}
-                    { step === 2 && (
-                        <CustomText>Step 2</CustomText>
-                    )}
+                    { step === 2 && swicthSendPages()}
                 </>
               )}
             </BottomSheetScrollView>
