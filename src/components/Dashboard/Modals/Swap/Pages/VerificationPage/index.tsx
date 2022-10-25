@@ -9,14 +9,15 @@ import { Theme } from '../../../../../../style/theme'
 import PrimaryButton from '../../../../../generalComponents/PrimaryButton'
 
 interface IProps {
-    changeStep: React.Dispatch<React.SetStateAction<number>>;
+    changeStep: () => void;
+    goBack: () => void;
 }
 
-const VerificationPage: React.FC<IProps> = ({ changeStep}) => {
+const VerificationPage: React.FC<IProps> = ({ changeStep, goBack}) => {
     const theme = useTheme<Theme>()
   return (
     <View style={Style.parent}>
-      <Pressable onPress={() => changeStep(prev => prev - 1)} style={{ height: 40, flexDirection: 'row', alignItems: 'center' }}>
+      <Pressable onPress={() => goBack() } style={{ height: 40, flexDirection: 'row', alignItems: 'center' }}>
         <Feather name="chevron-left" size={20} color={theme.colors.text} />
         <CustomText variant="bodylight" ml="s">Go Back</CustomText>
       </Pressable>
@@ -41,7 +42,7 @@ const VerificationPage: React.FC<IProps> = ({ changeStep}) => {
       </View>
 
       <View style={{ marginTop: 30 }}>
-        <PrimaryButton text='Continue' action={() => changeStep(3)}  />
+        <PrimaryButton text='Continue' action={() => changeStep()}  />
       </View>
     </View>
   )
