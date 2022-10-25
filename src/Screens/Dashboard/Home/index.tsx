@@ -11,12 +11,15 @@ import { ScrollView } from 'react-native-gesture-handler'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../../state/Store'
 import CoinTypeChip from '../../../components/Dashboard/Home/CoinType'
+// svgs
+import An from '../../../res/svgs/an.svg'
+import Btc from '../../../res/svgs/bitcoin.svg'
 
 const { height } = Dimensions.get('screen');
 
 const COINS = ['Bitcoin', 'Ethereum', 'Tether', 'BUSD', 'XRP', 'DOGE', 'BNB'];
 
-export default function Home() {
+export default function Home({ navigation }) {
   const isDarkMode = useSelector((state: RootState) => state.isDarkMode);
   const theme = useTheme<Theme>();
   
@@ -41,11 +44,13 @@ export default function Home() {
           <View style={{ width: '100%', height: 140, paddingVertical: 20, paddingHorizontal: 20, borderBottomWidth: 2, borderBottomColor: theme.textInput.backgroundColor }}>
 
             <View style={{ flexDirection: 'row', width: '80%' }}>
-              <View style={{ width: 50, height: 50, borderRadius: 25, backgroundColor: theme.colors.primaryColor }}></View>
+              <View style={{ width: 50, height: 50, borderRadius: 25 }}>
+                <An width={50} height={50} />
+              </View>
               <CustomText variant="bodylight" style={{ width: '100%', marginLeft: 10 }}>Financial compliance laws require us to verify your identity in order for you to use our services</CustomText>
             </View>
 
-            <Pressable style={{ flexDirection: 'row', justifyContent: 'flex-end', flex: 1, alignItems: 'center' }}>
+            <Pressable onPress={() => navigation.navigate('kyc')} style={{ flexDirection: 'row', justifyContent: 'flex-end', flex: 1, alignItems: 'center' }}>
               <CustomText color="primaryColor">Get Started</CustomText>
               <Feather name="arrow-right" size={20} color={theme.colors.primaryColor} />
             </Pressable>

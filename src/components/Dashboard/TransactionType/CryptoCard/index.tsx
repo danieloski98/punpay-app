@@ -4,6 +4,9 @@ import Box from '../../../generalComponents/Box'
 import CustomText from '../../../generalComponents/Text';
 import { Feather } from '@expo/vector-icons'
 import { useNavigation } from '@react-navigation/native'
+import Eth from '../../../../res/svgs/eth.svg'
+import { useTheme } from '@shopify/restyle';
+import { Theme } from '../../../../style/theme';
 // import { Container } from './styles';
 
 interface IProps {
@@ -13,6 +16,7 @@ interface IProps {
 
 const CryptoCard: React.FC<IProps> = ({ coin, type }) => {
   const navigation = useNavigation<any>();
+  const theme = useTheme<Theme>()
 
   const switchType = React.useCallback(() => {
     switch(type) {
@@ -38,12 +42,14 @@ const CryptoCard: React.FC<IProps> = ({ coin, type }) => {
       })}
       style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems:"center", flex:1 }}>
 
-        <Box marginTop="m" flexDirection="row" alignItems="center">
-            <Box width={60} height={60} borderRadius={30} style={{ backgroundColor: 'orange' }} />
+        <Box  marginTop="m" flexDirection="row" alignItems="center">
+            <Box width={60} height={60} borderRadius={30} >
+              <Eth width={60} height={60} />
+            </Box>
             <CustomText marginLeft="m">{coin}</CustomText>
         </Box>
 
-        <Feather name="chevron-right" size={30} />
+        <Feather name="chevron-right" size={30} color={theme.colors.text} />
 
       </Pressable>
     </Box>

@@ -5,6 +5,7 @@ import Home from '../Screens/Dashboard/Home';
 import KYC from '../Screens/Dashboard/KYC';
 import CryptoPage from '../Screens/Dashboard/CryptoPage';
 import TransactionType from '../Screens/Dashboard/TransactionType';
+import LinkBank from '../Screens/Dashboard/LinkBank';
 
 const { Navigator, Screen } = createNativeStackNavigator();
 
@@ -15,6 +16,7 @@ export default function HomeNavigation() {
         <Screen name="kyc" component={KYC} />
         <Screen name="crypto" component={CryptoPage} />
         <Screen name="transactiontype" component={TransactionType} />
+        <Screen name="link-bank" component={LinkBank} />
     </Navigator>
   )
 }
