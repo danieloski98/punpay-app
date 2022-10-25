@@ -32,7 +32,7 @@ const Swap: React.FC<IProps> = ({ close }) => {
                 return <AmountPage next={setStage} />
             }
             case 2: {
-              return <VerificationPage changeStep={setStage} />
+              return <VerificationPage changeStep={() => setStage(3)} goBack={() => setStage(prev => prev -1)} />
             }
             case 3: {
               return <ProcessingPage />
