@@ -1,0 +1,9 @@
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+<circle cx="24" cy="24" r="24" fill="#627EEA"/>
+<path d="M24.747 6V19.305L35.9925 24.33L24.747 6Z" fill="white" fill-opacity="0.602"/>
+<path d="M24.747 6L13.5 24.33L24.747 19.305V6Z" fill="white"/>
+<path d="M24.747 32.9521V41.9926L36 26.4241L24.747 32.9521Z" fill="white" fill-opacity="0.602"/>
+<path d="M24.747 41.9926V32.9506L13.5 26.4241L24.747 41.9926Z" fill="white"/>
+<path d="M24.747 30.8596L35.9925 24.3301L24.747 19.3081V30.8596Z" fill="white" fill-opacity="0.2"/>
+<path d="M13.5 24.3301L24.747 30.8596V19.3081L13.5 24.3301Z" fill="white" fill-opacity="0.602"/>
+</svg>
