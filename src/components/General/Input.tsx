@@ -8,13 +8,14 @@ import CustomText from './Text'
 
 interface IProps {
     label?: string;
-    name: string;
     rightElement?: JSX.Element;
-    leftElement: JSX.Element;
+    leftElement?: JSX.Element;
     isPassword?: boolean;
+    value: string;
+    onChange: (e: string) => void;
 }
 
-export const  CustomInput: React.FC<IProps & TextInputProps> = (props) => {
+export const  Input: React.FC<IProps & TextInputProps> = (props) => {
   const [focused, setFocused] = React.useState(false);
   const theme = useTheme<Theme>();
 
@@ -23,28 +24,25 @@ export const  CustomInput: React.FC<IProps & TextInputProps> = (props) => {
 
   const handleFocus = useCallback(() => {
     setFocused(true);
-    setFieldTouched(props.name, true, true);
   }, []);
 
   const onBlur = useCallback(() => {
     setFocused(false);
-    handleBlur(props.name);
   }, []);
 
   return (
     <>
       <CustomText variant="body">{props.label ?? ''}</CustomText>
-        <View style={{...Style.parent, backgroundColor: theme.textInput.backgroundColor, height: theme.textInput.height, borderColor: focused ? theme.colors.primaryColor:'transparent', marginTop: 10 }}>
-            {props.leftElement}
-            <TextInput {...props} secureTextEntry={props.isPassword ? true:false} value={values[props.name]} style={{  paddingHorizontal: 10, flex: 1 }} onFocus={handleFocus} onBlur={onBlur} onChangeText={handleChange(props.name)} />
-            {props.rightElement}
+        <View style={{...Style.parent, backgroundColor: theme.textInput.backgroundColor, height: theme.textInput.height, borderColor: focused ? theme.colors.primaryColor:'transparent' }}>
+            {/* {props.leftElement} */}
+            <TextInput {...props} placeholder='Search ' style={{  paddingHorizontal: 10, flex: 1 }} onChangeText={(e) => props.onChange(e)} />
+            {/* {props.rightElement} */}
         </View>
-        <ErrorMessage name={props.name} render={(msg) =>  <CustomText variant="xs" style={Style.text}>{msg}</CustomText>} />
     </>
   )
 }
 
-export default CustomInput;
+export default Input;
 
 export const Style = StyleSheet.create({
     parent: {

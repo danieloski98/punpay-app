@@ -12,6 +12,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LOGGEDINSTATES, DARKMODE } from '../../../enums/init.enum'
 import { useDispatch, useSelector } from 'react-redux'
 import { Dispatch, RootState } from '../../../state/Store'
+import ElevatedComponent from '../../../components/Dashboard/Settings/SwitchComponent'
+import LinkBankButton from '../../../components/Dashboard/Settings/LinkBankButton'
 
 export default function Settings({ navigation }: any) {
   const [check, setCheck] = React.useState(false);
@@ -50,37 +52,25 @@ export default function Settings({ navigation }: any) {
 
       <ScrollView style={{ flex: 1, marginTop: 20, marginBottom: 0 }} showsVerticalScrollIndicator={false}>
         
-        <Pressable onPress={() => navigation.navigate('link-bank')} style={{ width: '100%', height: theme.button.height, backgroundColor: '#F4F4FB', borderRadius: 10, justifyContent: 'center', alignItems: 'center' }}>
-          <CustomText variant="body" style={{ color: '#5149F7' }}>LINK</CustomText>
-        </Pressable>
+        <LinkBankButton />
 
         <View style={{ marginTop: 40 }}>
           <CustomText variant="body">Account Settings</CustomText>
 
-          <Box backgroundColor="mainBackground" style={{...Style.elevatedBtn, backgroundColor: theme.textInput.backgroundColor, marginTop: 20 }}>
-            <CustomText variant="bodylight">Enable DarkMode</CustomText>
-            <Switch onChange={triggerDarkMode} value={darkMode} />
-          </Box>
+          
+          <ElevatedComponent title="Enable DarkMode" type="SWITCH" onChange={() => triggerDarkMode()} isChecked={darkMode} />
         </View>
 
         <View style={{ marginTop: 40 }}>
           <CustomText variant="body">Account Security</CustomText>
 
-          <Box backgroundColor="mainBackground" style={{...Style.elevatedBtn, backgroundColor: theme.textInput.backgroundColor, marginTop: 20 }}>
-            <CustomText variant="bodylight">Enable Biometrics</CustomText>
-            <Switch onChange={() => setCheck(prev => !prev)} value={check} />
-          </Box>
+          <ElevatedComponent title="Enable Biometrics" type="SWITCH" onChange={() => setCheck(prev => !prev)} isChecked={check} />
+          <ElevatedComponent title="Change Password" type="LINK" link='changepassword' />
+          <ElevatedComponent title="Change PIN" type="LINK" link='changepin' />
+          <ElevatedComponent title="Next Of Kin" type="LINK" link='changepassword' />
 
-          <Pressable onPress={() => {navigation.navigate('changepassword')}} style={{...Style.elevatedBtn, backgroundColor: theme.textInput.backgroundColor, marginTop: 20 }}>
-            <CustomText variant="bodylight">Change Password</CustomText>
-            <Feather name="chevron-right" size={25} color={theme.colors.text}  />
-          </Pressable>
+          <Box marginTop='xl' />
 
-          <Pressable  onPress={() => {navigation.navigate('changepin')}} style={{...Style.elevatedBtn, backgroundColor: theme.textInput.backgroundColor, marginTop: 20, marginBottom: 100 }}>
-            <CustomText variant="bodylight">Change PIN</CustomText>
-            <Feather name="chevron-right" size={25} color={theme.colors.text} />
-          </Pressable>
-          
         </View>
 
       </ScrollView>

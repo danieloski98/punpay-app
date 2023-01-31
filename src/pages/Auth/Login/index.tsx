@@ -32,11 +32,23 @@ export default function Login({ navigation }: IProps) {
   const { mutate, isLoading } = useMutation({
     mutationFn: (data: any) => Axios.post('/user-auth/login', data),
     onSuccess: async (data) => {
-      AsyncStorage.setItem('token', data.data.data.token);
+      await AsyncStorage.setItem('token', data.data.data.token);
+      const pin = await AsyncStorage.getItem("PIN");
+      console.log(pin);
       const str = JSON.stringify(data.data.data.user);
       AsyncStorage.setItem('user', str);
-      dispatch.User.update(data.data.data.user, null);
-      dispatch.loggedIn.login();
+      if (!data.data.data.user.emailVerified) {
+        Alert.alert('Notice', 'You need to verify you email')
+        navigation.navigate('verifyemail', { email: data.data.data.user.email });
+        return;
+      }else if (pin === null || pin === undefined) {
+        navigation.navigate('setpin');
+        return
+      } else {
+        // await AsyncStorage.removeItem('PIN');
+        dispatch.User.update(data.data.data.user, null);
+        dispatch.loggedIn.login();
+      }
     },
     onError: (error: any)=> {
       Alert.alert('Error', error);

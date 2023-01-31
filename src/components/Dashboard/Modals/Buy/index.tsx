@@ -8,8 +8,6 @@ import { Style } from "./style";
 import AmountPage from './Pages/Amount';
 import AwaitingPaymentPage from './Pages/AwaitingPage';
 import ConfirmPaymentPage from './Pages/ConfirmPayment';
-import { useAtom } from 'jotai';
-import { DarkModeAtom } from '../../../../state/states'
 
 
 interface IProps {
