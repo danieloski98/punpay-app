@@ -99,13 +99,15 @@ const LinkBank = ({ navigation }) => {
 
 
 
-          <Pressable onPress={() => navigation.goBack()} style={Style.backContainer}>
+          <Pressable onPress={() => navigation.navigate('settings')} style={Style.backContainer}>
             <Feather name="chevron-left" size={25} color={theme.colors.text} />
             <CustomText variant="xs">Go Back</CustomText>
           </Pressable>
 
           <View style={Style.headerContainer}>
-            <CustomText variant="subheader" style={{ fontSize: 20 }}>Link a bank account</CustomText>
+            {bank.accountName === '' && <CustomText variant="subheader" style={{ fontSize: 20 }}>Link a bank account</CustomText>}
+            {bank.accountName !== '' && <CustomText variant="subheader" style={{ fontSize: 20 }}>Update bank account</CustomText>}
+
             <View style={{ width: '30%' }}>
               {bank.accountNumber === '' && <Submit text="Link" isLoading={isLoading} />}
               {bank.accountNumber !== '' && <Submit text="Update" isLoading={updateBank.isLoading} />}

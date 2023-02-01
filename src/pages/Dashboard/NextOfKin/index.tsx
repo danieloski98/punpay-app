@@ -13,7 +13,7 @@ import { useMutation } from '@tanstack/react-query'
 import Axios from '../../../utils/api'
 
 
-export default function ChangePassword({ navigation }: any) {
+export default function NextOfKin({ navigation }: any) {
   const [showPass, setShowPass] = React.useState(false);
   const [newp, setNewP] = React.useState(false);
   const [confirm, setConfirm] = React.useState(false);
@@ -59,7 +59,7 @@ export default function ChangePassword({ navigation }: any) {
     >
       <Box backgroundColor="mainBackground" flex={1} style={{ paddingHorizontal: 20 }}>
 
-        <Pressable style={Style.header} onPress={() => { navigation.navigate('settings') }}>
+        <Pressable style={Style.header} onPress={() => { navigation.goBack() }}>
           <Feather name="chevron-left" size={25} color={theme.colors.text} />
           <CustomText variant="body" marginLeft="s">Back</CustomText>
         </Pressable>

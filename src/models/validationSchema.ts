@@ -26,4 +26,29 @@ const resetPasswordSchema = yup.object().shape({
         .oneOf([yup.ref('newPassword'), null], 'Passwords do not match!')
         .required('This field is required*'),
 })
-export { VerifyEmailSchema, BankSchema, forgotPasswordSchema, resetPasswordSchema };
+
+const changePasswordSchema = yup.object().shape({
+    newPassword: yup
+        .string()
+        .matches(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/, {
+            message: 'Minimum 8 characters, at least an uppercase, lowercase, number and special character*',
+        })
+        .required('This field is required*'),
+    oldPassword: yup
+        .string()
+        .required('This field is required*'),
+    confirmPassword: yup
+        .string()
+        .oneOf([yup.ref('newPassword'), null], 'Passwords do not match!')
+        .required('This field is required*'),
+})
+
+const nextofkinSchema = yup.object().shape({
+    firstName: yup.string().required(),
+    lastName: yup.string().required(),
+    email: yup.string().email('Invalid email'),
+    phoneNumber: yup.string(),
+    DOB: yup.string().required(),
+    relationShip: yup.string().required(),
+})
+export { VerifyEmailSchema, BankSchema, forgotPasswordSchema, resetPasswordSchema, changePasswordSchema, nextofkinSchema };

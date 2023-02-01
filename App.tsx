@@ -5,7 +5,9 @@ import { Fragment, useCallback } from 'react';
 import * as SplashScreen from 'expo-splash-screen'
 import { useFonts } from 'expo-font'
 import { store } from './src/state/Store';
-import { View } from 'react-native';
+import { Alert, View } from 'react-native';
+import * as Updates from 'expo-updates';
+import React from 'react';
 
 export const queryClient = new QueryClient();
 
@@ -15,6 +17,19 @@ export default function App() {
     'Jakarta-Sans': require('./assets/fonts/PlusJakartaSans-Regular.ttf'),
     'Axiforma-Bold': require('./assets/fonts/Axiforma-Bold.ttf'),
   })
+
+  React.useEffect(() => {
+    Updates.checkForUpdateAsync()
+    .then((data) => {
+      if (data.isAvailable) {
+        Alert.alert('Update', 'An update is available')
+        Updates.fetchUpdateAsync()
+        .then((data) => {
+          data.isNew
+        })
+      }
+    })
+  }, [])
   const onLayout = useCallback(() => {
     if (fontLoaded) {
       SplashScreen.hideAsync();

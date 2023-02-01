@@ -5,4 +5,4 @@ const liveurl = 'https://api.punpay.co'
 
 export const url = router5g;;
 
-export default router5g;
+export default liveurl;

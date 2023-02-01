@@ -42,7 +42,7 @@ export default function TransactionHistory({ navigation }: any) {
       <View style={{ flex: 1, marginTop: 20 }}>
         <ScrollView contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 100, marginTop: 0 }}>
           <TransactionEntry type="BUY" />
-          <TransactionEntry type="SELL" />
+          {/* <TransactionEntry type="SELL" />
           <TransactionEntry type="SWAP" />
           <TransactionEntry type="BUY" />
           <TransactionEntry type="SELL" />
@@ -64,7 +64,7 @@ export default function TransactionHistory({ navigation }: any) {
           <TransactionEntry type="SWAP" />
           <TransactionEntry type="BUY" />
           <TransactionEntry type="SELL" />
-          <TransactionEntry type="SWAP" />
+          <TransactionEntry type="SWAP" /> */}
         </ScrollView>
       </View>
     </Box>

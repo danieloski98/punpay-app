@@ -20,7 +20,11 @@ const Navigation = () => {
       const loggedIn = await AsyncStorage.getItem(LOGGEDINSTATES.LOGGEDIN);
       if (loggedIn !== null && loggedIn === 'true') {
         console.log(loggedIn);
-        dispatch.loggedIn.login();
+        const usr = await AsyncStorage.getItem('user');
+        if (usr !== null) {
+          dispatch.User.update(JSON.parse(usr), null);
+          dispatch.loggedIn.login();
+        }   
       }
       dispatch.isDarkMode.change(mode !== null && mode === 'true' ? true:false, '');
     })()

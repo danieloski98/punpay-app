@@ -16,6 +16,7 @@ import Logout from '../../../res/svg-output/assets/Logout'
 import SidebarButton, { ISidebarButton } from '../SidebarButton'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../../state/Store'
+import useLogout from '../../../hooks/useLogout'
 
 export const MenuItems: ISidebarButton[] = [
     {
@@ -42,12 +43,6 @@ export const MenuItems: ISidebarButton[] = [
         icon: <Message width={25} height={25} />,
         backgroundColor: '#74BBFF'
     },
-    {
-        text: "Logout",
-        location: 'history',
-        icon: <Logout width={25} height={25} />,
-        backgroundColor: '#FF6675'
-    },
 ];
 
 
@@ -58,6 +53,8 @@ interface IProps {
 export default function SideBar({ navigation }: IProps) {
     const theme = useTheme<Theme>()
     const user = useSelector((state: RootState) => state.User);
+    console.log(user);
+    const { logout } = useLogout()
     
     const nav = (route: string) => {
         navigation.navigate(route)
@@ -82,6 +79,7 @@ export default function SideBar({ navigation }: IProps) {
                 {MenuItems.map((item, index) => (
                     <SidebarButton {...item} key={index.toString()} />
                 ))}
+                 <SidebarButton text='Logout' location={'home'} icon={<Logout width={25} height={25} />} backgroundColor='#FF6675' action={logout} />
             </View>
         </View>
     </Box>

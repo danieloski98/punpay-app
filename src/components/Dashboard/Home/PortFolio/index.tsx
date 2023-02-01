@@ -20,7 +20,7 @@ export default function Portfolio() {
   return (
     <View style={{...Style.parent, backgroundColor: theme.textInput.backgroundColor }}>
       <CustomText variant="bodylight" textAlign="center" textTransform="uppercase">Portfolio Balance</CustomText>
-      <CustomText variant="header" textAlign="center" textTransform="uppercase" marginTop="l" style={{ fontSize: 40 }}>$333,000</CustomText>
+      <CustomText variant="header" textAlign="center" textTransform="uppercase" marginTop="l" style={{ fontSize: 40 }}>$0.00</CustomText>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', flex: 1, alignItems: 'center', marginTop: 20 }}>
 
         <View style={{ alignItems: 'center' }}>

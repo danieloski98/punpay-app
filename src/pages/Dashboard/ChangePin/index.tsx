@@ -1,4 +1,4 @@
-import { View, TextInput, TouchableOpacity } from 'react-native'
+import { View, TextInput, TouchableOpacity, Alert } from 'react-native'
 import React from 'react'
 import { Box, Text as CustomText } from '../../../components/General'
 import { Style } from './style'
@@ -18,6 +18,7 @@ export default function ChangePin({navigation}: IProps) {
     const [step, setStep] = React.useState(1);
     const [holder, setHolder] = React.useState('');
     const [match, setMatch] = React.useState(false);
+    const Pin = useAsyncStorage('PIN');
 
     const theme = useTheme<Theme>();
     const pinS = useAsyncStorage('PIN')
@@ -31,23 +32,44 @@ export default function ChangePin({navigation}: IProps) {
     }
 
     React.useEffect(() => {
+        if (holder.length === 4) {
+            console.log(holder);
+        }
+    }, [holder])
+
+    React.useEffect(() => {
+       (async function() {
+        const p = await pinS.getItem();
         if (step === 1) {
             if (pin.length === 4) {
-                setHolder(pin.toString());
+                // console.log(pin);
+                let pp = pin.toString()
+                setHolder(pp);
+                console.log(pp)
+                if (p !== pin.toString()) {
+                    Alert.alert('Old PIN doesn\'t match');
+                    setPin([]);
+                    setHolder('');
+                    return;
+                }
                 setPin([]);
                 setStep(2);
             }
         } else {
             if (pin.length === 4) {
                 if (pin.toString() === holder) {
+                    Alert.alert('Warning', 'Can\'t use an old PIN')
+                } else {
                     setMatch(true);
                     pinS.setItem(pin.toString());
-                    navigation.navigate('biometric')
-                } else {
-                    setMatch(false);
+                    Alert.alert('Success', 'PIN changed')
+                    navigation.navigate('settings');
+                    setPin([]);
+                    setStep(1)
                 }
             }
         }
+       })()
     }, [pin])
 
     const clear = () => {
@@ -59,7 +81,7 @@ export default function ChangePin({navigation}: IProps) {
   return (
     <Box backgroundColor="mainBackground" flex={1}>
       <View style={Style.header}>
-            <TouchableOpacity style={{ flexDirection: 'row' }} onPress={() => navigation.goBack()}>
+            <TouchableOpacity style={{ flexDirection: 'row' }} onPress={() => navigation.navigate('settings')}>
                 <>
                     <Feather name="chevron-left" size={25} color={theme.colors.text} />
                     <CustomText variant="bodylight" >Go Back</CustomText>
@@ -70,7 +92,7 @@ export default function ChangePin({navigation}: IProps) {
       {step === 1 && (<CustomText fontWeight="bold" variant="body" textAlign="center">ENTER OLD PIN</CustomText>)}
 
       {step === 2 &&  (
-       <CustomText fontWeight="bold" variant="body" textAlign="center">CONFIRM DEVICE PIN</CustomText>
+       <CustomText fontWeight="bold" variant="body" textAlign="center">Enter new PIN</CustomText>
       )}
 
       <View style={{ width: '100%', height: 70, alignItems: 'center' }}>
@@ -82,7 +104,7 @@ export default function ChangePin({navigation}: IProps) {
         </View>
       </View>
 
-     {step === 1 && ( <CustomText fontWeight="400" variant="bodylight" textAlign="center">Enter a PIN you can remember</CustomText>)}
+     {step === 1 && ( <CustomText fontWeight="400" variant="bodylight" textAlign="center">Enter your old PIN</CustomText>)}
 
      {step === 2 && (
         <>

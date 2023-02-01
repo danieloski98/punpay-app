@@ -36,9 +36,10 @@ export default function Login({ navigation }: IProps) {
       await AsyncStorage.setItem('token', data.data.data.token);
       await AsyncStorage.setItem(LOGGEDINSTATES.LOGGEDIN, 'true');
       const pin = await AsyncStorage.getItem("PIN");
-      console.log(pin);
+      console.log(data.data.data);
       const str = JSON.stringify(data.data.data.user);
-      AsyncStorage.setItem('user', str);
+      await AsyncStorage.setItem('user', str);
+      dispatch.User.update(data.data.data.user, null);
       if (!data.data.data.user.emailVerified) {
         Alert.alert('Notice', 'You need to verify you email')
         navigation.navigate('verifyemail', { email: data.data.data.user.email });

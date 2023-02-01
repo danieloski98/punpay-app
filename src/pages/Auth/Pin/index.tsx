@@ -153,7 +153,7 @@ export default function Pin({navigation}: IProps) {
 
                 <TouchableOpacity onPress={auth} style={{  width: 60, height: 60, borderRadius: 35, borderWidth: 1, borderColor: theme.colors.primaryColor, justifyContent: 'center', alignItems: 'center', marginBottom: 20 }}>
                     {Platform.OS === 'android' && <Ionicons name="finger-print" size={25} />}
-                    {Platform.OS === 'ios' && <FaceID width={30} height={30} color={theme.colors.text} />}
+                    {Platform.OS === 'ios' && <FaceID width={30} height={30} fill={theme.colors.text} />}
                     {/* <CustomText variant="subheader">7</CustomText> */}
                 </TouchableOpacity>
                 

@@ -27,13 +27,17 @@ export default function Settings({ navigation }: any) {
 
   const triggerBiometrics = async () => {
     setCheck(prev => !prev)
-    await AsyncStorage.setItem('PIN', check ? 'true':'false');
+    await AsyncStorage.setItem('biometric', check ? 'true':'false');
   }
   const theme = useTheme<Theme>();
 
   React.useEffect(() => {
     (async function(){
       const pin = await AsyncStorage.getItem('PIN');
+      const biometeric = await AsyncStorage.getItem("biometric");
+      if (biometeric !== null && biometeric === 'true') {
+        setCheck(true);
+      }
       if (pin === null || pin === 'false') {
         setCheck(false);
       } if(pin !== null) {
@@ -45,7 +49,7 @@ export default function Settings({ navigation }: any) {
   return (
     <Box backgroundColor="mainBackground" flex={1} style={{ paddingHorizontal: 20 }}>
 
-      <Pressable style={Style.header} onPress={() => {navigation.goBack()}}>
+      <Pressable style={Style.header} onPress={() => {navigation.navigate('index')}}>
         <Feather name="chevron-left" size={25} color={theme.colors.text} />
         <CustomText variant="body" marginLeft="s" style={{ marginBottom: 4 }}>Back</CustomText>
       </Pressable>
