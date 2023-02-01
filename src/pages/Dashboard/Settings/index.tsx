@@ -24,7 +24,23 @@ export default function Settings({ navigation }: any) {
     dispatch({ type: 'isDarkMode/change' })
     await AsyncStorage.setItem(DARKMODE.DARKMODE, darkMode ? 'false':'true');
   }
+
+  const triggerBiometrics = async () => {
+    setCheck(prev => !prev)
+    await AsyncStorage.setItem('PIN', check ? 'true':'false');
+  }
   const theme = useTheme<Theme>();
+
+  React.useEffect(() => {
+    (async function(){
+      const pin = await AsyncStorage.getItem('PIN');
+      if (pin === null || pin === 'false') {
+        setCheck(false);
+      } if(pin !== null) {
+        setCheck(pin === 'true' ? true:false);
+      }
+    })()
+  }, [])
 
   return (
     <Box backgroundColor="mainBackground" flex={1} style={{ paddingHorizontal: 20 }}>
@@ -56,15 +72,13 @@ export default function Settings({ navigation }: any) {
 
         <View style={{ marginTop: 40 }}>
           <CustomText variant="body">Account Settings</CustomText>
-
-          
           <ElevatedComponent title="Enable DarkMode" type="SWITCH" onChange={() => triggerDarkMode()} isChecked={darkMode} />
         </View>
 
         <View style={{ marginTop: 40 }}>
           <CustomText variant="body">Account Security</CustomText>
 
-          <ElevatedComponent title="Enable Biometrics" type="SWITCH" onChange={() => setCheck(prev => !prev)} isChecked={check} />
+          <ElevatedComponent title="Enable Biometrics" type="SWITCH" onChange={() => triggerBiometrics()} isChecked={check} />
           <ElevatedComponent title="Change Password" type="LINK" link='changepassword' />
           <ElevatedComponent title="Change PIN" type="LINK" link='changepin' />
           <ElevatedComponent title="Next Of Kin" type="LINK" link='changepassword' />

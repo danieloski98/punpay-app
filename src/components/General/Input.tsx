@@ -35,7 +35,7 @@ export const  Input: React.FC<IProps & TextInputProps> = (props) => {
       <CustomText variant="body">{props.label ?? ''}</CustomText>
         <View style={{...Style.parent, backgroundColor: theme.textInput.backgroundColor, height: theme.textInput.height, borderColor: focused ? theme.colors.primaryColor:'transparent' }}>
             {/* {props.leftElement} */}
-            <TextInput {...props} placeholder='Search ' style={{  paddingHorizontal: 10, flex: 1 }} onChangeText={(e) => props.onChange(e)} />
+            <TextInput {...props} placeholder='Search ' style={{  paddingHorizontal: 10, flex: 1, color: theme.colors.text }} onChangeText={(e) => props.onChange(e)} />
             {/* {props.rightElement} */}
         </View>
     </>

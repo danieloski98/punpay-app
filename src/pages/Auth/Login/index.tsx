@@ -15,6 +15,7 @@ import * as yup from "yup";
 import { useMutation } from "@tanstack/react-query";
 import Axios from "../../../utils/api";
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { LOGGEDINSTATES } from "../../../enums/init.enum";
 
 const validationSchema = yup.object({
   email: yup.string().email().required(),
@@ -33,6 +34,7 @@ export default function Login({ navigation }: IProps) {
     mutationFn: (data: any) => Axios.post('/user-auth/login', data),
     onSuccess: async (data) => {
       await AsyncStorage.setItem('token', data.data.data.token);
+      await AsyncStorage.setItem(LOGGEDINSTATES.LOGGEDIN, 'true');
       const pin = await AsyncStorage.getItem("PIN");
       console.log(pin);
       const str = JSON.stringify(data.data.data.user);
@@ -112,7 +114,7 @@ export default function Login({ navigation }: IProps) {
                 keyboardType="visible-password"
                 name="password"
                 label="Password"
-                isPassword={showPass}
+                isPassword={!showPass}
               leftElement={
                 <Feather
                   name="lock"

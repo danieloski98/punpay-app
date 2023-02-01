@@ -36,7 +36,7 @@ export const  CustomInput: React.FC<IProps & TextInputProps> = (props) => {
       <CustomText variant="body">{props.label ?? ''}</CustomText>
         <View style={{...Style.parent, backgroundColor: theme.textInput.backgroundColor, height: theme.textInput.height, borderColor: focused ? theme.colors.primaryColor:'transparent', marginTop: 10 }}>
             {props.leftElement}
-            <TextInput {...props} secureTextEntry={props.isPassword ? true:false} value={values[props.name]} style={{  paddingHorizontal: 10, flex: 1 }} onFocus={handleFocus} onBlur={onBlur} onChangeText={handleChange(props.name)} />
+            <TextInput {...props} secureTextEntry={props.isPassword ? true:false} value={values[props.name]} style={{  paddingHorizontal: 10, flex: 1, color: theme.colors.text }} onFocus={handleFocus} onBlur={onBlur} onChangeText={handleChange(props.name)} />
             {props.rightElement}
         </View>
         <ErrorMessage name={props.name} render={(msg) =>  <CustomText variant="xs" style={Style.text}>{msg}</CustomText>} />

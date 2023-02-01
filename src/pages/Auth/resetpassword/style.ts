@@ -8,7 +8,7 @@ export const Style = StyleSheet.create({
         marginBottom: 20,
     },
     box: {
-        marginTop: 15,
+        marginTop: 8,
     },
     btnC: {
         marginTop: 25,

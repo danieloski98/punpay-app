@@ -9,8 +9,8 @@ import Svg, {
 } from "react-native-svg";
 const SvgSuccessfullyUnlock = (props: SvgProps) => (
   <Svg
-    width={321}
-    height={241}
+    width={121}
+    height={141}
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     xmlnsXlink="http://www.w3.org/1999/xlink"

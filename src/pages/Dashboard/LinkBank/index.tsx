@@ -12,6 +12,8 @@ import { BottomSheetModal, BottomSheetModalProvider } from '@gorhom/bottom-sheet
 import { useMutation } from '@tanstack/react-query'
 import Axios from '../../../utils/api'
 import { CustomInput } from '../../../components/General/TextInput'
+import { useDispatch, useSelector } from 'react-redux'
+import { Dispatch, RootState } from '../../../state/Store'
 
 const defaultState = {
   id: 0,
@@ -35,10 +37,11 @@ const reducer = (state, action: action) => {
 }
 
 const LinkBank = ({ navigation }) => {
-  const [bankName, setBankName] = useState('Select Bank')
+  const bank = useSelector((state: RootState) => state.Bank);
   const [state, dispatch] = React.useReducer(reducer, defaultState);
   const [showBanks, setShowBanks] = React.useState(false);
   const bottomsheetRef = React.useRef<BottomSheetModal>(null);
+  const reduxDispatch = useDispatch<Dispatch>();
 
   // MUTATION
   const { isLoading, mutate } = useMutation({
@@ -46,6 +49,20 @@ const LinkBank = ({ navigation }) => {
     mutationFn: (data) => Axios.post('/bank/create', data),
     onSuccess: (data) => {
       console.log(data.data.message);
+    },
+    onError: (error: any) => {
+      Alert.alert('Error', error)
+    }
+  })
+
+  // UPDATE MUTATION
+  const updateBank = useMutation({
+    mutationKey: ['createBank'],
+    mutationFn: (data) => Axios.put('/bank/update', data),
+    onSuccess: (data) => {
+      console.log(data.data.message);
+      reduxDispatch.Bank.update(data.data.data, null);
+      Alert.alert(data.data.message);
     },
     onError: (error: any) => {
       Alert.alert('Error', error)
@@ -61,7 +78,11 @@ const LinkBank = ({ navigation }) => {
   }, []);
 
   const submit = (data: any) => {
-    mutate({ ...data, ...state })
+    if (bank.accountNumber === '') {
+      mutate({ ...data, ...state })
+    } else {
+      updateBank.mutate({ ...data, ...state });
+    }
   }
 
 
@@ -69,7 +90,7 @@ const LinkBank = ({ navigation }) => {
     <FormContainer
       validationSchema={BankSchema}
       initialValues={{
-        accountNumber: '',
+        accountNumber: bank.accountNumber !== '' ? bank.accountNumber : '',
       }}
       onSubmit={submit}
     >
@@ -86,7 +107,8 @@ const LinkBank = ({ navigation }) => {
           <View style={Style.headerContainer}>
             <CustomText variant="subheader" style={{ fontSize: 20 }}>Link a bank account</CustomText>
             <View style={{ width: '30%' }}>
-              <Submit text="Link" isLoading={isLoading} />
+              {bank.accountNumber === '' && <Submit text="Link" isLoading={isLoading} />}
+              {bank.accountNumber !== '' && <Submit text="Update" isLoading={updateBank.isLoading} />}
             </View>
           </View>
 
@@ -99,7 +121,7 @@ const LinkBank = ({ navigation }) => {
             <View style={{ marginTop: 20 }}>
               <CustomText variant="subheader" style={{ fontSize: 15 }}>Bank</CustomText>
               <Pressable onPress={() => bottomsheetRef.current?.present() } style={{ ...Style.textInput, backgroundColor: theme.textInput.backgroundColor, height: theme.textInput.height }}>
-                <CustomText style={{ flex: 1 }}>{state.name}</CustomText>
+                <CustomText style={{ flex: 1 }}>{bank.name !== '' ? bank.name : state.name}</CustomText>
                 <Feather name="chevron-down" size={25} color={theme.colors.text} />
               </Pressable>
               {/* <Dropdown value={[{ label: '', value: ''}]} /> */}
@@ -108,6 +130,7 @@ const LinkBank = ({ navigation }) => {
 
             <View style={{ marginTop: 20 }}>
                 <CustomInput name="accountNumber" label="Account Number" leftElement={<></>} style={{ flex: 1, color: theme.colors.text }} keyboardType='number-pad' />
+                <CustomText mt="m">{bank.accountName}</CustomText>
             </View>
 
 
