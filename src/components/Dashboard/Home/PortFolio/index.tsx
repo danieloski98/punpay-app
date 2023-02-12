@@ -1,10 +1,9 @@
-import { View, Text, Pressable } from 'react-native'
+import { View, Pressable } from 'react-native'
 import React from 'react'
 import { Style} from './style'
 import { useTheme } from '@shopify/restyle'
 import { Theme } from '../../../../style/theme'
 import {Box, Text as CustomText} from '../../../General'
-import { Feather } from '@expo/vector-icons'
 import { useNavigation } from '@react-navigation/native'
 
 // svgs
@@ -26,21 +25,21 @@ export default function Portfolio() {
         <View style={{ alignItems: 'center' }}>
             <Pressable 
                 onPress={() => navigation.navigate('transactiontype', {
-                    type: 'Recieve'
+                    type: 'Deposit'
                 })}
                 style={{ width: 50, height: 50, backgroundColor: 'white', borderRadius: 30, marginHorizontal: 10, justifyContent: 'center', alignItems: 'center' }}>
                 <ArrowDown width={25} height={30} style={{ marginLeft: 7, marginTop: 5 }} />
             </Pressable>
-            <CustomText variant="body">Recieve</CustomText>
+            <CustomText variant="body">Deposit</CustomText>
         </View>
 
         <View style={{ alignItems: 'center' }}>
             <Pressable 
-                onPress={() => navigation.navigate('transactiontype', { type: 'Send'})}
+                onPress={() => navigation.navigate('transactiontype', { type: 'Withdraw'})}
                 style={{ width: 50, height: 50, backgroundColor: 'white', borderRadius: 30, marginHorizontal: 10, justifyContent: 'center', alignItems: 'center' }}>
                 <ArrowUp width={25} height={30} style={{ marginLeft: 7, marginTop: 5 }} />
             </Pressable>
-            <CustomText variant="body">Sell</CustomText>
+            <CustomText variant="body">Withdraw</CustomText>
         </View>
 
         <Pressable 

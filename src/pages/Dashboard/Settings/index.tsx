@@ -85,7 +85,7 @@ export default function Settings({ navigation }: any) {
           <ElevatedComponent title="Enable Biometrics" type="SWITCH" onChange={() => triggerBiometrics()} isChecked={check} />
           <ElevatedComponent title="Change Password" type="LINK" link='changepassword' />
           <ElevatedComponent title="Change PIN" type="LINK" link='changepin' />
-          <ElevatedComponent title="Next Of Kin" type="LINK" link='changepassword' />
+          <ElevatedComponent title="Next Of Kin" type="LINK" link='nextofkin' />
 
           <Box marginTop='xl' />
 

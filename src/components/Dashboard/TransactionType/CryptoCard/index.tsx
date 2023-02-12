@@ -6,18 +6,19 @@ import { useNavigation } from '@react-navigation/native'
 import Eth from '../../../../res/svg-output/Eth'
 import { useTheme } from '@shopify/restyle';
 import { Theme } from '../../../../style/theme';
+import useIcons from '../../../../hooks/useIcons';
 // import { Container } from './styles';
 
 interface IProps {
     coin: string;
     type: number;
-    callback: () => void;
     setCoin: (coin: string) => void;
 }
 
-const CryptoCard = ({ coin, type, callback, setCoin }: IProps) => {
+const CryptoCard = ({ coin, type, setCoin }: IProps) => {
   const navigation = useNavigation<any>();
   const theme = useTheme<Theme>()
+  const { getIcon } = useIcons()
 
   const switchType = React.useCallback(() => {
     switch(type) {
@@ -31,7 +32,7 @@ const CryptoCard = ({ coin, type, callback, setCoin }: IProps) => {
         return 'SWAP';
       }
       case 4: {
-        return 'RECIEVE';
+        return 'DEPOSIT';
       }
     }
   }, [])
@@ -39,12 +40,12 @@ const CryptoCard = ({ coin, type, callback, setCoin }: IProps) => {
     // <Text>Hello There people</Text>
     <Box width="100%" height={100} backgroundColor="mainBackground">
       <Pressable 
-      onPress={() => {setCoin(coin); callback();}}
+      onPress={() => setCoin(coin)}
       style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems:"center", flex:1 }}>
 
         <Box flexDirection="row" alignItems="center">
             <Box width={60} height={60} marginTop="m" >
-              <Eth width={60} height={60} />
+              {getIcon(coin, 50)}
             </Box>
             <CustomText marginLeft="m">{coin}</CustomText>
         </Box>

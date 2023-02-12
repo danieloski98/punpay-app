@@ -11,8 +11,8 @@ import FaceID from '../../../res/svg-output/Fill23'
 // import FaceID from '../../../../res/svgs/Fill-23.svg'
 import * as LocalAuthentication from 'expo-local-authentication';
 
-import { useDispatch } from 'react-redux'
-import { Dispatch } from '../../../state/Store'
+import { useDispatch, useSelector } from 'react-redux'
+import { Dispatch, RootState } from '../../../state/Store'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 
 interface IProps {
@@ -24,6 +24,7 @@ export default function Pin({navigation}: IProps) {
     const [step, setStep] = React.useState(1);
     const [holder, setHolder] = React.useState('');
     const [match, setMatch] = React.useState(false);
+    const user = useSelector((state: RootState) => state.User)
 
     const theme = useTheme<Theme>();
     const pinS = useAsyncStorage('PIN')
@@ -31,6 +32,7 @@ export default function Pin({navigation}: IProps) {
 
     const changePin = (e: string) => {
         if (pin.length === 4) {
+            
             return;
         } else {
             setPin(prev => [...prev, e]);
@@ -41,6 +43,15 @@ export default function Pin({navigation}: IProps) {
         if (step === 1) {
             if (pin.length === 4) {
                 setHolder(pin.toString());
+                pinS.getItem().then((data) => {
+                    if (data === holder) {
+                        navigation.navigate('index')
+                    } else {
+                        Alert.alert('Error', 'Pin does not match');
+                        setPin([]),
+                        setHolder('');
+                    }
+                })
                 setPin([]);
                 setStep(2);
             }
@@ -66,7 +77,7 @@ export default function Pin({navigation}: IProps) {
     const auth = async () => {
         const res = await LocalAuthentication.authenticateAsync({promptMessage: 'Sign in to Punpay'});
         if (res.success) {
-            dispatch.loggedIn.login();
+           navigation.navigate('index');
         } else {
             Alert.alert('Error', 'Authentication failed')
         }
@@ -75,7 +86,7 @@ export default function Pin({navigation}: IProps) {
   return (
     <Box backgroundColor="mainBackground" flex={1}>
       <View style={Style.header}>
-        { step > 1 && (
+        {/* { step > 1 && (
             <TouchableOpacity style={{ flexDirection: 'row' }} onPress={() => {
                 setHolder('');
                 setPin([]);
@@ -86,10 +97,10 @@ export default function Pin({navigation}: IProps) {
                     <CustomText variant="bodylight" >Go Back</CustomText>
                 </>
             </TouchableOpacity>
-        )}
+        )} */}
       </View>
 
-      <CustomText fontWeight="bold" variant="body" textAlign="center">WELCOME BACK, MICHAEL</CustomText>
+      <CustomText fontWeight="bold" variant="body" textAlign="center">WELCOME BACK, {user.firstName.toUpperCase()}</CustomText>
 
 
       <View style={{ width: '100%', height: 70, alignItems: 'center' }}>
@@ -152,8 +163,8 @@ export default function Pin({navigation}: IProps) {
             <View style={{ width: '100%', flexDirection: 'row', justifyContent: 'space-between'}}>
 
                 <TouchableOpacity onPress={auth} style={{  width: 60, height: 60, borderRadius: 35, borderWidth: 1, borderColor: theme.colors.primaryColor, justifyContent: 'center', alignItems: 'center', marginBottom: 20 }}>
-                    {Platform.OS === 'android' && <Ionicons name="finger-print" size={25} />}
-                    {Platform.OS === 'ios' && <FaceID width={30} height={30} fill={theme.colors.text} />}
+                     <Ionicons name="finger-print" size={25} color={theme.colors.text} />
+                    {/* {Platform.OS === 'ios' && <FaceID width={30} height={30} fill={theme.colors.text} />} */}
                     {/* <CustomText variant="subheader">7</CustomText> */}
                 </TouchableOpacity>
                 

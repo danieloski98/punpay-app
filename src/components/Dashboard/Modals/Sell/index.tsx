@@ -5,7 +5,7 @@ import { RootState } from "../../../../state/Store";
 import { useTheme } from '@shopify/restyle';
 import { Theme } from "../../../../style/theme";
 import { Style } from "./style";
-import { Text as CustomText } from '../../../General'
+import { Box, Text as CustomText } from '../../../General'
 import { View, Pressable } from 'react-native'
 
 // svgs
@@ -19,12 +19,14 @@ import SendAmountPage from './Pages/SendPages/Amount';
 import ReviewSendPage from './Pages/SendPages/Review';
 import { useAtom } from 'jotai';
 import { DarkModeAtom } from '../../../../state/states';
+import useIcons from '../../../../hooks/useIcons';
 
 interface IProps {
-    close: React.Dispatch<React.SetStateAction<boolean>>
+    close: React.Dispatch<React.SetStateAction<boolean>>;
+    coin: string;
 }
 
-const SellPage = ({ close }: IProps) => {
+const SellPage = ({ close, coin }: IProps) => {
     const [stage, setStage] = React.useState(1);
     const [step, setStep] = React.useState(1)
     const [sellStep, setSellStep] = React.useState(1);
@@ -34,6 +36,8 @@ const SellPage = ({ close }: IProps) => {
     const bottomsheetRef = React.useRef<BottomSheetModal>(null);
     const theme = useTheme<Theme>();
     const [darkmode,] = useAtom(DarkModeAtom);
+
+    const { getIcon } = useIcons()
 
     React.useEffect(() => {
         bottomsheetRef.current?.present();
@@ -107,7 +111,10 @@ const SellPage = ({ close }: IProps) => {
             <BottomSheetScrollView scrollEnabled horizontal={false} showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 100 }}>
               {initial && (
                  <>
-                 <CustomText variant="subheader" mt="m" style={{ fontSize: 20 }}>Sell Bitcoin</CustomText>
+                 <Box flexDirection='row' alignItems='center'>
+                  <CustomText variant="subheader" mr='s' style={{ fontSize: 20 }}>Withdraw {coin}</CustomText>
+                  {getIcon(coin, 25)}
+                 </Box>
                  <CustomText>What do you want to do ?</CustomText>
  
                  <View style={{ height: 30 }} />

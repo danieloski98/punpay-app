@@ -4,6 +4,9 @@ import { Style } from './style'
 import { useTheme } from '@shopify/restyle'
 import { Theme } from '../../../../../../../style/theme'
 import {Text as CustomText, PrimaryButton } from '../../../../../../General'
+import { useSelector } from 'react-redux'
+import { RootState } from '../../../../../../../state/Store'
+import useIcons from '../../../../../../../hooks/useIcons'
 
 interface IProps {
   change: React.Dispatch<React.SetStateAction<number>>;
@@ -11,6 +14,8 @@ interface IProps {
 
 const ReviewSendPage = ({ change }: IProps) => {
     const theme = useTheme<Theme>()
+    const coin = useSelector((state: RootState) => state.Coin);
+    const { getShortName } = useIcons()
   return (
     <View style={Style.parent}>
       <CustomText variant="bodylight">SEND CRYPTO</CustomText>
@@ -19,7 +24,7 @@ const ReviewSendPage = ({ change }: IProps) => {
       <View style={{ marginTop: 20, paddingVertical: 20, borderBottomWidth: 2, borderBottomColor: theme.textInput.backgroundColor }}>
         <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
             <CustomText variant="header" style={{  }}>1.0</CustomText>
-            <CustomText variant="bodylight" ml="s">BTC</CustomText>
+            <CustomText variant="bodylight" ml="s">{getShortName(coin as any)}</CustomText>
         </View>
         <CustomText variant="bodylight" textAlign="center">(NGN82,000,000.OO)</CustomText>
       </View>

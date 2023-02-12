@@ -1,11 +1,9 @@
 import { StyleSheet } from 'react-native'
 export const Style = StyleSheet.create({
     header: {
-        width: '100%',
-        height: '15%',
         flexDirection: 'row',
         alignItems: 'flex-end',
-        paddingBottom: 20
+        paddingBottom: 0
     },
     imgc: {
         width: '100%',

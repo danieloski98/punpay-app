@@ -8,7 +8,6 @@ import Login from '../pages/Auth/Login';
 import VerifyEmail from '../pages/Auth/verifyemail'
 import BioMetricSetup from '../pages/Auth/biometrics';
 import SetPin from '../pages/Auth/setpin';
-import Pin from '../pages/Auth/Pin';
 import ForgotPassword from '../pages/Auth/forgotpassword';
 import ResetCode from '../pages/Auth/ResetCode';
 import ResetPassword from '../pages/Auth/resetpassword';
@@ -27,7 +26,6 @@ const AuthenticationFlow = () => {
         <Screen name="forgotpassword" component={ForgotPassword} />
         <Screen name="resetcode" component={ResetCode} />
         <Screen name="resetpassword" component={ResetPassword} />
-        <Screen name="pin" component={Pin} options={{ presentation: 'modal' }} />
     </Navigator>
   )
 }

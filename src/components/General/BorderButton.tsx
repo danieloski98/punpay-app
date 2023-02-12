@@ -7,14 +7,15 @@ import Text from './Text'
 interface IProps {
     text: string;
     action: Function;
+    height?: number|string;
 }
 
-export default function PrimaryButton({ text, action }: IProps) {
+export default function PrimaryButton({ text, action, height }: IProps) {
     const theme = useTheme<Theme>();
-    const { height } = theme.button;
+    const { height:btnH } = theme.button;
     const { primaryColor } = theme.colors;
   return (
-    <Pressable onPress={() => action()} style={{...Style.parent, height, borderColor: primaryColor }}>
+    <Pressable onPress={() => action()} style={{...Style.parent, height: height ? height:btnH, borderColor: primaryColor }}>
         <Text variant="body" style={{ color: primaryColor }}>{text}</Text>
     </Pressable>
   )
