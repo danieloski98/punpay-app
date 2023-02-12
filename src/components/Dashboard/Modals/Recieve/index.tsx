@@ -7,7 +7,7 @@ import {
   BottomSheetScrollView,
   BottomSheetBackdrop
 } from "@gorhom/bottom-sheet";
-import {Text as CustomText, PrimaryButton } from '../../../General'
+import {Box, Text as CustomText, PrimaryButton } from '../../../General'
 import { useTheme } from "@shopify/restyle";
 import { Theme } from "../../../../style/theme";
 import { Ionicons } from '@expo/vector-icons'
@@ -20,10 +20,11 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../../state/Store";
 import { useAtom } from "jotai";
 import { DarkModeAtom } from "../../../../state/states";
+import useIcons from "../../../../hooks/useIcons";
 
 interface IProps {
     close: React.Dispatch<React.SetStateAction<boolean>>;
-    coin?: string;
+    coin: string;
 }
 
 const RecieveModal = ({ close, coin }: IProps) => {
@@ -32,6 +33,7 @@ const RecieveModal = ({ close, coin }: IProps) => {
   const snapPoints = React.useMemo(() => ["80%"], []);
   const bottomSheetRef = React.useRef<BottomSheetModal>(null);
   const [c, setC] = React.useState<any>(null);
+  const { getIcon } = useIcons()
 
   React.useEffect(() => {
     bottomSheetRef.current?.present();
@@ -74,14 +76,18 @@ const RecieveModal = ({ close, coin }: IProps) => {
         handleIndicatorStyle={{ width: 150, backgroundColor: darkmode ?'grey':'lightgrey' }}
       >
           <BottomSheetScrollView contentContainerStyle={Style.contentContainer}>
+
+            <Box flexDirection='row' alignItems='center' justifyContent='center'>
+                <CustomText variant='body'>Deposit { coin }</CustomText>
+            </Box>
             <View style={Style.writeupContainer}>
                 <CustomText variant="bodylight">
-                Only send { coin } to this Address, Sending any other coin will misplace your funds. Punpay cannot assist with recovering misplaced funds
+                Only send <CustomText fontWeight='bold' variant='body'>{ coin }</CustomText> to this Address, Sending any other coin will misplace your funds. Punpay cannot assist with recovering misplaced funds
                 </CustomText>
             </View>
 
             <View style={Style.iconContainer}>
-                <Bitcoin width={60} height={60} />
+                {getIcon(coin, 50)}
             </View>
 
             <View style={{ ...Style.addressCointainer, borderBottomColor: theme.textInput.backgroundColor }}>
@@ -96,7 +102,7 @@ const RecieveModal = ({ close, coin }: IProps) => {
                     Network
                 </CustomText>
                 <CustomText variant="subheader" fontSize={18}>
-                    BEP
+                    BEP20
                 </CustomText>
             </View>
 

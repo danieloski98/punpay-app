@@ -4,6 +4,8 @@ import { Style } from './style'
 import { useTheme } from '@shopify/restyle'
 import { Theme } from '../../../../../../style/theme'
 import {Text as CustomText, PrimaryButton } from '../../../../../General'
+import { useSelector } from 'react-redux'
+import { RootState } from '../../../../../../state/Store'
 
 interface IProps {
   change: React.Dispatch<React.SetStateAction<number>>;
@@ -11,6 +13,8 @@ interface IProps {
 
 const ReviewSellPage = ({ change }: IProps) => {
     const theme = useTheme<Theme>()
+    const coin = useSelector((state: RootState) => state.Coin);
+    const bank = useSelector((state: RootState) => state.Bank);
   return (
     <View style={Style.parent}>
       <CustomText variant="bodylight">SELL CRYPTO</CustomText>
@@ -19,7 +23,7 @@ const ReviewSellPage = ({ change }: IProps) => {
       <View style={{ marginTop: 20, paddingVertical: 20, borderBottomWidth: 2, borderBottomColor: theme.textInput.backgroundColor }}>
         <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
             <CustomText variant="header" style={{  }}>1.0</CustomText>
-            <CustomText variant="bodylight" ml="s">BTC</CustomText>
+            <CustomText variant="bodylight" ml="s">{coin}</CustomText>
         </View>
         <CustomText variant="bodylight" textAlign="center">(NGN82,000,000.OO)</CustomText>
       </View>
@@ -30,9 +34,9 @@ const ReviewSellPage = ({ change }: IProps) => {
         </View>
 
         <View style={{ marginLeft: 20 }}>
-            <CustomText variant="subheader" mt="m" style={{ fontSize: 16 }}>MICHEAL JOHN DOE</CustomText>
-            <CustomText variant="bodylight" style={{ fontSize: 16 }}>UNITED BANK FOR AFRICA</CustomText>
-            <CustomText variant="bodylight" style={{ fontSize: 16 }}>20399094938</CustomText>
+            <CustomText variant="subheader" mt="m" style={{ fontSize: 16 }}>{bank.accountName}</CustomText>
+            <CustomText variant="bodylight" style={{ fontSize: 16 }}>{bank.name}</CustomText>
+            <CustomText variant="bodylight" style={{ fontSize: 16 }}>{bank.accountNumber}</CustomText>
         </View>
       </View>
 

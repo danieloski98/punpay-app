@@ -13,10 +13,11 @@ import ProcessingPage from './Pages/ProcessingPage';
 
 
 interface IProps {
-    close: React.Dispatch<React.SetStateAction<boolean>>
+    close: React.Dispatch<React.SetStateAction<boolean>>;
+    coin: string;
 }
 
-const Swap = ({ close }: IProps) => {
+const Swap = ({ close, coin }: IProps) => {
     const [stage, setStage] = React.useState(1)
     const snapPoint = React.useMemo(() => ['80%'], []);
     const bottomsheetRef = React.useRef<BottomSheetModal>(null);
@@ -30,7 +31,7 @@ const Swap = ({ close }: IProps) => {
     const switchPages = React.useCallback(() => {
         switch(stage) {
             case 1: {
-                return <AmountPage next={setStage} />
+                return <AmountPage next={setStage} coin={coin} />
             }
             case 2: {
               return <VerificationPage changeStep={() => setStage(3)} goBack={() => setStage(prev => prev -1)} />

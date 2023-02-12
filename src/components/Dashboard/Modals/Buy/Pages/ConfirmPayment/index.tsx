@@ -7,9 +7,14 @@ import { Ionicons } from '@expo/vector-icons'
 import USDT from '../../../../../../res/svg-output/Usdt';
 import {Text as CustomText, PrimaryButton } from '../../../../../General'
 import { Feather } from '@expo/vector-icons'
+import { useSelector } from 'react-redux'
+import useIcons from '../../../../../../hooks/useIcons'
+import { RootState } from '../../../../../../state/Store'
 
 const ConfirmPaymentPage = () => {
   const theme = useTheme<Theme>()
+  const coin = useSelector((state: RootState) => state.Coin);
+  const { getIcon, getShortName } = useIcons()
   return (
     <View style={Style.parent}>
       <CustomText variant="subheader" style={Style.header}>Confirm Payment</CustomText>
@@ -58,9 +63,9 @@ const ConfirmPaymentPage = () => {
         <View style={{ flex: 1 }}>
           <CustomText variant="subheader" style={{ fontSize: 16 }}>You'll Recieve</CustomText>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <USDT width={30} height={30} />
+            {getIcon(coin, 20)}
             <CustomText variant="subheader" mx="s" style={{ fontSize: 18 }}>200</CustomText>
-            <CustomText variant="body">USDT</CustomText>
+            <CustomText variant="body">{getShortName(coin as any)}</CustomText>
           </View>
         </View>
 

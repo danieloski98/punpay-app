@@ -48,7 +48,7 @@ const nextofkinSchema = yup.object().shape({
     lastName: yup.string().required(),
     email: yup.string().email('Invalid email'),
     phoneNumber: yup.string(),
-    DOB: yup.string().required(),
-    relationShip: yup.string().required(),
+    relationship: yup.string().required(),
 })
+
 export { VerifyEmailSchema, BankSchema, forgotPasswordSchema, resetPasswordSchema, changePasswordSchema, nextofkinSchema };

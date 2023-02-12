@@ -24,18 +24,18 @@ const VerificationPage = ({ changeStep, goBack}: IProps) => {
 
       <View style={{ marginTop: 30 }}>
         <CustomText variant="subheader" style={{ fontSize: 16 }}>OTP Sent To Email</CustomText>
-        <View style={{ width: '100%', backgroundColor: theme.textInput.backgroundColor, flexDirection: 'row', padding: 10, borderRadius: 10 }}>
-            <TextInput keyboardType="number-pad" style={{ flex: 1, color: theme.colors.text, fontSize: 16 }} />
+        <View style={{ width: '100%', backgroundColor: theme.textInput.backgroundColor, flexDirection: 'row', padding: 10, borderRadius: 10, height: 55 }}>
+            <TextInput keyboardType="number-pad" placeholderTextColor={theme.colors.text} style={{ flex: 1, color: theme.colors.text, fontSize: 16 }} />
             <View style={{ width: '30%', height: '100%' }}>
-                <BorderButton text='Send OTP' action={() => {}}  />
+                <BorderButton text='Send OTP' action={() => {}} height='100%'  />
             </View>
         </View>
       </View>
 
       <View style={{ marginTop: 30 }}>
         <CustomText variant="subheader" style={{ fontSize: 16 }}>PIN</CustomText>
-        <View style={{ width: '100%', height: 80, backgroundColor: theme.textInput.backgroundColor, flexDirection: 'row', padding: 10, borderRadius: 10 }}>
-            <TextInput placeholder='Enter PIN' secureTextEntry keyboardType="number-pad" style={{ flex: 1, color: theme.colors.text, fontSize: 16 }} />
+        <View style={{ width: '100%', height: 55, backgroundColor: theme.textInput.backgroundColor, flexDirection: 'row', padding: 10, borderRadius: 10 }}>
+            <TextInput placeholder='Enter PIN' secureTextEntry keyboardType="number-pad" placeholderTextColor={theme.colors.text} style={{ flex: 1, color: theme.colors.text, fontSize: 16 }} />
         </View>
       </View>
 

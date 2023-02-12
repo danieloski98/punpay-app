@@ -11,10 +11,11 @@ import ConfirmPaymentPage from './Pages/ConfirmPayment';
 
 
 interface IProps {
-    close: React.Dispatch<React.SetStateAction<boolean>>
+    close: React.Dispatch<React.SetStateAction<boolean>>;
+    coin: string;
 }
 
-const BuyPage = ({ close }: IProps) => {
+const BuyPage = ({ close, coin }: IProps) => {
     const [stage, setStage] = React.useState(1)
     const snapPoint = React.useMemo(() => ['80%'], []);
     const bottomsheetRef = React.useRef<BottomSheetModal>(null);
@@ -28,7 +29,7 @@ const BuyPage = ({ close }: IProps) => {
     const switchPages = React.useCallback(() => {
         switch(stage) {
             case 1: {
-                return <AmountPage next={setStage} />
+                return <AmountPage next={setStage} coin={coin} />
             }
             case 2: {
               return <AwaitingPaymentPage next={setStage} />

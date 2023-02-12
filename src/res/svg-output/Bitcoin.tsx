@@ -2,8 +2,8 @@ import * as React from "react";
 import Svg, { SvgProps, Path } from "react-native-svg";
 const SvgBitcoin = (props: SvgProps) => (
   <Svg
-    width={300}
-    height={300}
+    width={48}
+    height={48}
     fill="none"
     {...props}
     scale={2}

@@ -8,13 +8,16 @@ import Ex from '../../../../../../res/svg-output/Ex'
 import USDT from '../../../../../../res/svg-output/Usdt'
 import { Feather, FontAwesome } from '@expo/vector-icons'
 import {Text as CustomText, PrimaryButton } from '../../../../../General'
+import useIcons from '../../../../../../hooks/useIcons'
 
 interface IProps {
   next: React.Dispatch<React.SetStateAction<number>>;
+  coin: string;
 }
 
-const AmountPage = ({ next }: IProps) => {
+const AmountPage = ({ next, coin }: IProps) => {
   const theme = useTheme<Theme>();
+  const { getIcon, getShortName } = useIcons()
   return (
     <View style={Style.parent}>
       <CustomText variant="subheader">Swap Crypto</CustomText>
@@ -26,13 +29,13 @@ const AmountPage = ({ next }: IProps) => {
 
           <View style={Style.inputContainer}>
             <TextInput defaultValue="0.0" style={{ flex: 1, fontSize: theme.textVariants.subheader.fontSize, fontWeight: '500', color: theme.colors.text }} keyboardType="number-pad" />
-            <CustomText variant="body">BTC</CustomText>
+            <CustomText variant="body">{getShortName(coin as any)}</CustomText>
           </View>
 
           <View style={Style.dropDownContainer}>
-            <Bitcoin width={30} height={30} />
-            <CustomText variant="bodylight" mx='m'>BTC</CustomText>
-            <Feather name="chevron-down" size={15} color={theme.colors.text} />
+            {getIcon(coin, 20)}
+            <CustomText variant="bodylight" mx='m'>{getShortName(coin as any)}</CustomText>
+            {/* <Feather name="chevron-down" size={15} color={theme.colors.text} /> */}
           </View>
 
         </View>
@@ -53,8 +56,8 @@ const AmountPage = ({ next }: IProps) => {
           </View>
 
           <View style={Style.dropDownContainer}>
-            <USDT width={30} height={30} />
-            <CustomText variant="bodylight" mx='m'>USDT</CustomText>
+            {getIcon('Tether', 20)}
+            <CustomText variant="bodylight" mx='m'>{getShortName('Tether')}</CustomText>
             {/* <Feather name="chevron-down" size={15} color={theme.colors.text} /> */}
           </View>
 

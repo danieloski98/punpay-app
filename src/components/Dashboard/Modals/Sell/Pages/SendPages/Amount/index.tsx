@@ -5,6 +5,9 @@ import { useTheme } from '@shopify/restyle'
 import { Theme } from '../../../../../../../style/theme'
 import { Feather, Ionicons } from '@expo/vector-icons'
 import {Text as CustomText, PrimaryButton } from '../../../../../../General'
+import { useSelector } from 'react-redux'
+import { RootState } from '../../../../../../../state/Store'
+import useIcons from '../../../../../../../hooks/useIcons'
 
 interface IProps {
   change: React.Dispatch<React.SetStateAction<number>>;
@@ -12,16 +15,18 @@ interface IProps {
 
 const SendAmountPage = ({ change }: IProps) => {
     const theme = useTheme<Theme>()
+    const coin = useSelector((state: RootState) => state.Coin);
+    const { getShortName } = useIcons()
   return (
     <View style={Style.parent}>
-      <CustomText variant="subheader">Send BTC</CustomText>
+      <CustomText variant="subheader">Send {coin}</CustomText>
       <CustomText variant="bodylight">Transfer coins to another wallet</CustomText>
 
       <View style={{ marginTop: 20 }}>
         <CustomText variant="subheader" style={{ fontSize: 15 }}>Enter Amount</CustomText>
         <View style={{...Style.input, backgroundColor: theme.textInput.backgroundColor, height: theme.textInput.height, marginTop: 10 }}>
             <TextInput defaultValue='0.00' style={{ flex: 1, fontSize: 16, color: theme.colors.text }} />
-            <CustomText variant="subheader" style={{ fontSize: 16 }}>BTC</CustomText>
+            <CustomText variant="subheader" style={{ fontSize: 16 }}>{getShortName(coin as any)}</CustomText>
         </View>
         <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
             <CustomText variant="body" style={{ fontSize: 15 }}>They'll recieve </CustomText>

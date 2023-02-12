@@ -26,7 +26,7 @@ export const Style = StyleSheet.create({
         alignItems: 'center',
     },
     left: {
-        flex: 1,
+        flex: 0.7,
         height: '100%',
         flexDirection: 'row',
         alignItems:'center',

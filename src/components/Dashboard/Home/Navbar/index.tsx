@@ -16,7 +16,7 @@ export default function HomeNavbar() {
       <Feather name="menu" size={25} color={theme.colors.text} onPress={() => navigation.dispatch(DrawerActions.toggleDrawer()) } />
       <View style={Style.rightSide}>
         <Feather name="settings" size={25} color={theme.colors.text} onPress={() => navigation.navigate('settings')} />
-        {/* <Feather name="maximize" size={25} color={theme.colors.text} style={{ marginLeft: 20}} /> */}
+        <Feather name="bell" size={25} color={theme.colors.text} style={{ marginLeft: 20}} onPress={() => navigation.navigate('notification')} />
       </View>
     </View>
   )
