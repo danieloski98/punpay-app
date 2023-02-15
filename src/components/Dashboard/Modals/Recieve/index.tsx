@@ -1,4 +1,4 @@
-import { View, Share } from "react-native";
+import { View, Share, ActivityIndicator } from "react-native";
 import React from "react";
 import { Style } from "./style";
 import {
@@ -14,6 +14,7 @@ import { Ionicons } from '@expo/vector-icons'
 import QRCode from 'react-native-qrcode-svg';
 
 
+
 // SVGS
 import Bitcoin from '../../../../res/svg-output/Bitcoin'
 import { useSelector } from "react-redux";
@@ -21,6 +22,8 @@ import { RootState } from "../../../../state/Store";
 import { useAtom } from "jotai";
 import { DarkModeAtom } from "../../../../state/states";
 import useIcons from "../../../../hooks/useIcons";
+import { useQuery } from '@tanstack/react-query'
+import Axios from '../../../../utils/api'
 
 interface IProps {
     close: React.Dispatch<React.SetStateAction<boolean>>;
@@ -28,17 +31,21 @@ interface IProps {
 }
 
 const RecieveModal = ({ close, coin }: IProps) => {
+  
   const theme = useTheme<Theme>();
   const [darkmode] = useAtom(DarkModeAtom);
   const snapPoints = React.useMemo(() => ["80%"], []);
   const bottomSheetRef = React.useRef<BottomSheetModal>(null);
   const [c, setC] = React.useState<any>(null);
-  const { getIcon } = useIcons()
+  const { getIcon, getShortName, getName, getNetwork } = useIcons()
+  const { isLoading, isError, data } = useQuery(['get_wallet'], () => Axios.get(`/user/wallet/${getShortName(coin as any)}`), {
+    refetchOnMount: true
+  })
+  // console.log(data.data.data.deposit_address);
 
   React.useEffect(() => {
     bottomSheetRef.current?.present();
   });
-
 
   // callbacks
   const handleSheetChanges = React.useCallback((index: number) => {
@@ -59,8 +66,8 @@ const RecieveModal = ({ close, coin }: IProps) => {
 
   const getData = React.useCallback(() => {
     Share.share({
-        message: '3FZbgi29cpjq2GjdwV8eyHuJJnkLtktZc5',
-        title: 'Bitcoin Address'
+        message: data.data.data.deposit_address,
+        title: `${getName(coin as any)} Address`
     }).then()
   }, []);
   return (
@@ -91,10 +98,21 @@ const RecieveModal = ({ close, coin }: IProps) => {
             </View>
 
             <View style={{ ...Style.addressCointainer, borderBottomColor: theme.textInput.backgroundColor }}>
-                <CustomText variant="bodylight">
-                    3FZbgi29cpjq2GjdwV8eyHuJJnkLtktZc5
-                </CustomText>
-                <Ionicons name="copy-outline" size={30} color={ darkmode ? 'white':'grey'} />
+                {!isLoading && !isError && (
+                  <CustomText variant="xs" style={{ flex: 1 }}>
+                      {data.data.data.deposit_address}
+                  </CustomText>
+                )}
+                {
+                  isLoading && (
+                    <Box justifyContent='center' alignItems='center' width='100%'>
+                      <ActivityIndicator color={theme.colors.primaryColor} size='small' />
+                    </Box>
+                  )
+                }
+               <Box width={50} alignItems='flex-end'>
+               <Ionicons name="copy-outline" size={30} color={ darkmode ? 'white':theme.colors.primaryColor} style={{ width: 30 }} />
+               </Box>
             </View>
 
             <View style={{ ...Style.addressCointainer, borderBottomColor: theme.textInput.backgroundColor }}>
@@ -102,13 +120,15 @@ const RecieveModal = ({ close, coin }: IProps) => {
                     Network
                 </CustomText>
                 <CustomText variant="subheader" fontSize={18}>
-                    BEP20
+                    {getNetwork(coin as any)}
                 </CustomText>
             </View>
 
-            <View style={Style.qrContainer}>
-                <QRCode value="3FZbgi29cpjq2GjdwV8eyHuJJnkLtktZc5" size={130} color="black" getRef={(c) => setC(c)}  />
-            </View>
+            {!isLoading && !isError && (
+              <View style={Style.qrContainer}>
+                <QRCode value={data.data.data.deposit_address} size={130} color="black" getRef={(c) => setC(c)}  />
+              </View>
+            )}
 
             <PrimaryButton text="Share Address" action={getData} />
           </BottomSheetScrollView>

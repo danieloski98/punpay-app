@@ -1,11 +1,11 @@
 import { View, Text, Image } from 'react-native'
 import React, { useCallback } from 'react'
 
-const COINS = ['Bitcoin', 'Ethereum', 'Tether', 'BUSD', 'XRP', 'DOGE', 'BNB'];
+const COINS = ['Bitcoin', 'Ethereum', 'Tether', 'BUSD', 'XRP', 'DOGE', 'BNB', 'LTC', 'DOT'];
 
-type coinType = 'btc' | 'eth' | 'usdt' | 'busd' | 'xrp' | 'doge' | 'bnb';
+type coinType = 'btc' | 'eth' | 'usdt' | 'busd' | 'xrp' | 'doge' | 'bnb' | 'ltc' | 'dot';
 
-type Coin = 'Bitcoin' | 'Ethereum' | 'Tether' | 'BUSD' | 'XRP' | 'DOGE' | 'BNB'
+type Coin = 'Bitcoin' | 'Ethereum' | 'Tether' | 'BUSD' | 'XRP' | 'DOGE' | 'BNB' | 'Pokadot' | 'Litecoin'
 
 const useIcons = () => {
     const getIcon = useCallback((icon: Coin | String, size?: number|string) => {
@@ -31,6 +31,12 @@ const useIcons = () => {
             case 'BNB': {
               return <Image source={require('../res/bnb.png')} style={{ width: size ? size: '100%', height: size ? size: '100%' }} resizeMode='cover' />
             }
+            case 'Pokadot': {
+              return <Image source={require('../res/dot.png')} style={{ width: size ? size: '100%', height: size ? size: '100%' }} resizeMode='cover' />
+            }
+            case 'Litecoin': {
+              return <Image source={require('../res/ltc.png')} style={{ width: size ? size: '100%', height: size ? size: '100%' }} resizeMode='cover' />
+            }
           }
     }, [])
 
@@ -52,10 +58,16 @@ const useIcons = () => {
           return 'BUSD'
         }
         case 'doge': {
-          return 'Doge'
+          return 'DOGE'
         }
         case 'xrp': {
-          return 'Ripple'
+          return 'XRP'
+        }
+        case 'dot': {
+          return 'Pokadot'
+        }
+        case 'ltc': {
+          return 'Litecoin'
         }
       }
     }, [])
@@ -63,25 +75,58 @@ const useIcons = () => {
     const getShortName = useCallback((coin: Coin) => {
       switch(coin) {
         case 'Bitcoin': {
+          return 'btc'
+        }
+        case 'Ethereum': {
+          return 'eth'
+        }
+        case 'Tether': {
+          return 'usdt'
+        }
+        case 'XRP': {
+          return 'xrp'
+        }
+        case 'DOGE': {
+          return 'doge'
+        }
+        case 'BUSD': {
+          return 'busd'
+        }
+        case 'BNB': {
+          return 'bnb'
+        }
+      }
+    }, [])
+
+    const getNetwork = useCallback((name: Coin) => {
+      console.log(`the network is for the coin ${name}`)
+      switch(name) {
+        case 'Bitcoin': {
           return 'BTC'
         }
         case 'Ethereum': {
-          return 'ETH'
+          return 'ERC20'
         }
         case 'Tether': {
-          return 'USDT'
+          return 'BEP20'
+        }
+        case 'BNB': {
+          return 'BEP20'
+        }
+        case 'BUSD': {
+          return 'BEP20'
+        }
+        case 'DOGE': {
+          return 'Doge'
         }
         case 'XRP': {
           return 'XRP'
         }
-        case 'DOGE': {
-          return 'DOGE'
+        case 'Pokadot': {
+          return 'BEP20'
         }
-        case 'BUSD': {
-          return 'BUSD'
-        }
-        case 'BNB': {
-          return 'BNB'
+        case 'Litecoin': {
+          return 'BEP20'
         }
       }
     }, [])
@@ -89,7 +134,8 @@ const useIcons = () => {
     getIcon,
     COINS,
     getShortName,
-    getName
+    getName,
+    getNetwork
   }
 }
 

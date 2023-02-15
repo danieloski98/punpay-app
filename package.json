@@ -24,7 +24,6 @@
     "expo": "^46.0.0",
     "expo-checkbox": "~2.2.0",
     "expo-font": "~10.2.0",
-    "expo-image": "^1.0.0-beta.6",
     "expo-local-authentication": "~12.3.0",
     "expo-splash-screen": "~0.16.2",
     "expo-status-bar": "~1.4.0",
