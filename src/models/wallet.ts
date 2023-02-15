@@ -1,4 +1,4 @@
-interface Wallet {
+export interface Wallet {
         id: string,
         currency: string,
         balance: string,

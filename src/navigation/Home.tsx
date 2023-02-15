@@ -13,7 +13,7 @@ const { Navigator, Screen } = createNativeStackNavigator()
 
 const Home = () => {
   return (
-   <Navigator screenOptions={{ headerShown: false }} initialRouteName='pin'>
+   <Navigator screenOptions={{ headerShown: false }} initialRouteName='index'>
         <Screen name='index' component={HomePage} />
         <Screen name="link-bank" component={LinkBank} />
         <Screen name="notification" component={Notifications} />

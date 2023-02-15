@@ -15,8 +15,8 @@ import {Box, Text as CustomText, PrimaryButton } from "../../../components/Gener
 import { useDispatch } from 'react-redux'
 import { Dispatch } from '../../../state/Store'
 
-const COINS = ['Bitcoin', 'Ethereum', 'Tether', 'BUSD', 'XRP', 'DOGE', 'BNB'];
-const COINS_T = ['Bitcoin', 'Ethereum', 'BUSD', 'XRP', 'DOGE', 'BNB'];
+const COINS = ['Bitcoin', 'Ethereum', 'Tether', 'BUSD', 'XRP', 'DOGE', 'BNB', 'Litecoin', 'Pokadot'];
+const COINS_T = ['Bitcoin', 'Ethereum', 'BUSD', 'XRP', 'DOGE', 'BNB', 'Litecoin', 'Pokadot'];
 interface IProps {
   route: RouteProp<any>;
   navigation: any;
@@ -73,10 +73,10 @@ const TransactionType = ({ route, navigation }: IProps) => {
 
         <View style={{ flex: 1 }}>
           <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 60 }}>
-            {type !== 'Swap' && COINS.map((item, index) => (
+            {type !== 'Swap' && COINS.sort().map((item, index) => (
               <CryptoCard key={index.toString()} coin={item} type={1} setCoin={registerCoin} />
             ))}
-            {type === 'Swap' && COINS_T.map((item, index) => (
+            {type === 'Swap' && COINS_T.sort().map((item, index) => (
               <CryptoCard key={index.toString()} coin={item} type={1} setCoin={registerCoin} />
             ))}
           </ScrollView>

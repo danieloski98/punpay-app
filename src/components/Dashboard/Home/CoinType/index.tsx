@@ -8,20 +8,22 @@ import { useNavigation } from "@react-navigation/native";
 import useIcons from "../../../../hooks/useIcons";
 import { useDispatch } from "react-redux";
 import { Dispatch } from "../../../../state/Store";
+import { Wallet } from "../../../../models/wallet";
 
 interface IProps {
-  coinName: string;
+ 
 }
 
-const CoinTypeChip = ({ coinName }: IProps) => {
+const CoinTypeChip = ({ currency, converted_balance }: IProps & Wallet) => {
   const theme = useTheme<Theme>();
   const navigation = useNavigation<any>();
   const dispatch = useDispatch<Dispatch>()
-  const { getIcon } = useIcons();
+  const { getIcon, getName } = useIcons();
+  console.log(currency);
 
   const navigate = () => {
-    dispatch({ type: 'Coin/update', payload: coinName});
-    navigation.navigate("crypto", { type: coinName });
+    dispatch({ type: 'Coin/update', payload: getName(currency as any)});
+    navigation.navigate("crypto", { type: getName(currency as any) });
   }
 
   return (
@@ -46,12 +48,12 @@ const CoinTypeChip = ({ coinName }: IProps) => {
               backgroundColor: "transparent",
             }}
           >
-            {getIcon(coinName)}
+            {getIcon(getName(currency as any))}
           </View>
 
           <View style={{ marginLeft: 10 }}>
-            <CustomText variant="body">{coinName}</CustomText>
-            <CustomText variant="xs">$0.00</CustomText>
+            <CustomText variant="body">{getName(currency as any)}</CustomText>
+            <CustomText variant="xs">NGN {converted_balance}</CustomText>
           </View>
         </View>
 

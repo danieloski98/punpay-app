@@ -1,4 +1,4 @@
-import { View, Pressable } from 'react-native'
+import { View, Pressable, ActivityIndicator } from 'react-native'
 import React from 'react'
 import { Style} from './style'
 import { useTheme } from '@shopify/restyle'
@@ -11,15 +11,28 @@ import ArrowDown from '../../../../res/svg-output/ArrowDown';
 import ArrowUp from "../../../../res/svg-output/ArrowUp";
 import Arrows from '../../../../res/svg-output/Arrows';
 import Wallet from '../../../../res/svg-output/Wallet';
+import useBalance from '../../../../hooks/useBalance'
 
 export default function Portfolio() {
     const theme = useTheme<Theme>();
     const navigation = useNavigation<any>();
+    const { isLoading, isError, data,refetch } = useBalance();
 
   return (
     <View style={{...Style.parent, backgroundColor: theme.textInput.backgroundColor }}>
       <CustomText variant="bodylight" textAlign="center" textTransform="uppercase">Portfolio Balance</CustomText>
-      <CustomText variant="header" textAlign="center" textTransform="uppercase" marginTop="l" style={{ fontSize: 40 }}>$0.00</CustomText>
+      {isLoading && (
+        <Box justifyContent='center' alignItems='center' pt='m'>
+            <ActivityIndicator color={theme.colors.primaryColor} size='large' />
+        </Box>
+      )}
+      {!isLoading && isError && (
+        <CustomText variant="body" mt="m" textAlign="center" textTransform="uppercase" style={{color: 'red'}} onPress={async () => await refetch() }>Error while loading balance</CustomText>
+      )}
+      {!isLoading && !isError && (
+        <CustomText variant="header" textAlign="center" textTransform="uppercase" marginTop="l" style={{ fontSize: 40 }}>NGN{data.data.data.balance}.00</CustomText>
+      )}
+      
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', flex: 1, alignItems: 'center', marginTop: 20 }}>
 
         <View style={{ alignItems: 'center' }}>
