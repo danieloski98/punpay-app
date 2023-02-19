@@ -15,8 +15,8 @@ import {Box, Text as CustomText, PrimaryButton } from "../../../components/Gener
 import { useDispatch } from 'react-redux'
 import { Dispatch } from '../../../state/Store'
 
-const COINS = ['Bitcoin', 'Ethereum', 'Tether', 'BUSD', 'XRP', 'DOGE', 'BNB', 'Litecoin', 'Pokadot'];
-const COINS_T = ['Bitcoin', 'Ethereum', 'BUSD', 'XRP', 'DOGE', 'BNB', 'Litecoin', 'Pokadot'];
+const COINS = ['Bitcoin', 'Ethereum', 'Tether', 'BUSD', 'XRP', 'DOGE', 'BNB', 'Litecoin' ];
+const COINS_T = ['Bitcoin', 'Ethereum', 'BUSD', 'XRP', 'DOGE', 'BNB', 'Litecoin' ];
 interface IProps {
   route: RouteProp<any>;
   navigation: any;
@@ -25,6 +25,7 @@ interface IProps {
 const TransactionType = ({ route, navigation }: IProps) => {
   const [openModal, setOpenModal] = React.useState(false);
   const [coin, setCoin] = React.useState('');
+  const [search, setSearch] = React.useState<string>('')
   const { type } = route.params as { type: string };
   const dispatch = useDispatch<Dispatch>();
   const theme = useTheme<Theme>();
@@ -65,7 +66,7 @@ const TransactionType = ({ route, navigation }: IProps) => {
 
         {/* Search bar */}
         <View style={{ width: '100%', height: theme.textInput.height, flexDirection: 'row', borderRadius: theme.textInput.height, backgroundColor: theme.textInput.backgroundColor, paddingVertical: 10, paddingHorizontal: 20, alignItems: 'center', marginBottom: 30 }}>
-          <TextInput style={{ flex: 1, color: theme.colors.text }} placeholder="search" placeholderTextColor={theme.colors.text} />
+          <TextInput value={search} onChangeText={(t) => setSearch(t)} style={{ flex: 1, color: theme.colors.text }} placeholder="search" placeholderTextColor={theme.colors.text} />
           <Feather name="search" size={20} color={theme.colors.text} />
         </View>
 
@@ -73,10 +74,22 @@ const TransactionType = ({ route, navigation }: IProps) => {
 
         <View style={{ flex: 1 }}>
           <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 60 }}>
-            {type !== 'Swap' && COINS.sort().map((item, index) => (
+            {type !== 'Swap' && COINS.sort().filter((item) => {
+              if (search === '' ) {
+                return item;
+              } else if (item.toLowerCase().includes(search.toLowerCase())) {
+                  return item;
+              }
+            }).map((item, index) => (
               <CryptoCard key={index.toString()} coin={item} type={1} setCoin={registerCoin} />
             ))}
-            {type === 'Swap' && COINS_T.sort().map((item, index) => (
+            {type === 'Swap' && COINS_T.sort().filter((item) => {
+               if (search === '' ) {
+                return item;
+              } else if (item.toLowerCase().includes(search.toLowerCase())) {
+                  return item;
+              }
+            }).map((item, index) => (
               <CryptoCard key={index.toString()} coin={item} type={1} setCoin={registerCoin} />
             ))}
           </ScrollView>

@@ -20,6 +20,7 @@ import ReviewSendPage from './Pages/SendPages/Review';
 import { useAtom } from 'jotai';
 import { DarkModeAtom } from '../../../../state/states';
 import useIcons from '../../../../hooks/useIcons';
+import ModalWrapper from '../../../General/ModalWrapper';
 
 interface IProps {
     close: React.Dispatch<React.SetStateAction<boolean>>;
@@ -98,19 +99,12 @@ const SellPage = ({ close, coin }: IProps) => {
     setStep(step);
   }, []);
   return (
-    <BottomSheetModalProvider>
-        <BottomSheetModal
-            ref={bottomsheetRef}
-            snapPoints={snapPoint}
-            onDismiss={() => close(false)}
-            backdropComponent={renderBackdrop}
-            style={{...Style.parent }}
-            backgroundStyle={{ backgroundColor: theme.colors.modalBg }}
-            handleIndicatorStyle={{ width: 150, backgroundColor: darkmode ?'grey':'lightgrey' }}
-        >
-            <BottomSheetScrollView scrollEnabled horizontal={false} showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 100 }}>
-              {initial && (
-                 <>
+    <ModalWrapper
+      ref={bottomsheetRef}
+      onClose={() => close(false)}
+    >
+      {initial && (
+                 <Box mt='m'>
                  <Box flexDirection='row' alignItems='center'>
                   <CustomText variant="subheader" mr='s' style={{ fontSize: 20 }}>Withdraw {coin}</CustomText>
                   {getIcon(coin, 25)}
@@ -128,17 +122,15 @@ const SellPage = ({ close, coin }: IProps) => {
                      <CardEdit width={30} height={30} />
                      <CustomText variant="bodylight" ml="m">Transfer to another wallet</CustomText>
                  </Pressable>
-                </>
+                </Box>
               )}
               {!initial && (
-                <>
+                <Box mt='m'>
                     { step === 1 && switchPages()}
                     { step === 2 && swicthSendPages()}
-                </>
+                </Box>
               )}
-            </BottomSheetScrollView>
-        </BottomSheetModal>
-    </BottomSheetModalProvider>
+    </ModalWrapper>
   )
 }
 

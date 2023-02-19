@@ -16,7 +16,7 @@ import { useTheme } from "@shopify/restyle";
 import { Theme } from "../../../style/theme";
 import StatsTab from "../../../components/Dashboard/Crypto/Stats";
 import TransactionHistory from "../../../components/Dashboard/Crypto/Transactions";
-import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
+import { BottomSheetModal, BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import RecieveModal from "../../../components/Dashboard/Modals/Recieve";
 import Swap from '../../../components/Dashboard/Modals/Swap'
 import BuyPage from '../../../components/Dashboard/Modals/Buy'
@@ -36,11 +36,13 @@ export default function CryptoPage({ route }) {
   const theme = useTheme<Theme>();
   const { type } = route.params;
 
+
   // MODAL STATES
   const [showRecieve, setShowRecieve] = React.useState(false);
   const [showSwap, setShowSwap] = React.useState(false);
   const [showBuy, setShowBuy] = React.useState(false);
-  const [showSell, setShowSell] = React.useState(false)
+  const [showSell, setShowSell] = React.useState(false);
+
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
@@ -49,7 +51,7 @@ export default function CryptoPage({ route }) {
         <Actions recieve={setShowRecieve} swap={setShowSwap} buy={setShowBuy} sell={setShowSell} />
         <CryptoTab tab={tab} setTab={setTab} />
         <View style={Style.scrollContainer}>
-          {tab === 1 && <StatsTab />}
+          {/* {tab === 1 && <StatsTab />} */}
           {tab === 2 && <TransactionHistory />}
         </View>
         {/* MODALS */}

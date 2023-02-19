@@ -8,10 +8,12 @@ import { store } from './src/state/Store';
 import { Alert, View } from 'react-native';
 import * as Updates from 'expo-updates';
 import React from 'react';
+import registerNNPushToken from 'native-notify';
 
 export const queryClient = new QueryClient();
 
 export default function App() {
+  registerNNPushToken(6405, 'JhIbh6BDeO8Z5mEBHU50Dh');
   // load fonts
   const [fontLoaded] = useFonts({
     'Jakarta-Sans': require('./assets/fonts/PlusJakartaSans-Regular.ttf'),
@@ -32,7 +34,7 @@ export default function App() {
   }, [])
   const onLayout = useCallback(() => {
     if (fontLoaded) {
-      SplashScreen.hideAsync();
+      // SplashScreen.hideAsync();
     }
   }, [fontLoaded]);
 

@@ -15,13 +15,13 @@ const CryptoTab = ({ tab, setTab }: IProps) => {
   return (
     <View style={Style.container}>
      <View style={{...Style.tab, backgroundColor: theme.textInput.backgroundColor}}>
-        <Pressable onPress={() => setTab(2)} style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: tab === 2? theme.colors.primaryColor: 'transparent', borderRadius: 10 }}>
+        <Pressable onPress={() => setTab(1)} style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: tab === 2? theme.colors.primaryColor: 'transparent', borderRadius: 10 }}>
             <Text style={{ color: tab === 2 ? 'white':'grey'}}>TRANSACTIONS</Text>
         </Pressable>
 
-        <Pressable onPress={() => setTab(1)} style={{ flex: 1,  justifyContent: 'center', alignItems: 'center', backgroundColor: tab === 1? theme.colors.primaryColor: 'transparent', borderRadius: 10 }}>
-            <Text style={{ color: tab === 1 ? 'white':'grey'}}>MARKET INFORMATION</Text>
-        </Pressable>
+        {/* <Pressable onPress={() => setTab(1)} style={{ flex: 1,  justifyContent: 'center', alignItems: 'center', backgroundColor: tab === 1? theme.colors.primaryColor: 'transparent', borderRadius: 10 }}>
+            <Text style={{ color: tab === 1 ? 'white':'grey'}}>TRANSACTIONS</Text>
+        </Pressable> */}
      </View>
     </View>
   )

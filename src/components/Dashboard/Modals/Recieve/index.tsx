@@ -3,27 +3,20 @@ import React from "react";
 import { Style } from "./style";
 import {
   BottomSheetModal,
-  BottomSheetModalProvider,
-  BottomSheetScrollView,
-  BottomSheetBackdrop
 } from "@gorhom/bottom-sheet";
 import {Box, Text as CustomText, PrimaryButton } from '../../../General'
 import { useTheme } from "@shopify/restyle";
 import { Theme } from "../../../../style/theme";
 import { Ionicons } from '@expo/vector-icons'
 import QRCode from 'react-native-qrcode-svg';
-
-
-
-// SVGS
-import Bitcoin from '../../../../res/svg-output/Bitcoin'
-import { useSelector } from "react-redux";
-import { RootState } from "../../../../state/Store";
 import { useAtom } from "jotai";
 import { DarkModeAtom } from "../../../../state/states";
 import useIcons from "../../../../hooks/useIcons";
 import { useQuery } from '@tanstack/react-query'
 import Axios from '../../../../utils/api'
+import ModalWrapper from '../../../General/ModalWrapper'
+
+
 
 interface IProps {
     close: React.Dispatch<React.SetStateAction<boolean>>;
@@ -34,34 +27,21 @@ const RecieveModal = ({ close, coin }: IProps) => {
   
   const theme = useTheme<Theme>();
   const [darkmode] = useAtom(DarkModeAtom);
-  const snapPoints = React.useMemo(() => ["80%"], []);
-  const bottomSheetRef = React.useRef<BottomSheetModal>(null);
   const [c, setC] = React.useState<any>(null);
   const { getIcon, getShortName, getName, getNetwork } = useIcons()
+  const bottomSheetRef = React.useRef<BottomSheetModal>(null);
   const { isLoading, isError, data } = useQuery(['get_wallet'], () => Axios.get(`/user/wallet/${getShortName(coin as any)}`), {
-    refetchOnMount: true
+    refetchOnMount: true,
+    keepPreviousData: false,
+    refetchInterval: 1000,
+    staleTime: 100
   })
-  // console.log(data.data.data.deposit_address);
 
   React.useEffect(() => {
+    console.log(getShortName(coin as any))
     bottomSheetRef.current?.present();
   });
 
-  // callbacks
-  const handleSheetChanges = React.useCallback((index: number) => {
-    // bottomSheetRef.current?.snapToIndex(index);
-  }, []);
-
-  const renderBackdrop = React.useCallback(
-    props => (
-      <BottomSheetBackdrop
-        {...props}
-        disappearsOnIndex={-1}
-        appearsOnIndex={0}
-      />
-    ),
-    []
-  );
 
 
   const getData = React.useCallback(() => {
@@ -71,20 +51,11 @@ const RecieveModal = ({ close, coin }: IProps) => {
     }).then()
   }, []);
   return (
-    <BottomSheetModalProvider>
-      <BottomSheetModal
-        ref={bottomSheetRef}
-        snapPoints={snapPoints}
-        onChange={handleSheetChanges}
-        onDismiss={() => close(false)}
-        style={{...Style.parent }}
-        backdropComponent={renderBackdrop}
-        backgroundStyle={{ backgroundColor: theme.colors.modalBg }}
-        handleIndicatorStyle={{ width: 150, backgroundColor: darkmode ?'grey':'lightgrey' }}
-      >
-          <BottomSheetScrollView contentContainerStyle={Style.contentContainer}>
-
-            <Box flexDirection='row' alignItems='center' justifyContent='center'>
+   <ModalWrapper
+    ref={bottomSheetRef}
+    onClose={() => close(false)}
+   >
+     <Box flexDirection='row' alignItems='center' justifyContent='center'>
                 <CustomText variant='body'>Deposit { coin }</CustomText>
             </Box>
             <View style={Style.writeupContainer}>
@@ -131,10 +102,7 @@ const RecieveModal = ({ close, coin }: IProps) => {
             )}
 
             <PrimaryButton text="Share Address" action={getData} />
-          </BottomSheetScrollView>
-
-      </BottomSheetModal>
-    </BottomSheetModalProvider>
+   </ModalWrapper>
   );
 };
 

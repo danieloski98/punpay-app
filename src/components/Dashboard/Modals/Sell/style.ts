@@ -2,7 +2,8 @@ import { StyleSheet } from 'react-native'
 export const Style = StyleSheet.create({
     parent: {
         flex: 1,
-        padding: 20,
+        paddingTop: 0,
+        paddingHorizontal: 20,
         zIndex: 6,
         shadowColor: "#000",
         shadowOffset: {

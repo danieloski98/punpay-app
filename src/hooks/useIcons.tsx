@@ -95,6 +95,12 @@ const useIcons = () => {
         case 'BNB': {
           return 'bnb'
         }
+        case 'Litecoin': {
+          return 'ltc'
+        }
+        case 'Pokadot': {
+          return 'dot'
+        }
       }
     }, [])
 

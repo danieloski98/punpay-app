@@ -1,22 +1,39 @@
 import { View, Text } from 'react-native'
 import React from 'react'
 import { Style } from './style'
-import { Feather } from '@expo/vector-icons'
+import { Feather, Ionicons } from '@expo/vector-icons'
 import { useTheme } from '@shopify/restyle'
 import { Theme } from '../../../../style/theme'
 import { useNavigation, DrawerActions } from '@react-navigation/native'
+import { getUnreadNotificationInboxCount } from 'native-notify';
+import CustomText from '../../../General/Text'
 
 export default function HomeNavbar() {
     const theme = useTheme<Theme>();
     const navigation = useNavigation<any>();
-    // console.log(navigation);
+    const [unreadNotificationCount, setUnreadNotificationCount] = React.useState(0);
+
+    React.useEffect(() => {
+      (async function() {
+        let unreadCount = await getUnreadNotificationInboxCount(6405, 'JhIbh6BDeO8Z5mEBHU50Dh');
+        console.log("unreadCount: ", unreadCount);
+        setUnreadNotificationCount(unreadCount);
+      })()
+    }, [])
 
   return (
     <View style={{...Style.parent, backgroundColor: theme.textInput.backgroundColor }}>
       <Feather name="menu" size={25} color={theme.colors.text} onPress={() => navigation.dispatch(DrawerActions.toggleDrawer()) } />
       <View style={Style.rightSide}>
         <Feather name="settings" size={25} color={theme.colors.text} onPress={() => navigation.navigate('settings')} />
-        <Feather name="bell" size={25} color={theme.colors.text} style={{ marginLeft: 20}} onPress={() => navigation.navigate('notification')} />
+       <View style={{
+        position: 'relative'
+       }}>
+        {unreadNotificationCount > 0 && <View style={{ position: 'absolute', width: 18, height: 18, borderRadius: 9, backgroundColor: theme.colors.primaryColor, left: 35, bottom: 15, justifyContent: 'center', alignItems: 'center' }} >
+          <CustomText variant='xs'>{unreadNotificationCount}</CustomText>
+        </View>}
+        <Ionicons name="notifications" size={25} color={theme.colors.text} style={{ marginLeft: 20}} onPress={() => navigation.navigate('notification')} />
+       </View>
       </View>
     </View>
   )

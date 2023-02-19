@@ -13,10 +13,11 @@ import { RootState } from '../../../state/Store'
 import Compaliance from '../../../components/Dashboard/Compliance'
 import useWallets from '../../../hooks/useWallets';
 import { Wallet } from '../../../models/wallet'
+import useVerifyToken from '../../../hooks/useVerifyToken'
 
 const { height } = Dimensions.get('screen');
 
-const COINS = ['Bitcoin', 'Ethereum', 'Tether', 'BUSD', 'XRP', 'DOGE', 'BNB', 'DOT', 'LTC'];
+const COINS = ['Bitcoin', 'Ethereum', 'Tether', 'BUSD', 'XRP', 'DOGE', 'BNB', 'LTC'];
 
 export default function Home({ navigation }) {
   const isDarkMode = useSelector((state: RootState) => state.isDarkMode);
@@ -44,7 +45,7 @@ export default function Home({ navigation }) {
 
           <ScrollView style={{ width: '100%' }} contentContainerStyle={{ width: '100%', paddingBottom: 100 }}>
 
-            {!user.KYCVerified && <Compaliance />}
+            {/* {!user.KYCVerified && <Compaliance />} */}
 
 
             <View style={{ paddingHorizontal: 40, paddingVertical: 20,  }}>
@@ -52,7 +53,7 @@ export default function Home({ navigation }) {
                 !isLoading && !isError && (
                   <View style={{ flexDirection: 'row', justifyContent: 'space-between', height: 60, }}>
                     <CustomText variant="body">PORTFOLIO</CustomText>
-                    <Feather name="search" size={25} color={theme.colors.text} />
+                    {/* <Feather name="search" size={25} color={theme.colors.text} /> */}
                   </View>
                 )
               }
