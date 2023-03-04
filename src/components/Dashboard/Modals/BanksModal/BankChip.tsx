@@ -7,7 +7,7 @@ import CustomText from '../../../General/Text'
 interface IProps{
     name: string;
     code: string;
-    id: number;
+    id: string;
     onSelect: (e: any) => void;
 }
 
@@ -16,7 +16,7 @@ const BankChip: React.FC<IProps> = ({name, code, id, onSelect }) => {
 
     const returnFirstLetter = useCallback(() => {
         return name.charAt(0).toUpperCase();
-    }, [])
+    }, [name])
 
   return (
     <Pressable style={Styles.parent} onPress={() => onSelect({ name, code, id})}>

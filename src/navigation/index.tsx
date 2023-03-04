@@ -28,12 +28,16 @@ const Navigation = () => {
         console.log(loggedIn);
         const usr = await AsyncStorage.getItem('user');
         if (usr !== null) {
-          dispatch.User.update(JSON.parse(usr), null);
+          dispatch.User.update(JSON.parse(usr));
           dispatch.loggedIn.login();
         }   
       }
       SplashScreen.hideAsync();
-      dispatch.isDarkMode.change(mode !== null && mode === 'true' ? true:false, '');
+      if (mode !== null && mode === 'true') {
+        dispatch.isDarkMode.on();
+      } else {
+        dispatch.isDarkMode.off();
+      }
       } else {
         dispatch.loggedIn.logout();
       }

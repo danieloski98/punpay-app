@@ -1,4 +1,4 @@
-import { View, TextInput, Pressable } from 'react-native'
+import { View, TextInput, Pressable, ActivityIndicator } from 'react-native'
 import { Style } from './style'
 import React from 'react'
 import {Text as CustomText, PrimaryButton } from '../../../../../General'
@@ -8,6 +8,8 @@ import Bank from '../../../../../../res/svg-output/Bank'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../../../../../state/Store'
 import useIcons from '../../../../../../hooks/useIcons'
+import useGetRate from '../../../../../../hooks/useGetRate';
+import { useNavigation } from '@react-navigation/native'
 
 interface IProps {
   change: React.Dispatch<React.SetStateAction<number>>;
@@ -20,6 +22,13 @@ const AmountPage = ({ change }: IProps) => {
     const bank = useSelector((state: RootState) => state.Bank);
     const user = useSelector((state: RootState) => state.User);
     const {getShortName} = useIcons();
+    const navigation= useNavigation<any>();
+    // get rate
+    const { isLoading, data } = useGetRate({ currency: getShortName(coin as any), transactionType: 'buy' })
+
+    // if (data) {
+    //   console.log(data);
+    // }
   return (
     <View style={Style.parent}>
       <CustomText variant="subheader">Sell {getShortName(coin as any)} For FIAT</CustomText>
@@ -43,10 +52,11 @@ const AmountPage = ({ change }: IProps) => {
         </View>
       </View>
 
-      {/* <View style={{ marginTop: 10 }}>
+      <View style={{ marginTop: 10 }}>
         <CustomText variant="subheader" style={{ fontSize: 18 }}>Current Rate</CustomText>
-        <CustomText variant="body" style={{ fontSize: 18 }}>NGN745/$1</CustomText>
-      </View> */}
+        {!isLoading && <CustomText variant="body" style={{ fontSize: 18 }}>NGN{data.data.rate}/$1</CustomText>}
+        {isLoading && <ActivityIndicator size="small" color={theme.colors.primaryColor} />}
+      </View>
 
       {bank.accountNumber && (
         <View style={{ marginTop: 20 }}>
@@ -78,7 +88,7 @@ const AmountPage = ({ change }: IProps) => {
         <View style={{ marginTop: 20 }}>
             <CustomText variant="subheader" style={{ fontSize: 18 }}>Bank</CustomText>
 
-            <Pressable onPress={() => setHa(true)} style={{ ...Style.linkBtn, height: theme.button.height, backgroundColor: theme.textInput.backgroundColor }}>
+            <Pressable onPress={() => navigation.navigate('link-bank')} style={{ ...Style.linkBtn, height: theme.button.height, backgroundColor: theme.textInput.backgroundColor }}>
                 <CustomText variant="subheader" style={{ fontSize: 18, color: theme.colors.primaryColor }}>Link</CustomText>
             </Pressable>
         </View>

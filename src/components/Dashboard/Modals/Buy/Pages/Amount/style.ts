@@ -27,5 +27,8 @@ export const Style = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 10,
+    },
+    input: {
+        fontSize: 55, 
     }
 });

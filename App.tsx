@@ -9,6 +9,7 @@ import { Alert, View } from 'react-native';
 import * as Updates from 'expo-updates';
 import React from 'react';
 import registerNNPushToken from 'native-notify';
+import { ToastProvider } from 'react-native-toast-notifications'
 
 export const queryClient = new QueryClient();
 
@@ -20,21 +21,21 @@ export default function App() {
     'Axiforma-Bold': require('./assets/fonts/Axiforma-Bold.ttf'),
   })
 
-  React.useEffect(() => {
-    Updates.checkForUpdateAsync()
-    .then((data) => {
-      if (data.isAvailable) {
-        Alert.alert('Update', 'An update is available')
-        Updates.fetchUpdateAsync()
-        .then((data) => {
-          data.isNew
-        })
-      }
-    })
-  }, [])
+  // React.useEffect(() => {
+  //   Updates.checkForUpdateAsync()
+  //   .then((data) => {
+  //     if (data.isAvailable) {
+  //       Alert.alert('Update', 'An update is available')
+  //       Updates.fetchUpdateAsync()
+  //       .then((data) => {
+  //         data.isNew
+  //       })
+  //     }
+  //   })
+  // }, [])
   const onLayout = useCallback(() => {
     if (fontLoaded) {
-      // SplashScreen.hideAsync();
+      SplashScreen.hideAsync();
     }
   }, [fontLoaded]);
 
@@ -46,6 +47,7 @@ export default function App() {
       onLayout={onLayout}
       style={{ flex: 1 }}
     >
+      <ToastProvider>
       <QueryClientProvider client={queryClient}>
       <Provider store={store}>
         <Fragment>
@@ -53,6 +55,7 @@ export default function App() {
         </Fragment>
       </Provider>
     </QueryClientProvider>
+      </ToastProvider>
     </View>
   );
 }

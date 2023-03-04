@@ -14,3 +14,17 @@ interface Bank {
     createdAt: string;
     updatedAt: string;
 }
+
+export interface IBank {
+    id: number;
+    userId: string;
+    bankId: string;
+    name: string;
+    code: string;
+    accountNumber: string;
+    accountName: string;
+    isLinked: boolean;
+    isAdminAccount: boolean;
+    createdAt: string;
+    updatedAt: string;
+}

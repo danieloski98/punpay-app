@@ -1,12 +1,12 @@
 import axios, { AxiosError } from 'axios';
-import Url from './url'
+import {STAT_URL} from './url'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const Axios = axios.create({
-    baseURL: `${Url}`,
+const STAT = axios.create({
+    baseURL: `${STAT_URL}`,
 });
 
-Axios.interceptors.request.use(async(config) => {
+STAT.interceptors.request.use(async(config) => {
     const token = await AsyncStorage.getItem('token')
     config.headers!['content-type'] = 'application/json';
     if (token === null) {
@@ -18,12 +18,12 @@ Axios.interceptors.request.use(async(config) => {
     return Promise.reject(error)
 }); 
 
-Axios.interceptors.response.use((data) => {
+STAT.interceptors.response.use((data) => {
     return data;
 }, (error: AxiosError<any, any>) => {
     if (error.response?.data.message instanceof Array) {
         const msg = error.response?.data.message as Array<any>;        
-        return Promise.reject(JSON.stringify(error.response?.data.message));
+        return Promise.reject(msg);
     } else {
         if (error.response?.data.message === undefined || error.response?.data === undefined) {
             return Promise.reject('An error occured');
@@ -32,4 +32,4 @@ Axios.interceptors.response.use((data) => {
     }
 });
 
-export default Axios;
+export default STAT;

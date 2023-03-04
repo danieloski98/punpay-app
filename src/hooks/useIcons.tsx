@@ -1,14 +1,14 @@
 import { View, Text, Image } from 'react-native'
 import React, { useCallback } from 'react'
 
-const COINS = ['Bitcoin', 'Ethereum', 'Tether', 'BUSD', 'XRP', 'DOGE', 'BNB', 'LTC', 'DOT'];
+export const COINS = ['Bitcoin', 'Ethereum', 'Tether', 'BUSD', 'XRP', 'DOGE', 'BNB', 'LTC', 'DOT'];
 
-type coinType = 'btc' | 'eth' | 'usdt' | 'busd' | 'xrp' | 'doge' | 'bnb' | 'ltc' | 'dot';
+export type coinType = 'btc' | 'eth' | 'usdt' | 'busd' | 'xrp' | 'doge' | 'bnb' | 'ltc' | 'dot';
 
-type Coin = 'Bitcoin' | 'Ethereum' | 'Tether' | 'BUSD' | 'XRP' | 'DOGE' | 'BNB' | 'Pokadot' | 'Litecoin'
+export type Coin = 'Bitcoin' | 'Ethereum' | 'Tether' | 'BUSD' | 'XRP' | 'DOGE' | 'BNB' | 'Pokadot' | 'Litecoin'
 
 const useIcons = () => {
-    const getIcon = useCallback((icon: Coin | String, size?: number|string) => {
+    const getIcon = (icon: Coin | String, size?: number|string) => {
         switch(icon) {
             case 'Bitcoin': {
               return <Image source={require('../res/bitcoin.png')} style={{ width: size ? size: '100%', height: size ? size: '100%' }} resizeMode='cover' />
@@ -38,9 +38,9 @@ const useIcons = () => {
               return <Image source={require('../res/ltc.png')} style={{ width: size ? size: '100%', height: size ? size: '100%' }} resizeMode='cover' />
             }
           }
-    }, [])
+    }
 
-    const getName = useCallback((name: coinType) => {
+    const getName = (name: coinType) => {
       switch(name) {
         case 'btc': {
           return 'Bitcoin'
@@ -70,9 +70,9 @@ const useIcons = () => {
           return 'Litecoin'
         }
       }
-    }, [])
+    }
 
-    const getShortName = useCallback((coin: Coin) => {
+    const getShortName = (coin: Coin) => {
       switch(coin) {
         case 'Bitcoin': {
           return 'btc'
@@ -102,10 +102,9 @@ const useIcons = () => {
           return 'dot'
         }
       }
-    }, [])
+    }
 
-    const getNetwork = useCallback((name: Coin) => {
-      console.log(`the network is for the coin ${name}`)
+    const getNetwork = (name: Coin) => {
       switch(name) {
         case 'Bitcoin': {
           return 'BTC'
@@ -135,7 +134,7 @@ const useIcons = () => {
           return 'BEP20'
         }
       }
-    }, [])
+    }
   return {
     getIcon,
     COINS,

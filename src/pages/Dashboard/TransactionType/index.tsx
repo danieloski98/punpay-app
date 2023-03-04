@@ -49,7 +49,6 @@ const TransactionType = ({ route, navigation }: IProps) => {
 
   const registerCoin = (co: string) => {
     setCoin(co);
-    // console.log(co)
     dispatch({ type: 'Coin/update', payload: co });
     setOpenModal(true);
   };

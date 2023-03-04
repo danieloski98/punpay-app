@@ -1,15 +1,16 @@
-import { View, Text, Platform, ActivityIndicator } from 'react-native'
+import { View, Text, Platform, ActivityIndicator, Alert } from 'react-native'
 import React from 'react'
 import { Style } from './style'
 import { Feather } from '@expo/vector-icons'
 
 // svg
-import Bitcoin from '../../../../res/svg-output/Bitcoin';
 import {Box, Text as CustomText} from '../../../General'
 import theme, { Theme } from '../../../../style/theme';
 import { useTheme } from '@shopify/restyle';
 import { useNavigation } from '@react-navigation/native';
 import useIcons from '../../../../hooks/useIcons'
+import Axios from '../../../../utils/api';
+import { useQuery } from '@tanstack/react-query';
 
 const os = Platform.OS;
 
@@ -17,6 +18,16 @@ const CryptoPageHeader = ({ coinName }) => {
     const theme = useTheme<Theme>();
     const navigation = useNavigation();
     const { getIcon, getShortName } = useIcons();
+
+    // get the users coin details
+  const { isLoading, data, isError } = useQuery(['getCoin'], () => Axios.get(`/user/wallet/${getShortName(coinName)}`), {
+    refetchOnMount: true,
+    onError: (error) => {
+      Alert.alert('An error occured');
+      navigation.goBack();
+    }
+  })
+
   return (
     <Box style={Style.container} backgroundColor="mainBackground">
         {/* LEFT HEADER SECTION */}
@@ -32,7 +43,8 @@ const CryptoPageHeader = ({ coinName }) => {
       </View>
       <View style={Style.right}>
         <CustomText style={{ color: theme.colors.text }}>YOUR BALANCE</CustomText>
-        <CustomText variant="subheader" style={{ fontSize: 18, textAlign: 'left' }}>0.000{getShortName(coinName)}</CustomText>
+       {!isLoading && !isError &&  <CustomText variant="subheader" style={{ fontSize: 18, textAlign: 'left' }}>{data.data.data.balance}{getShortName(coinName)}</CustomText>}
+       {isLoading && <ActivityIndicator size="small" color={theme.colors.primaryColor} />}
         {/* <ActivityIndicator size="small" color={theme.colors.primaryColor} /> */}
       </View>
     </Box>

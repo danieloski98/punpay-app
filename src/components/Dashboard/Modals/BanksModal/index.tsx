@@ -13,10 +13,11 @@ import CustomInput from '../../../General/TextInput'
 import { useQuery } from '@tanstack/react-query'
 import Axios from '../../../../utils/api'
 import BankChip from './BankChip'
+import { IBank } from '../../../../models/bank'
 
 interface IProps {
   onClose: () => void;
-  onSelect: (item: Partial<Bank>) => void;
+  onSelect: (item: Partial<IBank>) => void;
   ref: React.MutableRefObject<BottomSheetModalMethods>;
 }
 
@@ -58,14 +59,14 @@ const BanksModal: React.ForwardRefExoticComponent<any> = React.forwardRef(({ onC
           backgroundStyle={{ backgroundColor: theme.colors.modalBg }}
           handleIndicatorStyle={{ width: 150, backgroundColor: darkmode ?'grey':'lightgrey' }}
         >
-          <Input value={value} onChange={(e: any) => setValue(e)} />
+          <Input value={value} onChange={(e: any) => setValue(e)} placeholderTextColor={theme.colors.text} />
           <BottomSheetScrollView scrollEnabled horizontal={false} showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 100, marginTop: 20 }}>
             {isLoading && (
               <View style={{ width: '100%', height: 50, justifyContent: 'center', alignItems: 'center'}}>
                 <ActivityIndicator color={theme.colors.primaryColor} />
               </View>
             )}
-            {!isLoading && !error && data && (data.data.data as Array<Bank>).filter((item, index) => {
+            {!isLoading && !error && data && (data.data.data as Array<IBank>).filter((item, index) => {
               if (value === '') {
                 return item
               } 

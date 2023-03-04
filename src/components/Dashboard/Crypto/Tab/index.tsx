@@ -15,7 +15,7 @@ const CryptoTab = ({ tab, setTab }: IProps) => {
   return (
     <View style={Style.container}>
      <View style={{...Style.tab, backgroundColor: theme.textInput.backgroundColor}}>
-        <Pressable onPress={() => setTab(1)} style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: tab === 2? theme.colors.primaryColor: 'transparent', borderRadius: 10 }}>
+        <Pressable  style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: tab === 2? theme.colors.primaryColor: 'transparent', borderRadius: 10 }}>
             <Text style={{ color: tab === 2 ? 'white':'grey'}}>TRANSACTIONS</Text>
         </Pressable>
 

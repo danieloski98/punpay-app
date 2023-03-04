@@ -14,22 +14,23 @@ import Axios from '../../../utils/api'
 import { CustomInput } from '../../../components/General/TextInput'
 import { useDispatch, useSelector } from 'react-redux'
 import { Dispatch, RootState } from '../../../state/Store'
+import { IBank } from '../../../models/bank'
 
 const defaultState = {
   id: 0,
   code: '',
-  name: 'Select Bank',
+  bankname: 'Select Bank',
 }
 
 type action = {
   type: 'UPDATE',
-  payload: typeof defaultState,
+  payload: any,
 }
 
 const reducer = (state, action: action) => {
   switch (action.type) {
     case 'UPDATE': {
-      state = { ...action.payload };
+      state = { ...action.payload, bankname: action.payload.name };
       console.log(state);
     }
       return state;
@@ -49,6 +50,9 @@ const LinkBank = ({ navigation }) => {
     mutationFn: (data) => Axios.post('/bank/create', data),
     onSuccess: (data) => {
       console.log(data.data.message);
+      reduxDispatch.Bank.update(data.data.data);
+      Alert.alert(data.data.message);
+      navigation.goBack()
     },
     onError: (error: any) => {
       Alert.alert('Error', error)
@@ -61,8 +65,9 @@ const LinkBank = ({ navigation }) => {
     mutationFn: (data) => Axios.put('/bank/update', data),
     onSuccess: (data) => {
       console.log(data.data.message);
-      reduxDispatch.Bank.update(data.data.data, null);
+      reduxDispatch.Bank.update(data.data.data);
       Alert.alert(data.data.message);
+      navigation.goBack();
     },
     onError: (error: any) => {
       Alert.alert('Error', error)
@@ -72,7 +77,7 @@ const LinkBank = ({ navigation }) => {
 
   const theme = useTheme<Theme>()
 
-  const setBank = React.useCallback((item: Partial<Bank> | any ) => {
+  const setBank = React.useCallback((item: Partial<IBank> | any ) => {
     dispatch({ type: 'UPDATE', payload: item });
     bottomsheetRef.current?.close();
   }, []);

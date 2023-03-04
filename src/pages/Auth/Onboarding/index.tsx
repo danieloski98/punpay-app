@@ -19,7 +19,9 @@ const Onboarding = ({ navigation }: IProps) => {
   return (
       <Box backgroundColor="mainBackground" flex={1} style={Style.parent}>
         <View style={Style.imgContainer}>
+          <View style={{ paddingRight: 50}}>
           <Img width={width} height={width} />
+          </View>
           <Text variant="header" marginTop="s" textAlign="left" style={Style.text} >Buy, Sell & Swap Crypto on the go</Text>
           <Text variant="bodylight" marginTop="s" textAlign="left" style={Style.text}>PunPay ensures you get the best rates and secure transactions</Text>
         </View>

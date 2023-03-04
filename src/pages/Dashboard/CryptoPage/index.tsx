@@ -5,6 +5,7 @@ import {
   Platform,
   Dimensions,
   Pressable,
+  ActivityIndicator
 } from "react-native";
 import React from "react";
 import CryptoPageHeader from "../../../components/Dashboard/Crypto/Header";
@@ -24,6 +25,8 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import SellPage from "../../../components/Dashboard/Modals/Sell";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../state/Store";
+import { useQuery } from "@tanstack/react-query";
+import Axios from "../../../utils/api";
 
 const os = Platform.OS;
 export const { width: SIZE } = Dimensions.get("window");

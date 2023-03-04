@@ -16,10 +16,11 @@ import { useMutation } from "@tanstack/react-query";
 import Axios from "../../../utils/api";
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { LOGGEDINSTATES } from "../../../enums/init.enum";
+import { registerIndieID } from 'native-notify'
 
 const validationSchema = yup.object({
   email: yup.string().email().required(),
-  password: yup.string().required().min(8),
+  password: yup.string().required(),
 });
 
 interface IProps {
@@ -39,21 +40,26 @@ export default function Login({ navigation }: IProps) {
       console.log(data.data.data);
       const str = JSON.stringify(data.data.data.user);
       await AsyncStorage.setItem('user', str);
-      dispatch.User.update(data.data.data.user, null);
+      const notiReg = await AsyncStorage.getItem('notireg');
+      if (notiReg === null) {
+        registerIndieID(data.data.data.user.id, 6405, 'JhIbh6BDeO8Z5mEBHU50Dh');
+        await AsyncStorage.setItem('notireg', 'true');
+      }
+      dispatch.User.update(data.data.data.user);
       if (!data.data.data.user.emailVerified) {
         Alert.alert('Notice', 'You need to verify you email')
         navigation.navigate('verifyemail', { email: data.data.data.user.email });
         return;
-      }else if (pin === null || pin === undefined) {
+      } else if (pin === null || pin === undefined) {
         navigation.navigate('setpin');
         return
       } else {
         // await AsyncStorage.removeItem('PIN');
-        dispatch.User.update(data.data.data.user, null);
+        dispatch.User.update(data.data.data.user);
         dispatch.loggedIn.login();
       }
     },
-    onError: (error: any)=> {
+    onError: (error: any) => {
       Alert.alert('Error', error);
     }
   })
@@ -66,12 +72,12 @@ export default function Login({ navigation }: IProps) {
 
   return (
     <FormContainer
-        validationSchema={validationSchema}
-        initialValues={{
-            email: '',
-            password: ''
-        }}
-        onSubmit={submit}
+      validationSchema={validationSchema}
+      initialValues={{
+        email: '',
+        password: ''
+      }}
+      onSubmit={submit}
     >
       <Box
         backgroundColor="mainBackground"
@@ -97,9 +103,9 @@ export default function Login({ navigation }: IProps) {
         >
           <View style={Style.box}>
             <TextInput
-            keyboardType="email-address"
-             name="email"
-             label="Email"
+              keyboardType="email-address"
+              name="email"
+              label="Email"
               leftElement={
                 <Feather
                   name="mail"
@@ -111,27 +117,29 @@ export default function Login({ navigation }: IProps) {
           </View>
 
           <View style={Style.box}>
-            <TextInput
-                keyboardType="visible-password"
-                name="password"
-                label="Password"
-                isPassword={!showPass}
-              leftElement={
-                <Feather
-                  name="lock"
-                  size={25}
-                  style={{ marginTop: 10, color: theme.colors.iconColor }}
-                />
-              }
-              rightElement={
-                <Feather
-                  onPress={() => setShowPass((prev) => !prev)}
-                  name={showPass ? "eye" : "eye-off"}
-                  size={25}
-                  style={{ marginTop: 10, color: theme.colors.iconColor }}
-                />
-              }
+          <TextInput 
+            keyboardType="visible-password"
+            name="password"
+            label="Password"
+            isPassword={showPass}
+            leftElement={
+              <Feather
+              name="lock"
+              size={25}
+              style={{ marginTop: 10, color: theme.colors.iconColor }}
             />
+            } 
+            rightElement={
+              <Feather
+              onPress={() => setShowPass((prev) => !prev)}
+              name={showPass ? "eye-off" : "eye"}
+              size={25}
+              style={{ marginTop: 10, color: theme.colors.iconColor }}
+            />
+            }
+            style={{ flex: 1, color: theme.colors.text }} 
+            />
+
           </View>
 
           <CustomText

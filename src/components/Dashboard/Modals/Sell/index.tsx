@@ -28,15 +28,12 @@ interface IProps {
 }
 
 const SellPage = ({ close, coin }: IProps) => {
-    const [stage, setStage] = React.useState(1);
     const [step, setStep] = React.useState(1)
     const [sellStep, setSellStep] = React.useState(1);
     const [sendStep, setSendStep] = React.useState(1);
     const [initial, setInital] = React.useState(true);
-    const snapPoint = React.useMemo(() => ['80%'], []);
     const bottomsheetRef = React.useRef<BottomSheetModal>(null);
     const theme = useTheme<Theme>();
-    const [darkmode,] = useAtom(DarkModeAtom);
 
     const { getIcon } = useIcons()
 
@@ -121,6 +118,12 @@ const SellPage = ({ close, coin }: IProps) => {
                  <Pressable onPress={() => selectSell(2)} style={{ ...Style.conatiner, backgroundColor: theme.textInput.backgroundColor, marginTop: 20 }}>
                      <CardEdit width={30} height={30} />
                      <CustomText variant="bodylight" ml="m">Transfer to another wallet</CustomText>
+                 </Pressable>
+
+                  <CustomText variant='body' mt='xl'>Have a transaction above $20k?</CustomText>
+                  <Pressable onPress={() => alert('Coming soon!')} style={{ ...Style.conatiner, backgroundColor: theme.textInput.backgroundColor, marginTop: 20 }}>
+                     <CardEdit width={30} height={30} />
+                     <CustomText variant="bodylight" ml="m">Use Punpay Aboki Rate</CustomText>
                  </Pressable>
                 </Box>
               )}

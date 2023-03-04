@@ -38,7 +38,6 @@ const RecieveModal = ({ close, coin }: IProps) => {
   })
 
   React.useEffect(() => {
-    console.log(getShortName(coin as any))
     bottomSheetRef.current?.present();
   });
 
