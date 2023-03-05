@@ -1,4 +1,4 @@
-import { View, Text } from 'react-native'
+import { View, Text, Alert } from 'react-native'
 import React from 'react'
 import { Coin } from './useIcons'
 import { useQuery } from '@tanstack/react-query';
@@ -38,8 +38,9 @@ const useCoin = (coin: Coin) => {
     // api call
     const { data, isLoading, isError } = useQuery(['getCoinDetails'], () => STAT.get(`/coins/${getApiName()}`), {
         refetchOnMount: true,
-        notifyOnChangeProps: 'all',
-
+        onError: (error: any) => {
+            Alert.alert('Error', error);
+        }
     });
   return {
     data: data?.data as IStat,

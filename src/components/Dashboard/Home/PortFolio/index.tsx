@@ -5,6 +5,7 @@ import { useTheme } from '@shopify/restyle'
 import { Theme } from '../../../../style/theme'
 import {Box, Text as CustomText} from '../../../General'
 import { useNavigation } from '@react-navigation/native'
+import { Feather } from '@expo/vector-icons'
 
 // svgs
 import ArrowDown from '../../../../res/svg-output/ArrowDown';
@@ -12,10 +13,12 @@ import ArrowUp from "../../../../res/svg-output/ArrowUp";
 import Arrows from '../../../../res/svg-output/Arrows';
 import Wallet from '../../../../res/svg-output/Wallet';
 import useBalance from '../../../../hooks/useBalance'
+import { currencyFormat } from '../../../../utils/currencyconverter'
 
 export default function Portfolio() {
     const theme = useTheme<Theme>();
     const navigation = useNavigation<any>();
+    const [show, setShow] = React.useState(false);
     const { isLoading, isError, data,refetch } = useBalance();
 
   return (
@@ -30,7 +33,11 @@ export default function Portfolio() {
         <CustomText variant="body" mt="m" textAlign="center" textTransform="uppercase" style={{color: 'red'}} onPress={async () => await refetch() }>Error while loading balance</CustomText>
       )}
       {!isLoading && !isError && (
-        <CustomText variant="header" textAlign="center" textTransform="uppercase" marginTop="l" style={{ fontSize: 40 }}>NGN{data.data.data.balance}.00</CustomText>
+       <Box mt='l' flexDirection='row' justifyContent='center'>
+         {show && <CustomText variant="subheader" textAlign="center" textTransform="uppercase" style={{ flex: 0.9 }}>NGN{currencyFormat(data?.data.data.balance)}</CustomText>}
+         {!show && <CustomText variant="subheader" textAlign="center" textTransform="uppercase" style={{ flex: 0.9 }}>****</CustomText>}
+         <Feather name={show ? 'eye-off':'eye'} size={30} color={theme.colors.primaryColor} onPress={() => setShow(prev => !prev)} style={{ flex: 0.1}} />
+       </Box>
       )}
       
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', flex: 1, alignItems: 'center', marginTop: 20 }}>

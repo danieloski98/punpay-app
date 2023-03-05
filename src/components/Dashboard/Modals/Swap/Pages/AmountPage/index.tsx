@@ -8,16 +8,39 @@ import Ex from '../../../../../../res/svg-output/Ex'
 import USDT from '../../../../../../res/svg-output/Usdt'
 import { Feather, FontAwesome } from '@expo/vector-icons'
 import {Text as CustomText, PrimaryButton } from '../../../../../General'
-import useIcons from '../../../../../../hooks/useIcons'
+import useIcons, { Coin } from '../../../../../../hooks/useIcons'
+import { Action, State } from '../../state'
 
 interface IProps {
   next: React.Dispatch<React.SetStateAction<number>>;
   coin: string;
+  dispatch:  React.Dispatch<Action>;
+  usd: string;
+  state: State;
 }
 
-const AmountPage = ({ next, coin }: IProps) => {
+const AmountPage = ({ next, coin, dispatch, usd, state }: IProps) => {
+  const [amount, setAmount] = React.useState(state.transactionAmount.toString() || '0');
   const theme = useTheme<Theme>();
-  const { getIcon, getShortName } = useIcons()
+  const { getIcon, getShortName } = useIcons();
+
+  const handleconversion = React.useCallback(() => {
+    const usdV = parseFloat(usd) * parseFloat(amount);
+    return usdV;
+  }, [amount, usd]);
+
+  const hanldePercentage = React.useCallback(() => {
+    const percenter = (handleconversion()/100) * 5;
+    return percenter
+  }, [amount, usd]);
+
+  const handlePress = React.useCallback(() => {
+    dispatch({ type: 'transaction_currency', payload: getShortName(coin as Coin) });
+    dispatch({ type: 'transaction_amount', payload:  parseFloat(amount) });
+    dispatch({ type: 'payout_amount', payload: handleconversion() });
+    next(2);
+  }, [state, amount, coin])
+
   return (
     <View style={Style.parent}>
       <CustomText variant="subheader">Swap Crypto</CustomText>
@@ -28,7 +51,7 @@ const AmountPage = ({ next, coin }: IProps) => {
         <View style={{ ...Style.selectContainer, borderBottomColor: theme.textInput.backgroundColor }}>
 
           <View style={Style.inputContainer}>
-            <TextInput defaultValue="0.0" style={{ flex: 1, fontSize: theme.textVariants.subheader.fontSize, fontWeight: '500', color: theme.colors.text }} keyboardType="number-pad" />
+            <TextInput defaultValue="0.0" value={amount} onChangeText={(e) => setAmount(e)} style={{ flex: 1, fontSize: theme.textVariants.subheader.fontSize, fontWeight: '500', color: theme.colors.text }} keyboardType="number-pad" />
             <CustomText variant="body">{getShortName(coin as any)}</CustomText>
           </View>
 
@@ -39,7 +62,7 @@ const AmountPage = ({ next, coin }: IProps) => {
           </View>
 
         </View>
-        <CustomText>0.0034BTC Avaliable</CustomText>
+        {/* <CustomText>0.0034BTC Avaliable</CustomText> */}
       </View>
 
       <View style={{ height: 100, justifyContent: 'center' }}>
@@ -51,7 +74,9 @@ const AmountPage = ({ next, coin }: IProps) => {
         <View style={{ ...Style.selectContainer, borderBottomColor: theme.textInput.backgroundColor }}>
 
           <View style={Style.inputContainer}>
-            <TextInput defaultValue="0.0" style={{ flex: 1, fontSize: theme.textVariants.subheader.fontSize, fontWeight: '500', color: theme.colors.text }} keyboardType="number-pad" />
+            <CustomText variant="subheader" style={{ flex: 1, flexWrap: 'wrap' }}>
+            {handleconversion().toFixed(2)}
+            </CustomText>
             <CustomText variant="body">USDT</CustomText>
           </View>
 
@@ -64,7 +89,12 @@ const AmountPage = ({ next, coin }: IProps) => {
         </View>
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <CustomText variant="subheader" style={{ fontSize: 16 }}>Transaction Fee</CustomText>
-          <CustomText variant="bodylight" ml="s">0.0002BTC</CustomText>
+          <CustomText variant="bodylight" ml="s">{hanldePercentage().toFixed(2)}usdt</CustomText>
+        </View>
+
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <CustomText variant="subheader" style={{ fontSize: 16 }}>What you will recieve</CustomText>
+          <CustomText variant="bodylight" ml="s">{(handleconversion() - hanldePercentage()).toFixed(2 )}usdt</CustomText>
         </View>
       </View>
 
@@ -73,7 +103,7 @@ const AmountPage = ({ next, coin }: IProps) => {
       </View>
 
       <View style={{ marginTop: 30 }}>
-        <PrimaryButton text='Swap' action={() => next(2)} />
+        <PrimaryButton text='Swap' action={handlePress} />
       </View>
     </View>
   )

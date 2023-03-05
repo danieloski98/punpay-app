@@ -7,6 +7,7 @@ import { Theme } from "../../../../style/theme";
 import { Style } from "./style";
 import { Box, Text as CustomText } from '../../../General'
 import { View, Pressable, Alert } from 'react-native'
+import * as Linking from 'expo-linking'
 
 // svgs
 import CardEdit from '../../../../res/svg-output/CardEdit'
@@ -26,7 +27,7 @@ import useCoin from '../../../../hooks/useCoin';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import STAT from '../../../../utils/stats';
 import { IStat } from '../../../../models/Stat';
-import { useNavigation } from '@react-navigation/native';
+import { Link, useNavigation } from '@react-navigation/native';
 import { reducer, state as reducerState } from './state';
 import Axios from '../../../../utils/api';
 
@@ -76,6 +77,7 @@ const SellPage = ({ close, coin }: IProps) => {
     mutationFn: (data: any) => Axios.post(`/transaction/sell`, data),
     onSuccess: (data) => {
       Alert.alert('Success', data.data.message);
+      setSellStep(4)
     },
     onError: (error: any) => {
       Alert.alert('Error', error);
@@ -86,6 +88,7 @@ const SellPage = ({ close, coin }: IProps) => {
     mutationFn: (data: any) => Axios.post(`/transaction/withdraw`, data),
     onSuccess: (data) => {
       Alert.alert('Success', data.data.message);
+      setSendStep(4)
     },
     onError: (error: any) => {
       Alert.alert('Error', error);
@@ -106,10 +109,10 @@ const SellPage = ({ close, coin }: IProps) => {
   const createSellTransaction = React.useCallback(() => {
     const obj = {
       userId: user.id,
-      transaction_currency: state.transactionCurrency,
-      transaction_amount: state.transactionAmount,
-      payout_currency: state.payoutCurrency,
-      payout_amount: state.payoutAmount,
+      transactionCurrency: state.transactionCurrency,
+      transactionAmount: state.transactionAmount,
+      payoutCurrency: state.payoutCurrency,
+      payoutAmount: state.payoutAmount,
       rate: state.rate,
     }
     sellMutation(obj);
@@ -125,10 +128,6 @@ const SellPage = ({ close, coin }: IProps) => {
     }
     withdrawMutation(obj);
   }, [state, user]);
-
-  
-
-  
 
 
     const { getIcon } = useIcons()
@@ -149,7 +148,7 @@ const SellPage = ({ close, coin }: IProps) => {
                 return <VerificationPage changeStep={() => setSellStep(4)} goBack={() => setSellStep(prev => prev - 1)} loading={sellIsLoading} action={createSellTransaction} />
             }
             case 4: {
-                return <ProcessingPage />
+                return <ProcessingPage state={state} close={close} />
             }
         }
     }, [sellStep, usd]);
@@ -166,7 +165,7 @@ const SellPage = ({ close, coin }: IProps) => {
           return <VerificationPage changeStep={() => setSendStep(4)} goBack={() => setSendStep(prev => prev - 1)} loading={withdrawIsLoading} action={withdrawTransaction} />
       }
       case 4: {
-          return <ProcessingPage />
+          return <ProcessingPage state={state} close={close} />
       }
       }
     }, [sendStep]);
@@ -183,8 +182,8 @@ const SellPage = ({ close, coin }: IProps) => {
     []
   );
 
-  const sellPages = React.useCallback(() => {
-    
+  const openwhatsapp = React.useCallback(async() => {
+    await Linking.openURL('whatsapp://wa.me/message/LX3XCNXKYMVVK1')
   }, []);
 
   const selectSell = React.useCallback((step: number) => {
@@ -217,7 +216,7 @@ const SellPage = ({ close, coin }: IProps) => {
                  </Pressable>
 
                   <CustomText variant='body' mt='xl'>Have a transaction above $20k?</CustomText>
-                  <Pressable onPress={() => alert('Coming soon!')} style={{ ...Style.conatiner, backgroundColor: theme.textInput.backgroundColor, marginTop: 20 }}>
+                  <Pressable onPress={() => openwhatsapp} style={{ ...Style.conatiner, backgroundColor: theme.textInput.backgroundColor, marginTop: 20 }}>
                      <CardEdit width={30} height={30} />
                      <CustomText variant="bodylight" ml="m">Use Punpay Aboki Rate</CustomText>
                  </Pressable>

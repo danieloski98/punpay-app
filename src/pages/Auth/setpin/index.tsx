@@ -26,7 +26,7 @@ export default function SetPin({navigation}: IProps) {
     const [match, setMatch] = React.useState(false);
     const user = useSelector((state: RootState) => state.User)
 
-    // update Pin
+    // create Pin
     const { isLoading, mutate } = useMutation({
         mutationFn: (data: any) => Axios.post('/user-auth/create-pin', data),
         onSuccess: (data) => {
@@ -44,7 +44,6 @@ export default function SetPin({navigation}: IProps) {
     })
 
     const theme = useTheme<Theme>();
-    const pinS = useAsyncStorage('PIN')
 
     const changePin = (e: string) => {
         if (pin.length === 4) {
@@ -55,10 +54,6 @@ export default function SetPin({navigation}: IProps) {
         }
         console.log(pin);
     }
-
-    React.useEffect(() => {
-        console.log(pin);
-    }, [pin])
 
     React.useEffect(() => {
         if (holder.length === 4) {
@@ -77,6 +72,13 @@ export default function SetPin({navigation}: IProps) {
         } else {
             if (pin.length === 4) {
                     setMatch(true);
+                    if (pin !== holder) {
+                        setPin('');
+                        setHolder('');
+                        setStep(1);
+                        Alert.alert('Pin does not match');
+                        return
+                    }
                     mutate({ userId: user.id, pin }); 
             }
         }

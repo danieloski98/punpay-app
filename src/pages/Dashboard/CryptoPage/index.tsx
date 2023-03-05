@@ -27,6 +27,8 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../state/Store";
 import { useQuery } from "@tanstack/react-query";
 import Axios from "../../../utils/api";
+import { Transaction } from "../../../models/transaction";
+import TransactionDetails from "../../../components/Dashboard/Modals/TransactionDetails";
 
 const os = Platform.OS;
 export const { width: SIZE } = Dimensions.get("window");
@@ -36,8 +38,14 @@ export default function CryptoPage({ route }) {
   const [time, setTime] = React.useState("24h");
   const [tab, setTab] = React.useState(2);
   const coin = useSelector((state: RootState) => state.Coin);
+  const [transaction, setTransaction] = React.useState({} as Transaction);
   const theme = useTheme<Theme>();
   const { type } = route.params;
+
+  const open = React.useCallback((trans: Transaction) => {
+    setTransaction(trans);
+    setShowModal(true);
+  }, [transaction]);
 
 
   // MODAL STATES
@@ -45,6 +53,8 @@ export default function CryptoPage({ route }) {
   const [showSwap, setShowSwap] = React.useState(false);
   const [showBuy, setShowBuy] = React.useState(false);
   const [showSell, setShowSell] = React.useState(false);
+  const [showModal, setShowModal] = React.useState(false);
+ 
 
 
   return (
@@ -55,13 +65,14 @@ export default function CryptoPage({ route }) {
         <CryptoTab tab={tab} setTab={setTab} />
         <View style={Style.scrollContainer}>
           {/* {tab === 1 && <StatsTab />} */}
-          {tab === 2 && <TransactionHistory />}
+          {tab === 2 && <TransactionHistory type={type}  open={open}/>}
         </View>
         {/* MODALS */}
         {showRecieve && <RecieveModal close={setShowRecieve} coin={coin} />}
         {showSwap && <Swap close={setShowSwap} coin={coin} />}
         {showBuy && <BuyPage close={setShowBuy} coin={coin} />}
         {showSell && <SellPage close={setShowSell} coin={coin} />}
+        {showModal && <TransactionDetails transaction={transaction} close={setShowModal} />}
         {/* END MODALS */}
       </Box>
     </GestureHandlerRootView>

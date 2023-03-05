@@ -12,7 +12,7 @@ import { DARKMODE, LOGGEDINSTATES } from '../enums/init.enum'
 import useVerifyToken from '../hooks/useVerifyToken'
 import * as SplashScreen from 'expo-splash-screen'
 import { Box } from '../components/General'
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import Axios from '../utils/api'
 
 
@@ -22,18 +22,6 @@ const Navigation = () => {
   const { isLoading, isError, data, status } = useVerifyToken()
   const dispatch = useDispatch<Dispatch>()
 
-  // get bank
-  const { isLoading: bankLoading, refetch } = useQuery(['getUserBank'], () => Axios.get('/bank/user'), {
-    refetchOnMount: true,
-    onSuccess: (data) => {
-      console.log(data.data);
-      dispatch.Bank.update(data.data.data);
-    },
-    onError: async (error: any) => {
-      Alert.alert('Error', error);
-      await refetch()
-    }
-  })
   React.useEffect(() => {
     (async function() {
       if (!isLoading && !isError) {

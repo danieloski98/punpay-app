@@ -21,7 +21,7 @@ export interface Transaction {
 
   hash: string;
 
-  payoutAamount: number;
+  payoutAmount: number;
 
   images: string[];
 

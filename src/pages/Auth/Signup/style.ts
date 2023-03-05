@@ -6,6 +6,8 @@ export const Style = StyleSheet.create({
         height: '20%',
         justifyContent: 'flex-end',
         marginBottom: 20,
+        borderBottomRightRadius: 50,
+        paddingBottom: 20,
     },
     box: {
         marginTop: 15,

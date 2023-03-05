@@ -1,4 +1,4 @@
-import { View, Text, Pressable, Switch, Image } from 'react-native'
+import { View, Text, Pressable, Switch, Image, Alert, RefreshControl } from 'react-native'
 import React from 'react'
 import { Feather } from '@expo/vector-icons'
 import { Style } from './style'
@@ -14,20 +14,33 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Dispatch, RootState } from '../../../state/Store'
 import ElevatedComponent from '../../../components/Dashboard/Settings/SwitchComponent'
 import LinkBankButton from '../../../components/Dashboard/Settings/LinkBankButton'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import Axios from '../../../utils/api'
 
 export default function Settings({ navigation }: any) {
   const [check, setCheck] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
   const darkMode = useSelector((state: RootState) => state.isDarkMode);
   const user = useSelector((state: RootState) => state.User);
   const bio = useSelector((state: RootState) => state.isBiometricEnabled)
   const dispatch = useDispatch<Dispatch>();
+  const queryClient = useQueryClient();
+
   const triggerDarkMode = async () => {
     dispatch({ type: 'isDarkMode/change' })
     await AsyncStorage.setItem(DARKMODE.DARKMODE, darkMode ? 'false':'true');
   }
 
+  const onRefresh = React.useCallback(() => {
+    setLoading(true);
+    queryClient.invalidateQueries()
+    .then(() => {
+      setLoading(false);
+    });
+  }, [])
+
   const triggerBiometrics = async () => {
-    dispatch.isBiometricEnabled.change()
+    dispatch.isBiometricEnabled.change(null, null)
     
     await AsyncStorage.setItem('biometric', bio ? 'true':'false');
   }
@@ -72,7 +85,9 @@ export default function Settings({ navigation }: any) {
 
       <View style={{ flex: 1, paddingBottom: 0 }}>
 
-      <ScrollView style={{ flex: 1, marginTop: 20, marginBottom: 0 }} showsVerticalScrollIndicator={false}>
+      <ScrollView 
+      refreshControl={<RefreshControl onRefresh={onRefresh} refreshing={loading} />}
+      style={{ flex: 1, marginTop: 20, marginBottom: 0 }} showsVerticalScrollIndicator={false}>
         
         <LinkBankButton />
 

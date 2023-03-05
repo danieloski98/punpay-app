@@ -1,4 +1,4 @@
-import { View, Text, Dimensions, Pressable, ActivityIndicator } from 'react-native'
+import { View, Text, Dimensions, Pressable, ActivityIndicator, RefreshControl, Alert } from 'react-native'
 import React from 'react'
 import { Box, Text as CustomText } from '../../../components/General'
 import HomeNavbar from '../../../components/Dashboard/Home/Navbar'
@@ -8,12 +8,15 @@ import { useTheme } from '@shopify/restyle'
 import { Theme } from '../../../style/theme'
 import { ScrollView } from 'react-native-gesture-handler'
 import CoinTypeChip from '../../../components/Dashboard/Home/CoinType'
-import { useSelector } from 'react-redux'
-import { RootState } from '../../../state/Store'
+import { useDispatch, useSelector } from 'react-redux'
+import { Dispatch, RootState } from '../../../state/Store'
 import Compaliance from '../../../components/Dashboard/Compliance'
 import useWallets from '../../../hooks/useWallets';
 import { Wallet } from '../../../models/wallet'
 import useVerifyToken from '../../../hooks/useVerifyToken'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
+import Axios from '../../../utils/api'
+import { IBank } from '../../../models/bank'
 
 const { height } = Dimensions.get('screen');
 
@@ -22,10 +25,45 @@ const COINS = ['Bitcoin', 'Ethereum', 'Tether', 'BUSD', 'XRP', 'DOGE', 'BNB', 'L
 export default function Home({ navigation }) {
   const isDarkMode = useSelector((state: RootState) => state.isDarkMode);
   const user = useSelector((state: RootState) => state.User);
+  const [loading, setLoading] = React.useState(false);
+  const dispatch = useDispatch<Dispatch>()
   const theme = useTheme<Theme>();
+  const queryClient = useQueryClient();
   const { isLoading, isError, data, refetch } = useWallets();
+  const { isLoading: userLoading } = useQuery(['getUser'], () => Axios.get(`/user/profile/${user.id}`),{
+    refetchOnMount: true,
+    onSuccess: (data) => {
+        dispatch.User.update(data.data.data);
+        if (data.data.data.bank === null) {
+          const obj: IBank = {
+            accountName: '',
+            accountNumber: '',
+            bankId: '',
+            code: '',
+            createdAt: '',
+            id: 0,
+            isAdminAccount: false,
+            isLinked: false,
+            name: '',
+            updatedAt: '',
+            userId: ''
+          }
+          dispatch.Bank.update(obj);
+        } else {
+          dispatch.Bank.update(data.data.data.bank);
+          
+        }
+    }
+  })
 
-  console.log(data);
+  const onRefresh = React.useCallback(() => {
+    setLoading(true);
+    queryClient.invalidateQueries()
+    .then(() => {
+      setLoading(false)
+    });
+  }, [])
+
 
   return (
     <Box backgroundColor="mainBackground" flex={1}>
@@ -43,7 +81,10 @@ export default function Home({ navigation }) {
 
         <Box backgroundColor="mainBackground" style={{ width: '100%', height: (height / 100) * 60, backgroundColor: isDarkMode ? 'black' : 'white', borderTopLeftRadius: 30, borderTopRightRadius: 30 }}>
 
-          <ScrollView style={{ width: '100%' }} contentContainerStyle={{ width: '100%', paddingBottom: 100 }}>
+          <ScrollView 
+          refreshControl={<RefreshControl onRefresh={onRefresh} refreshing={loading} />}
+          style={{ width: '100%' }} 
+          contentContainerStyle={{ width: '100%', paddingBottom: 100 }}>
 
             {/* {!user.KYCVerified && <Compaliance />} */}
 
@@ -60,7 +101,7 @@ export default function Home({ navigation }) {
 
               {/* Portfolio chip */}
               {
-                isLoading && (
+                isLoading  && (
                   <Box justifyContent='center' alignItems='center' pt='l'>
                     <ActivityIndicator color={theme.colors.primaryColor} size="large" />
                   </Box>

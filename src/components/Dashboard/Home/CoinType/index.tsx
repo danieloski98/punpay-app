@@ -9,6 +9,7 @@ import useIcons from "../../../../hooks/useIcons";
 import { useDispatch } from "react-redux";
 import { Dispatch } from "../../../../state/Store";
 import { Wallet } from "../../../../models/wallet";
+import { currencyFormat } from "../../../../utils/currencyconverter";
 
 interface IProps {
  
@@ -53,7 +54,7 @@ const CoinTypeChip = ({ currency, converted_balance }: IProps & Wallet) => {
 
           <View style={{ marginLeft: 10 }}>
             <CustomText variant="body">{getName(currency as any)}</CustomText>
-            <CustomText variant="xs">NGN {converted_balance}</CustomText>
+            <CustomText variant="xs">NGN {currencyFormat(parseFloat(converted_balance))}</CustomText>
           </View>
         </View>
 

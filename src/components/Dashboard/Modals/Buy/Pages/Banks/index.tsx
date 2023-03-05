@@ -24,11 +24,17 @@ const Bank = ({ action }: IProps) => {
         <CustomText variant='subheader'>P2P Transaction</CustomText>
         <CustomText>Please select a merchant to trade with</CustomText>
 
-        {!isLoading && data && (
+        {!isLoading && (data.data.data as Array<IBank>).length > 0 && (
           <View style={{ marginTop: 20 }}>
             {(data.data.data as Array<IBank>).map((item, index) => (
                 <BankChip bank={item} key={index} action={action} />
             ))}
+        </View>
+        )}
+
+      {!isLoading && (data.data.data as Array<IBank>).length < 1 && (
+          <View style={{ marginTop: 20 }}>
+           <CustomText variant='body' textAlign='center' color='primaryColor'>No P2P Trader available</CustomText>
         </View>
         )}
     </Box>

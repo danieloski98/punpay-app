@@ -49,8 +49,8 @@ const LinkBank = ({ navigation }) => {
     mutationKey: ['createBank'],
     mutationFn: (data) => Axios.post('/bank/create', data),
     onSuccess: (data) => {
-      console.log(data.data.message);
-      reduxDispatch.Bank.update(data.data.data);
+      console.log(data.data);
+      reduxDispatch.Bank.update(data.data.data, null);
       Alert.alert(data.data.message);
       navigation.goBack()
     },
@@ -65,7 +65,7 @@ const LinkBank = ({ navigation }) => {
     mutationFn: (data) => Axios.put('/bank/update', data),
     onSuccess: (data) => {
       console.log(data.data.message);
-      reduxDispatch.Bank.update(data.data.data);
+      reduxDispatch.Bank.update(data.data.data, null);
       Alert.alert(data.data.message);
       navigation.goBack();
     },

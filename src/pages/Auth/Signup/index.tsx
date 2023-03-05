@@ -35,14 +35,14 @@ export default function Signup({ navigation }: IProps) {
   const dispatch = useDispatch<Dispatch>()
 
   const { mutate, isLoading } = useMutation({
-    mutationFn: (data: any) => Axios.post('/user-auth/create/account', data),
+    mutationFn: (data: any) => Axios.post('/user-auth/create-account', data),
     onSuccess: (data) => {
       AsyncStorage.setItem('token', data.data.data.token);
       const str = JSON.stringify(data.data.data.user);
       AsyncStorage.setItem('user', str);
       dispatch.User.update(data.data.data.user, null);
       navigation.navigate("verifyemail", {
-        email
+        email: data.data.data.user.email,
       });
     },
     onError: (error: any) => {
@@ -73,9 +73,9 @@ export default function Signup({ navigation }: IProps) {
         flex={1}
         style={{ paddingHorizontal: 0 }}
       >
-        <View style={{ ...Style.text, paddingHorizontal: 20 }}>
-          <CustomText variant="subheader">Create Account</CustomText>
-          <CustomText variant="bodylight">Getting started is easy</CustomText>
+        <View style={{ ...Style.text, paddingHorizontal: 20, backgroundColor: theme.colors.primaryColor }}>
+          <CustomText variant="subheader" style={{ color: 'white' }}>Create Account</CustomText>
+          <CustomText variant="bodylight" style={{ color: 'white' }}>Getting started is easy</CustomText>
         </View>
 
         <ScrollView
