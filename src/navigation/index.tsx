@@ -3,7 +3,7 @@ import {NavigationContainer } from '@react-navigation/native'
 import AuthenticationFlow from './Authentication'
 import { useDispatch, useSelector } from 'react-redux'
 import { Dispatch, RootState } from '../state/Store'
-import { ActivityIndicator, StatusBar } from 'react-native'
+import { ActivityIndicator, Alert, StatusBar } from 'react-native'
 import { ThemeProvider } from '@shopify/restyle'
 import theme, { darkTheme } from '../style/theme'
 import DashboardRoutes from './Dashboard'
@@ -12,6 +12,8 @@ import { DARKMODE, LOGGEDINSTATES } from '../enums/init.enum'
 import useVerifyToken from '../hooks/useVerifyToken'
 import * as SplashScreen from 'expo-splash-screen'
 import { Box } from '../components/General'
+import { useQuery } from '@tanstack/react-query'
+import Axios from '../utils/api'
 
 
 const Navigation = () => {
@@ -19,11 +21,30 @@ const Navigation = () => {
   const loggedIn = useSelector((state: RootState) => state.loggedIn);
   const { isLoading, isError, data, status } = useVerifyToken()
   const dispatch = useDispatch<Dispatch>()
+
+  // get bank
+  const { isLoading: bankLoading, refetch } = useQuery(['getUserBank'], () => Axios.get('/bank/user'), {
+    refetchOnMount: true,
+    onSuccess: (data) => {
+      console.log(data.data);
+      dispatch.Bank.update(data.data.data);
+    },
+    onError: async (error: any) => {
+      Alert.alert('Error', error);
+      await refetch()
+    }
+  })
   React.useEffect(() => {
     (async function() {
       if (!isLoading && !isError) {
         const mode = await AsyncStorage.getItem(DARKMODE.DARKMODE);
       const loggedIn = await AsyncStorage.getItem(LOGGEDINSTATES.LOGGEDIN);
+      const bio = await AsyncStorage.getItem('biometric');
+      if (bio === 'true') {
+        dispatch.isBiometricEnabled.on();
+      } else {
+        dispatch.isBiometricEnabled.off();
+      }
       if (loggedIn !== null && loggedIn === 'true') {
         console.log(loggedIn);
         const usr = await AsyncStorage.getItem('user');

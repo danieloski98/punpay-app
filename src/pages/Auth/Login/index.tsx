@@ -36,8 +36,7 @@ export default function Login({ navigation }: IProps) {
     onSuccess: async (data) => {
       await AsyncStorage.setItem('token', data.data.data.token);
       await AsyncStorage.setItem(LOGGEDINSTATES.LOGGEDIN, 'true');
-      const pin = await AsyncStorage.getItem("PIN");
-      console.log(data.data.data);
+
       const str = JSON.stringify(data.data.data.user);
       await AsyncStorage.setItem('user', str);
       const notiReg = await AsyncStorage.getItem('notireg');
@@ -45,17 +44,17 @@ export default function Login({ navigation }: IProps) {
         registerIndieID(data.data.data.user.id, 6405, 'JhIbh6BDeO8Z5mEBHU50Dh');
         await AsyncStorage.setItem('notireg', 'true');
       }
-      dispatch.User.update(data.data.data.user);
+      dispatch.User.update(data.data.data.user, null);
       if (!data.data.data.user.emailVerified) {
         Alert.alert('Notice', 'You need to verify you email')
         navigation.navigate('verifyemail', { email: data.data.data.user.email });
         return;
-      } else if (pin === null || pin === undefined) {
+      } else if (data.data.data.user.pin === '' || !data.data.data.user.pin) {
         navigation.navigate('setpin');
         return
       } else {
         // await AsyncStorage.removeItem('PIN');
-        dispatch.User.update(data.data.data.user);
+        dispatch.User.update(data.data.data.user, null);
         dispatch.loggedIn.login();
       }
     },

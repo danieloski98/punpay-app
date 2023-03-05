@@ -17,8 +17,9 @@ import LinkBankButton from '../../../components/Dashboard/Settings/LinkBankButto
 
 export default function Settings({ navigation }: any) {
   const [check, setCheck] = React.useState(false);
-  const darkMode = useSelector((state: RootState) => state.isDarkMode)
-  const user = useSelector((state: RootState) => state.User)
+  const darkMode = useSelector((state: RootState) => state.isDarkMode);
+  const user = useSelector((state: RootState) => state.User);
+  const bio = useSelector((state: RootState) => state.isBiometricEnabled)
   const dispatch = useDispatch<Dispatch>();
   const triggerDarkMode = async () => {
     dispatch({ type: 'isDarkMode/change' })
@@ -26,8 +27,9 @@ export default function Settings({ navigation }: any) {
   }
 
   const triggerBiometrics = async () => {
-    setCheck(prev => !prev)
-    await AsyncStorage.setItem('biometric', check ? 'true':'false');
+    dispatch.isBiometricEnabled.change()
+    
+    await AsyncStorage.setItem('biometric', bio ? 'true':'false');
   }
   const theme = useTheme<Theme>();
 
@@ -82,7 +84,7 @@ export default function Settings({ navigation }: any) {
         <View style={{ marginTop: 40 }}>
           <CustomText variant="body">Account Security</CustomText>
 
-          <ElevatedComponent title="Enable Biometrics" type="SWITCH" onChange={() => triggerBiometrics()} isChecked={check} />
+          <ElevatedComponent title="Enable Biometrics" type="SWITCH" onChange={() => triggerBiometrics()} isChecked={bio} />
           <ElevatedComponent title="Change Password" type="LINK" link='changepassword' />
           <ElevatedComponent title="Change PIN" type="LINK" link='changepin' />
           <ElevatedComponent title="Next Of Kin" type="LINK" link='nextofkin' />

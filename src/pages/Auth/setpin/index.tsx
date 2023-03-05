@@ -1,4 +1,4 @@
-import { View, TextInput, TouchableOpacity } from 'react-native'
+import { View, TextInput, TouchableOpacity, Alert } from 'react-native'
 import React from 'react'
 import { Box } from '../../../components/General'
 import { Style } from './style'
@@ -10,16 +10,38 @@ import { useAsyncStorage } from '@react-native-async-storage/async-storage'
 
 import {} from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import { useMutation } from '@tanstack/react-query'
+import { useSelector } from 'react-redux'
+import { RootState } from '../../../state/Store'
+import Axios from '../../../utils/api'
 
 interface IProps {
     navigation: NativeStackNavigationProp<any>;
 }
 
 export default function SetPin({navigation}: IProps) {
-    const [pin, setPin] = React.useState([] as Array<string>);
+    const [pin, setPin] = React.useState('');
     const [step, setStep] = React.useState(1);
     const [holder, setHolder] = React.useState('');
     const [match, setMatch] = React.useState(false);
+    const user = useSelector((state: RootState) => state.User)
+
+    // update Pin
+    const { isLoading, mutate } = useMutation({
+        mutationFn: (data: any) => Axios.post('/user-auth/create-pin', data),
+        onSuccess: (data) => {
+            Alert.alert('Success', data.data.message);
+            setPin('')
+            setStep(1)
+            navigation.navigate('biometric');
+        },
+        onError: (error: any) => {
+            Alert.alert('Error', error);
+            setPin('');
+            setHolder('')
+            setStep(1);
+        }
+    })
 
     const theme = useTheme<Theme>();
     const pinS = useAsyncStorage('PIN')
@@ -28,34 +50,42 @@ export default function SetPin({navigation}: IProps) {
         if (pin.length === 4) {
             return;
         } else {
-            setPin(prev => [...prev, e]);
+            let newp = pin + e;
+            setPin(newp);
         }
+        console.log(pin);
     }
 
     React.useEffect(() => {
+        console.log(pin);
+    }, [pin])
+
+    React.useEffect(() => {
+        if (holder.length === 4) {
+            console.log(holder);
+        }
+    }, [holder])
+
+    React.useEffect(() => {
+       (async function() {
         if (step === 1) {
             if (pin.length === 4) {
-                setHolder(pin.toString());
-                setPin([]);
+                setHolder(pin);
+                setPin('');
                 setStep(2);
             }
         } else {
             if (pin.length === 4) {
-                if (pin.toString() === holder) {
                     setMatch(true);
-                    pinS.setItem(pin.toString());
-                    navigation.navigate('biometric')
-                } else {
-                    setMatch(false);
-                }
+                    mutate({ userId: user.id, pin }); 
             }
         }
+       })()
     }, [pin])
 
     const clear = () => {
-        const copy = [...pin];
-        copy.splice(pin.length - 1, 1);
-        setPin(copy);    
+        const newp = pin.slice(0, pin.length - 1);
+        setPin(newp);    
     }
 
   return (
@@ -64,7 +94,7 @@ export default function SetPin({navigation}: IProps) {
         { step > 1 && (
             <TouchableOpacity style={{ flexDirection: 'row' }} onPress={() => {
                 setHolder('');
-                setPin([]);
+            setPin('');
                 setStep(1);
             }}>
                 <>

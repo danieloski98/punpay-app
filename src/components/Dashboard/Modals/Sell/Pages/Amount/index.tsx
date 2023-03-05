@@ -7,16 +7,23 @@ import { Theme } from '../../../../../../style/theme'
 import Bank from '../../../../../../res/svg-output/Bank'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../../../../../state/Store'
-import useIcons from '../../../../../../hooks/useIcons'
+import useIcons, { Coin } from '../../../../../../hooks/useIcons'
 import useGetRate from '../../../../../../hooks/useGetRate';
 import { useNavigation } from '@react-navigation/native'
+import { Action } from '../../state'
+import { currencyFormat } from '../../../../../../utils/currencyconverter'
+import uuid from 'react-native-uuid';
+
 
 interface IProps {
   change: React.Dispatch<React.SetStateAction<number>>;
+  dispatch: React.Dispatch<Action>,
+  coinUSDValue: string;
 }
 
-const AmountPage = ({ change }: IProps) => {
+const AmountPage = ({ change, dispatch, coinUSDValue }: IProps) => {
     const [ha, setHa] = React.useState(false);
+    const [amount, setAmount] = React.useState('0');
     const theme = useTheme<Theme>();
     const coin = useSelector((state: RootState) => state.Coin);
     const bank = useSelector((state: RootState) => state.Bank);
@@ -26,9 +33,28 @@ const AmountPage = ({ change }: IProps) => {
     // get rate
     const { isLoading, data } = useGetRate({ currency: getShortName(coin as any), transactionType: 'buy' })
 
-    // if (data) {
-    //   console.log(data);
-    // }
+
+    const handleconversion = React.useCallback(() => {
+      console.log(`this is the usd coin value --- ${coinUSDValue}`)
+      if (coin === 'Tether' || coin === 'BUSD') {
+        return data.data.rate * parseFloat(amount);
+      }
+      const usd = parseFloat(coinUSDValue) * parseFloat(amount);
+      return usd * data.data.rate < 1 ? 0: (usd * data.data.rate);
+    }, [coin, coinUSDValue, amount, data])
+
+    const handlePress = React.useCallback(() => {
+      dispatch({ type: 'transaction_amount', payload: parseFloat(amount) });
+      dispatch({ type: 'transaction_currency', payload: getShortName(coin as Coin) })
+      dispatch({ type: 'payout_amount', payload: handleconversion() })
+      dispatch({ type: 'payout_currency', payload: 'ngn' })
+      dispatch({ type: 'rate', payload: data.data.rate })
+      const ref =  uuid.v4()
+      dispatch({ type: 'reference', payload: ref });
+      change(2);
+    }, [amount, coin, data])
+
+
   return (
     <View style={Style.parent}>
       <CustomText variant="subheader">Sell {getShortName(coin as any)} For FIAT</CustomText>
@@ -43,12 +69,12 @@ const AmountPage = ({ change }: IProps) => {
       <View style={{ marginTop: 20 }}>
         <CustomText variant="subheader" style={{ fontSize: 18 }}>Enter Amount</CustomText>
         <View style={{...Style.input, backgroundColor: theme.textInput.backgroundColor, height: theme.textInput.height, marginTop: 10 }}>
-            <TextInput defaultValue='0.00' style={{ flex: 1, fontSize: 16, color: theme.colors.text }} />
+            <TextInput defaultValue='0.00' value={amount} onChangeText={(e) => setAmount(e)} style={{ flex: 1, fontSize: 16, color: theme.colors.text }} />
             <CustomText variant="subheader" style={{ fontSize: 16 }}>{getShortName(coin as any)}</CustomText>
         </View>
         <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
             <CustomText variant="body" style={{ fontSize: 18 }}>You'll recieve </CustomText>
-            <CustomText variant="subheader" style={{ fontSize: 18 }} mt="s">NGN0.00</CustomText>
+            <CustomText variant="subheader" style={{ fontSize: 18 }}>NGN{currencyFormat(handleconversion())}</CustomText>
         </View>
       </View>
 
@@ -95,7 +121,7 @@ const AmountPage = ({ change }: IProps) => {
       )}
     {bank.accountNumber && (
         <View style={{ marginTop: 20 }}>
-            <PrimaryButton text='Continue' action={() => change(2)} />
+            <PrimaryButton text='Continue' action={handlePress} />
         </View>
     )}
     </View>

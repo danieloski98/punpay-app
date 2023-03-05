@@ -16,10 +16,10 @@ const LinkBankButton = () => {
   const [hasBank, setHasBank] = React.useState(false)
   const navigation = useNavigation<any>()
   const { isLoading, data } = useQuery(['GetBank'], () => Axios.get('/bank/user'), {
-    refetchInterval: 1200,
+    // refetchInterval: 1200,
     refetchOnMount: true,
     onSuccess: (data) => {
-      dispatch.Bank.update(data.data.data);
+      dispatch.Bank.update(data.data.data, null);
       setHasBank(true);
     },
     onError: (error: any) => {

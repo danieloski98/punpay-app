@@ -26,7 +26,13 @@ export default function BioMetricSetup() {
   const change = useCallback(async () => {
     setCheck(prev => !prev);
     await AsyncStorage.setItem('biometric', check ? 'true':'false');
-  }, []);
+    const bio = await AsyncStorage.getItem('biometric');
+    if (bio === 'true') {
+      dispatch.isBiometricEnabled.on();
+    } else {
+      dispatch.isBiometricEnabled.off();
+    }
+  }, [check]);
 
   return (
     <Box backgroundColor="mainBackground" flex={1}>

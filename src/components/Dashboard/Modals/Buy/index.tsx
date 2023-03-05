@@ -36,7 +36,7 @@ const BuyPage = ({ close, coin }: IProps) => {
 
   // CUSTOM HOOKS
   const { getShortName } = useIcons()
-  const { isLoading, data } = useGetRate({ currency: getShortName(coin as Coin), transactionType: 'buy' });
+  const { isLoading, data } = useGetRate({ currency: getShortName(coin as Coin), transactionType: 'sell' });
   const { getApiName } = useCoin(coin as Coin);
   const { isLoading: createTransactionMutation, mutate } = useMutation({
     mutationFn: (data: any) => Axios.post('/transaction/buy', data),
@@ -46,11 +46,6 @@ const BuyPage = ({ close, coin }: IProps) => {
       dispatch({ type: 'id', payload: data.data.data.id });
     },
     onError: (error: any) => {
-      // if (error.length !== undefined) {
-      //   Alert.alert('Error', error.toString());
-      //   return;
-      // }
-      // Alert.alert('Error', error as any);
       Alert.alert('Error', 'An error occured while trying to create the transaction')
       console.log(error);
     }
@@ -61,7 +56,6 @@ const BuyPage = ({ close, coin }: IProps) => {
     onSuccess: (data) => {
       const res = data.data as IStat
       setUsd(res.market_data.current_price.usd);
-      
     },
     onError: () => {
       Alert.alert('Error', `Couldn\'t get ${coin} usd value`);

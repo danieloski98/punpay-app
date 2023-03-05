@@ -6,12 +6,15 @@ import { Theme } from '../../../../../../style/theme'
 import {Text as CustomText, PrimaryButton } from '../../../../../General'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../../../../../state/Store'
+import { State } from '../../state'
+import { currencyFormat } from '../../../../../../utils/currencyconverter'
 
 interface IProps {
   change: React.Dispatch<React.SetStateAction<number>>;
+  state: State
 }
 
-const ReviewSellPage = ({ change }: IProps) => {
+const ReviewSellPage = ({ change, state }: IProps) => {
     const theme = useTheme<Theme>()
     const coin = useSelector((state: RootState) => state.Coin);
     const bank = useSelector((state: RootState) => state.Bank);
@@ -22,10 +25,10 @@ const ReviewSellPage = ({ change }: IProps) => {
 
       <View style={{ marginTop: 20, paddingVertical: 20, borderBottomWidth: 2, borderBottomColor: theme.textInput.backgroundColor }}>
         <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-            <CustomText variant="header" style={{  }}>1.0</CustomText>
+            <CustomText variant="header" style={{  }}>{state.transactionAmount}</CustomText>
             <CustomText variant="bodylight" ml="s">{coin}</CustomText>
         </View>
-        <CustomText variant="bodylight" textAlign="center">(NGN82,000,000.OO)</CustomText>
+        <CustomText variant="bodylight" textAlign="center">(NGN{currencyFormat(state.payoutAmount as number)})</CustomText>
       </View>
 
       <View style={{ flexDirection: 'row', paddingVertical: 20, borderBottomWidth: 2, borderBottomColor: theme.textInput.backgroundColor }}>
@@ -40,7 +43,7 @@ const ReviewSellPage = ({ change }: IProps) => {
         </View>
       </View>
 
-      <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 10, borderBottomWidth: 2, borderBottomColor: theme.textInput.backgroundColor }}>
+      {/* <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 10, borderBottomWidth: 2, borderBottomColor: theme.textInput.backgroundColor }}>
         <View>
             <CustomText variant="subheader" mt="m" style={{ fontSize: 16 }}>TransactionFee</CustomText>
         </View>
@@ -48,7 +51,7 @@ const ReviewSellPage = ({ change }: IProps) => {
         <View style={{ marginLeft: 20 }}>
             <CustomText variant="body" mt="m" style={{ fontSize: 16 }}>NGN8,300($10.23)</CustomText>
         </View>
-      </View>
+      </View> */}
 
       <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 10, marginBottom: 20 }}>
         <View>
@@ -56,7 +59,7 @@ const ReviewSellPage = ({ change }: IProps) => {
         </View>
 
         <View style={{ marginLeft: 20 }}>
-            <CustomText variant="body" mt="m" style={{ fontSize: 16 }}>NGN745/$</CustomText>
+            <CustomText variant="body" mt="m" style={{ fontSize: 16 }}>NGN{state.rate}/$</CustomText>
         </View>
       </View>
 

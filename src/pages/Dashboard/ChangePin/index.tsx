@@ -1,4 +1,4 @@
-import { View, TextInput, TouchableOpacity, Alert } from 'react-native'
+import { View, TextInput, TouchableOpacity, Alert, ActivityIndicator } from 'react-native'
 import React from 'react'
 import { Box, Text as CustomText } from '../../../components/General'
 import { Style } from './style'
@@ -6,19 +6,39 @@ import { useTheme } from '@shopify/restyle'
 import { Theme } from '../../../style/theme'
 import { Feather } from '@expo/vector-icons'
 import { useAsyncStorage } from '@react-native-async-storage/async-storage'
-
+import { useMutation } from '@tanstack/react-query'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import Api from '../../../utils/api';
+import { useSelector } from 'react-redux'
+import { RootState } from '../../../state/Store'
 
 interface IProps {
     navigation: NativeStackNavigationProp<any>;
 }
 
 export default function ChangePin({navigation}: IProps) {
-    const [pin, setPin] = React.useState([] as Array<string>);
+    const [pin, setPin] = React.useState('');
     const [step, setStep] = React.useState(1);
     const [holder, setHolder] = React.useState('');
     const [match, setMatch] = React.useState(false);
-    const Pin = useAsyncStorage('PIN');
+    const user = useSelector((state: RootState) => state.User)
+
+    // update Pin
+    const { isLoading, mutate } = useMutation({
+        mutationFn: (data: any) => Api.put('/user-auth/update-pin', data),
+        onSuccess: (data) => {
+            Alert.alert('Success', data.data.message);
+            setPin('')
+            setStep(1)
+            navigation.goBack();
+        },
+        onError: (error: any) => {
+            Alert.alert('Error', error);
+            setPin('');
+            setHolder('')
+            setStep(1);
+        }
+    })
 
     const theme = useTheme<Theme>();
     const pinS = useAsyncStorage('PIN')
@@ -27,9 +47,15 @@ export default function ChangePin({navigation}: IProps) {
         if (pin.length === 4) {
             return;
         } else {
-            setPin(prev => [...prev, e]);
+            let newp = pin + e;
+            setPin(newp);
         }
+        console.log(pin);
     }
+
+    React.useEffect(() => {
+        console.log(pin);
+    }, [pin])
 
     React.useEffect(() => {
         if (holder.length === 4) {
@@ -39,33 +65,19 @@ export default function ChangePin({navigation}: IProps) {
 
     React.useEffect(() => {
        (async function() {
-        const p = await pinS.getItem();
         if (step === 1) {
             if (pin.length === 4) {
-                // console.log(pin);
-                let pp = pin.toString()
-                setHolder(pp);
-                console.log(pp)
-                if (p !== pin.toString()) {
-                    Alert.alert('Old PIN doesn\'t match');
-                    setPin([]);
-                    setHolder('');
-                    return;
-                }
-                setPin([]);
+                setHolder(pin);
+                setPin('');
                 setStep(2);
             }
         } else {
             if (pin.length === 4) {
-                if (pin.toString() === holder) {
-                    Alert.alert('Warning', 'Can\'t use an old PIN')
+                if (pin === holder) {
+                    Alert.alert('Warning', 'Can\'t use an old PIN');
                 } else {
                     setMatch(true);
-                    pinS.setItem(pin.toString());
-                    Alert.alert('Success', 'PIN changed')
-                    navigation.navigate('settings');
-                    setPin([]);
-                    setStep(1)
+                    mutate({ userId: user.id, pin, oldpin: holder }); 
                 }
             }
         }
@@ -73,9 +85,8 @@ export default function ChangePin({navigation}: IProps) {
     }, [pin])
 
     const clear = () => {
-        const copy = [...pin];
-        copy.splice(pin.length - 1, 1);
-        setPin(copy);    
+        const newp = pin.slice(0, pin.length - 1);
+        setPin(newp);    
     }
 
   return (
@@ -104,9 +115,9 @@ export default function ChangePin({navigation}: IProps) {
         </View>
       </View>
 
-     {step === 1 && ( <CustomText fontWeight="400" variant="bodylight" textAlign="center">Enter your old PIN</CustomText>)}
+     {!isLoading && step === 1 && ( <CustomText fontWeight="400" variant="bodylight" textAlign="center">Enter your old PIN</CustomText>)}
 
-     {step === 2 && (
+     {!isLoading && step === 2 && (
         <>
             {pin.length < 4 && !match && (
                 <CustomText fontWeight="400" variant="bodylight" textAlign="center">Just making sure this matches the previous PIN</CustomText>
@@ -116,6 +127,10 @@ export default function ChangePin({navigation}: IProps) {
                 <CustomText fontWeight="400" variant="bodylight" textAlign="center" style={{ color: 'red' }}>PIN does not match, please try again</CustomText>
             )}
         </>
+     )}
+
+     {isLoading && (
+        <ActivityIndicator size='small' color={theme.colors.primaryColor} />
      )}
 
 
