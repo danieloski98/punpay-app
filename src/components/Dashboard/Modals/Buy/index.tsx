@@ -44,9 +44,10 @@ const BuyPage = ({ close, coin }: IProps) => {
       toast.show('Transaction created', {
       })
       dispatch({ type: 'id', payload: data.data.data.id });
+      setStage(3);
     },
     onError: (error: any) => {
-      Alert.alert('Error', 'An error occured while trying to create the transaction')
+      Alert.alert('Error', error)
       console.log(error);
     }
   })
@@ -94,7 +95,6 @@ const BuyPage = ({ close, coin }: IProps) => {
       transactionReference: state.referenceCode,
     }
     mutate(obj);
-    setStage(3);
   }, [state])
 
   const switchPages = React.useCallback(() => {

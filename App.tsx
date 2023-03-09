@@ -13,6 +13,8 @@ import { ToastProvider } from 'react-native-toast-notifications'
 
 export const queryClient = new QueryClient();
 
+SplashScreen.preventAutoHideAsync();
+
 export default function App() {
   registerNNPushToken(6405, 'JhIbh6BDeO8Z5mEBHU50Dh');
   // load fonts
@@ -35,7 +37,7 @@ export default function App() {
   // }, [])
   const onLayout = useCallback(() => {
     if (fontLoaded) {
-      SplashScreen.hideAsync();
+      // SplashScreen.hideAsync();
     }
   }, [fontLoaded]);
 

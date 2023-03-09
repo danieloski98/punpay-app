@@ -22,32 +22,34 @@ const Navigation = () => {
   const { isLoading, isError, data, status } = useVerifyToken()
   const dispatch = useDispatch<Dispatch>()
 
+
   React.useEffect(() => {
     (async function() {
       if (!isLoading && !isError) {
-        const mode = await AsyncStorage.getItem(DARKMODE.DARKMODE);
+      const mode = await AsyncStorage.getItem(DARKMODE.DARKMODE);
       const loggedIn = await AsyncStorage.getItem(LOGGEDINSTATES.LOGGEDIN);
       const bio = await AsyncStorage.getItem('biometric');
       if (bio === 'true') {
-        dispatch.isBiometricEnabled.on();
+        dispatch({ type: 'isBiometricEnabled/on' })
       } else {
-        dispatch.isBiometricEnabled.off();
+        dispatch({ type: 'isBiometricEnabled/off' })
+      }
+      if (mode !== null && mode === 'true') {
+        dispatch({ type: 'isDarkMode/on' });
+      } else {
+        dispatch({ type: 'isDarkMode/off' });
       }
       if (loggedIn !== null && loggedIn === 'true') {
         console.log(loggedIn);
         const usr = await AsyncStorage.getItem('user');
         if (usr !== null) {
-          dispatch.User.update(JSON.parse(usr));
+          dispatch({ type: 'User/update', payload: JSON.parse(usr)})
           dispatch.loggedIn.login();
+          SplashScreen.hideAsync();
         }   
       }
-      SplashScreen.hideAsync();
-      if (mode !== null && mode === 'true') {
-        dispatch.isDarkMode.on();
-      } else {
-        dispatch.isDarkMode.off();
-      }
-      } else {
+    }
+      if (!isLoading && isError) {
         dispatch.loggedIn.logout();
       }
     })()
@@ -59,10 +61,10 @@ const Navigation = () => {
       </Box>
     );
   }
-  // if (isError && status === 'error') {
-  //   SplashScreen.hideAsync();
-  //   dispatch.loggedIn.logout();
-  // } 
+  if (isError && status === 'error') {
+    SplashScreen.hideAsync();
+    dispatch.loggedIn.logout();
+  } 
   return (
     <ThemeProvider theme={darkMode ? darkTheme : theme}>
       <NavigationContainer>

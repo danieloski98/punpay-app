@@ -33,10 +33,10 @@ export default function Portfolio() {
         <CustomText variant="body" mt="m" textAlign="center" textTransform="uppercase" style={{color: 'red'}} onPress={async () => await refetch() }>Error while loading balance</CustomText>
       )}
       {!isLoading && !isError && (
-       <Box mt='l' flexDirection='row' justifyContent='center'>
+       <Box mt='l' flexDirection='row' justifyContent='center' mr='m'>
          {show && <CustomText variant="subheader" textAlign="center" textTransform="uppercase" style={{ flex: 0.9 }}>NGN{currencyFormat(data?.data.data.balance)}</CustomText>}
          {!show && <CustomText variant="subheader" textAlign="center" textTransform="uppercase" style={{ flex: 0.9 }}>****</CustomText>}
-         <Feather name={show ? 'eye-off':'eye'} size={30} color={theme.colors.primaryColor} onPress={() => setShow(prev => !prev)} style={{ flex: 0.1}} />
+         <Feather name={show ? 'eye-off':'eye'} size={25} color={theme.colors.text} onPress={() => setShow(prev => !prev)} style={{ flex: 0.1}} />
        </Box>
       )}
       

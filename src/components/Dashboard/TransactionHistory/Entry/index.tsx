@@ -67,8 +67,8 @@ export default function TransactionEntry({ transaction, open }: IProps) {
         </View>
       </View>
       <View style={Style.right}>
-        {transaction.transactionType !== 4 && <CustomText variant="body">{transaction.payoutAmount} {transaction.payoutCurrency}</CustomText>}
-        {transaction.transactionType === 4 && <CustomText variant="body">{transaction.transactionAmount} {transaction.transactionCurrency}</CustomText>}
+        {transaction.transactionType !== 4 && transaction.transactionType !== 0 && <CustomText variant="body">{transaction.payoutAmount} {transaction.payoutCurrency}</CustomText>}
+        {transaction.transactionType === 4 || transaction.transactionType === 0 && <CustomText variant="body">{transaction.transactionAmount} {transaction.transactionCurrency}</CustomText>}
       </View>
     </Pressable>
   )

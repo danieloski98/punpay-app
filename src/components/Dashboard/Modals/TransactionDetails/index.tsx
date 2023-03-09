@@ -6,11 +6,14 @@ import { PrimaryButton, Text as CustomText } from '../../../General'
 import { Transaction } from '../../../../models/transaction'
 import { useTheme } from '@shopify/restyle';
 import { Theme } from '../../../../style/theme';
+import SadFace from '../../../../res/svg-output/Sadf'
 
 interface IProps {
   close: React.Dispatch<React.SetStateAction<boolean>>;
   transaction: Transaction;
 }
+
+const TYPES = [0,1,3,4];
 
 const TransactionDetails = ({ close, transaction }: IProps) => {
   const theme = useTheme<Theme>();
@@ -70,8 +73,10 @@ const TransactionDetails = ({ close, transaction }: IProps) => {
         <CustomText variant="subheader" style={{ fontSize: 20 }}>Transaction Details</CustomText>
         <CustomText variant="bodylight">Transaction Status - {transactionStatus()}</CustomText>
 
-        <View style={{ width: '100%', height: 150 }}>
-          <Image source={require('../../../../res/svgs/hourp.png')} style={{ width: '100%', height: '100%' }} resizeMode="contain" />
+        <View style={{ width: '100%', height: 150, alignItems: 'center' }}>
+          {transaction.status <= 2 && <Image source={require('../../../../res/svgs/hourp.png')} style={{ width: '100%', height: '100%' }} resizeMode="contain" />}
+          {transaction.status === 3 && <Image source={require('../../../../res/rocket.png')} style={{ width: '100%', height: '100%' }} resizeMode="contain" />}
+          {transaction.status === 4 && <SadFace width={279} height={203} />}
         </View>
 
         <View style={{ paddingVertical: 20, borderBottomWidth: 2, borderBottomColor: theme.textInput.backgroundColor }}>
@@ -95,7 +100,19 @@ const TransactionDetails = ({ close, transaction }: IProps) => {
           </CustomText>
         </View>
 
-        {transaction.transactionType !== 4 && (
+        {
+          TYPES.includes(transaction.transactionType) && (
+            <View style={{ paddingVertical: 20, flexDirection: 'column' }}>
+              <CustomText variant="subheader" style={{ fontSize: 16 }}>Hash</CustomText>
+              <CustomText variant="bodylight" style={{ fontSize: 16 }} selectable>
+                {transaction.hash}
+              </CustomText>
+            </View>
+          )
+        }
+
+
+        {transaction.transactionType !== 4 && transaction.transactionType !== 0 && (
           <>
           <View style={{ paddingVertical: 20, borderBottomWidth: 2, borderBottomColor: theme.textInput.backgroundColor }}>
               <CustomText variant="subheader" style={{ fontSize: 16 }}>Payout Currency</CustomText>
@@ -107,6 +124,9 @@ const TransactionDetails = ({ close, transaction }: IProps) => {
             <View style={{ paddingVertical: 20, borderBottomWidth: 2, borderBottomColor: theme.textInput.backgroundColor }}>
               <CustomText variant="subheader" style={{ fontSize: 16 }}>Payout Amount</CustomText>
               <CustomText variant="bodylight" style={{ fontSize: 16 }}>
+                {transaction.transactionType === 3 && (
+                  (transaction.payoutAmount - transaction.payoutAmount / 100 * 5)
+                )}
                 {transaction.payoutAmount}
               </CustomText>
             </View>
@@ -122,6 +142,13 @@ const TransactionDetails = ({ close, transaction }: IProps) => {
           </CustomText>
         </View>
         )}
+
+        <View style={{ paddingVertical: 20, flexDirection: 'column' }}>
+          <CustomText variant="subheader" style={{ fontSize: 16 }}>Date</CustomText>
+          <CustomText variant="bodylight" style={{ fontSize: 16 }}>
+            {new Date(transaction.createdAt).toDateString()}
+          </CustomText>
+        </View>
 
         <View>
           <PrimaryButton text="Done" action={() => close(false)} />
