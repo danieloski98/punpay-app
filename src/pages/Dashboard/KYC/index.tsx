@@ -1,7 +1,7 @@
 import { View, Pressable } from "react-native";
 import React from "react";
 import { Style } from "./style";
-import {Box, Text as CustomText, PrimaryButton } from "../../../components/General";
+import { Box, Text as CustomText, PrimaryButton } from "../../../components/General";
 import { useTheme } from "@shopify/restyle";
 import { Theme } from "../../../style/theme";
 import { BottomSheetModalProvider, BottomSheetModal, BottomSheetBackdrop, BottomSheetView } from '@gorhom/bottom-sheet'
@@ -15,32 +15,21 @@ import Identify from "../../../res/svg-output/Identity";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../state/Store";
 import { useAtom } from "jotai";
+import VerificationModal from "../../../components/Dashboard/Modals/VerificationModal";
 
 export default function KYC() {
   const theme = useTheme<Theme>();
   const modalRef = React.useRef<BottomSheetModal>(null);
   const snapPoints = React.useMemo(() => ["80%", "80%"], []);
   const [darkmode,] = useAtom(DarkModeAtom)
+  const [openModal, setOpenModal] = React.useState(false);
+  const [type, setType] = React.useState('');
 
-  const open = React.useCallback(() => {
-    modalRef.current?.present();
-  }, []);
+  const open = React.useCallback((type: string) => {
+    setType(type);
+    setOpenModal(true);
+  }, [type]);
 
-  // callbacks
-  const handleSheetChanges = React.useCallback((index: number) => {
-    // bottomSheetRef.current?.snapToIndex(index);
-  }, []);
-
-  const renderBackdrop = React.useCallback(
-    props => (
-      <BottomSheetBackdrop
-        {...props}
-        disappearsOnIndex={-1}
-        appearsOnIndex={0}
-      />
-    ),
-    []
-  );
 
   return (
     <Box backgroundColor="mainBackground" style={Style.parent}>
@@ -54,7 +43,7 @@ export default function KYC() {
       <View style={{ height: 40 }}></View>
 
       <Pressable
-        onPress={() => open()}
+        onPress={() => open('nin')}
         style={{
           ...Style.conatiner,
           backgroundColor: theme.textInput.backgroundColor,
@@ -67,7 +56,7 @@ export default function KYC() {
       </Pressable>
 
       <Pressable
-        onPress={() => open()}
+        onPress={() => open('drivers-lincence')}
         style={{
           ...Style.conatiner,
           backgroundColor: theme.textInput.backgroundColor,
@@ -81,7 +70,7 @@ export default function KYC() {
       </Pressable>
 
       <Pressable
-        onPress={() => open()}
+        onPress={() => open('passport')}
         style={{
           ...Style.conatiner,
           backgroundColor: theme.textInput.backgroundColor,
@@ -94,31 +83,8 @@ export default function KYC() {
         </CustomText>
       </Pressable>
 
-      <BottomSheetModalProvider>
-        <BottomSheetModal
-           ref={modalRef}
-           snapPoints={snapPoints}
-           onChange={handleSheetChanges}
-           onDismiss={() => {}}
-           style={{ flex: 1 }}
-           backdropComponent={renderBackdrop}
-           backgroundStyle={{ backgroundColor: theme.colors.modalBg }}
-           handleIndicatorStyle={{ width: 150, backgroundColor: darkmode ?'grey':'lightgrey' }}
-        >
-          <BottomSheetView style={{ paddingTop: 80, paddingHorizontal: 20 }}>
-            <CustomText variant="subheader">Identity Verified Successfully</CustomText>
+      {openModal && <VerificationModal type={type} close={setOpenModal} />}
 
-            <View style={{ alignItems: 'center'}}>
-              <Identify width={300} height={300} />
-            </View>
-
-            <CustomText variant="bodylight" mb="l">Your Identity is now fully verified. All limits have been lifted from your account.</CustomText>
-
-            <PrimaryButton text="Back to dashboard" action={() => {}} />
-
-          </BottomSheetView>
-        </BottomSheetModal>
-      </BottomSheetModalProvider>
     </Box>
   );
 }

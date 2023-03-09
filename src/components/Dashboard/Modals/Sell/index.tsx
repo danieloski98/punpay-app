@@ -15,7 +15,7 @@ import UserO from '../../../../res/svg-output/Usero'
 import AmountPage from './Pages/Amount';
 import ReviewSellPage from './Pages/Review';
 import VerificationPage from '../Swap/Pages/VerificationPage';
-import ProcessingPage from '../Swap/Pages/ProcessingPage';
+import ProcessingPage from './Pages/ProcessingPage';
 import SendAmountPage from './Pages/SendPages/Amount';
 import ReviewSendPage from './Pages/SendPages/Review';
 import { useAtom } from 'jotai';
@@ -30,6 +30,7 @@ import { IStat } from '../../../../models/Stat';
 import { Link, useNavigation } from '@react-navigation/native';
 import { reducer, state as reducerState } from './state';
 import Axios from '../../../../utils/api';
+import useOpenWhatsapp from '../../../../hooks/useOpenWhatsapp';
 
 
 interface IProps {
@@ -50,7 +51,8 @@ const SellPage = ({ close, coin }: IProps) => {
     const navigation = useNavigation();
     const bottomsheetRef = React.useRef<BottomSheetModal>(null);
     const theme = useTheme<Theme>();
-    const { getShortName } = useIcons()
+    const { getShortName } = useIcons();
+    const { openwhatsapp } = useOpenWhatsapp()
 
     // Custom hooks
     const { isLoading, data } = useGetRate({ currency: getShortName(coin as Coin), transactionType: 'buy' });
@@ -148,7 +150,7 @@ const SellPage = ({ close, coin }: IProps) => {
                 return <VerificationPage changeStep={() => setSellStep(4)} goBack={() => setSellStep(prev => prev - 1)} loading={sellIsLoading} action={createSellTransaction} />
             }
             case 4: {
-                return <ProcessingPage state={state} close={close} />
+                return <ProcessingPage state={state} close={close} transactionType='Sell' />
             }
         }
     }, [sellStep, usd]);
@@ -165,7 +167,7 @@ const SellPage = ({ close, coin }: IProps) => {
           return <VerificationPage changeStep={() => setSendStep(4)} goBack={() => setSendStep(prev => prev - 1)} loading={withdrawIsLoading} action={withdrawTransaction} />
       }
       case 4: {
-          return <ProcessingPage state={state} close={close} />
+          return <ProcessingPage state={state} close={close} transactionType='Send' />
       }
       }
     }, [sendStep]);
@@ -181,10 +183,6 @@ const SellPage = ({ close, coin }: IProps) => {
     ),
     []
   );
-
-  const openwhatsapp = React.useCallback(async() => {
-    await Linking.openURL('whatsapp://wa.me/message/LX3XCNXKYMVVK1')
-  }, []);
 
   const selectSell = React.useCallback((step: number) => {
     setInital(false);
@@ -216,7 +214,7 @@ const SellPage = ({ close, coin }: IProps) => {
                  </Pressable>
 
                   <CustomText variant='body' mt='xl'>Have a transaction above $20k?</CustomText>
-                  <Pressable onPress={() => openwhatsapp} style={{ ...Style.conatiner, backgroundColor: theme.textInput.backgroundColor, marginTop: 20 }}>
+                  <Pressable onPress={openwhatsapp} style={{ ...Style.conatiner, backgroundColor: theme.textInput.backgroundColor, marginTop: 20 }}>
                      <CardEdit width={30} height={30} />
                      <CustomText variant="bodylight" ml="m">Use Punpay Aboki Rate</CustomText>
                  </Pressable>

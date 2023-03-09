@@ -9,6 +9,7 @@ const useLogout = () => {
     const dispatch = useDispatch<Dispatch>()
     const logout = React.useCallback(async() => {
         await AsyncStorage.removeItem('user');
+        await AsyncStorage.setItem('token', '');
         dispatch.Bank.update({}, '');
         dispatch.User.update({}, '');
         dispatch.loggedIn.logout();

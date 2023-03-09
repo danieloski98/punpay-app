@@ -1,4 +1,4 @@
-import { View, Text, Dimensions, Pressable, ActivityIndicator, RefreshControl, Alert } from 'react-native'
+import { View, Text, Dimensions, Pressable, ActivityIndicator, RefreshControl, Alert, Image } from 'react-native'
 import React from 'react'
 import { Box, Text as CustomText } from '../../../components/General'
 import HomeNavbar from '../../../components/Dashboard/Home/Navbar'
@@ -17,6 +17,8 @@ import useVerifyToken from '../../../hooks/useVerifyToken'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import Axios from '../../../utils/api'
 import { IBank } from '../../../models/bank'
+import useOpenWhatsapp from '../../../hooks/useOpenWhatsapp'
+import CurrencyModal from '../../../components/Dashboard/Modals/Currency'
 
 const { height } = Dimensions.get('screen');
 
@@ -24,16 +26,19 @@ const COINS = ['Bitcoin', 'Ethereum', 'Tether', 'BUSD', 'XRP', 'DOGE', 'BNB', 'L
 
 export default function Home({ navigation }) {
   const isDarkMode = useSelector((state: RootState) => state.isDarkMode);
+  const [showModal, setShowModal] = React.useState(true);
+  const [currency, setCurrency] = React.useState(2)
   const user = useSelector((state: RootState) => state.User);
   const [loading, setLoading] = React.useState(false);
   const dispatch = useDispatch<Dispatch>()
   const theme = useTheme<Theme>();
   const queryClient = useQueryClient();
   const { isLoading, isError, data, refetch } = useWallets();
+  const { openwhatsapp } = useOpenWhatsapp()
   const { isLoading: userLoading } = useQuery(['getUser'], () => Axios.get(`/user/profile/${user.id}`),{
     refetchOnMount: true,
     onSuccess: (data) => {
-        dispatch.User.update(data.data.data);
+      dispatch({ type: 'User/update', payload: data.data.data })
         if (data.data.data.bank === null) {
           const obj: IBank = {
             accountName: '',
@@ -48,10 +53,9 @@ export default function Home({ navigation }) {
             updatedAt: '',
             userId: ''
           }
-          dispatch.Bank.update(obj);
+          dispatch({ type: 'Bank/update', payload: obj })
         } else {
-          dispatch.Bank.update(data.data.data.bank);
-          
+          dispatch({ type: 'Bank/update', payload: data.data.data.bank })
         }
     }
   })
@@ -68,18 +72,20 @@ export default function Home({ navigation }) {
   return (
     <Box backgroundColor="mainBackground" flex={1}>
       <HomeNavbar />
-      <View style={{ width: '100%', height: 30, backgroundColor: '#FFC37D', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+      <Pressable
+       onPress={() => navigation.navigate('kyc')}
+       style={{ width: '100%', height: 30, backgroundColor: '#FFC37D', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
         <Feather name="alert-triangle" size={15} />
-        <CustomText variant="xs" color="blackText" marginLeft="s">Account is limited</CustomText>
-      </View>
+        <CustomText variant="xs" color="blackText" marginLeft="s">Account is limited. Click to verify KYC</CustomText>
+      </Pressable>
 
       <View style={{ backgroundColor: theme.textInput.backgroundColor, flex: 1 }}>
         {/* portfolio section */}
-        <View style={{ width: '100%', height: (height / 100) * 25 }}>
-          <Portfolio />
+        <View style={{ width: '100%', height: (height / 100) * 30 }}>
+          <Portfolio currency={currency} open={() => setShowModal(true)} />
         </View>
 
-        <Box backgroundColor="mainBackground" style={{ width: '100%', height: (height / 100) * 60, backgroundColor: isDarkMode ? 'black' : 'white', borderTopLeftRadius: 30, borderTopRightRadius: 30 }}>
+        <Box backgroundColor="mainBackground" style={{ width: '100%', height: (height / 100) * 65, backgroundColor: isDarkMode ? 'black' : 'white', borderTopLeftRadius: 30, borderTopRightRadius: 30 }}>
 
           <ScrollView 
           refreshControl={<RefreshControl onRefresh={onRefresh} refreshing={loading} />}
@@ -90,6 +96,22 @@ export default function Home({ navigation }) {
 
 
             <View style={{ paddingHorizontal: 40, paddingVertical: 20,  }}>
+              {
+                !isLoading && !isError && (
+                  <Pressable onPress={openwhatsapp}>
+                    <Box flexDirection='row' justifyContent='space-between' alignItems='center' height={60}>
+                    <Box flexDirection='row'>
+                      <Box width={20} height={20}>
+                        <Image source={require('../../../res/gift.png')} resizeMode='contain' style={{ width: '100%', height: '100%'}} />
+                      </Box>
+                      <CustomText ml='s'>Sell Gift Cards</CustomText>
+                    </Box>
+                    <Feather name='chevron-right' size={25} color={theme.colors.text} />
+                  </Box>
+                  </Pressable>
+                )
+              }
+
               {
                 !isLoading && !isError && (
                   <View style={{ flexDirection: 'row', justifyContent: 'space-between', height: 60, }}>
@@ -127,9 +149,7 @@ export default function Home({ navigation }) {
 
       </View>
 
-
-
-
+    {showModal && <CurrencyModal change={setCurrency} close={() => setShowModal(false)} />}
     </Box>
   )
 }

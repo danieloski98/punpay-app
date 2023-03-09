@@ -8,7 +8,7 @@ export const Style = StyleSheet.create({
         flex: 0.8,
         justifyContent: 'flex-end',
         alignItems: 'center',
-        backgroundColor: 'transparent'
+        backgroundColor: 'transparent',
     },
     text: {
         width: '100%',
@@ -21,5 +21,11 @@ export const Style = StyleSheet.create({
         paddingTop: 40,
         alignItems: 'flex-start',
         justifyContent: 'space-between',
+    },
+    indicators: {
+        width: 10,
+        height: 10,
+        borderRadius: 10,
+        marginHorizontal: 5,
     }
 });

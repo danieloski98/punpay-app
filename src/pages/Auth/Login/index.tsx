@@ -36,6 +36,7 @@ export default function Login({ navigation }: IProps) {
     onSuccess: async (data) => {
       await AsyncStorage.setItem('token', data.data.data.token);
       await AsyncStorage.setItem(LOGGEDINSTATES.LOGGEDIN, 'true');
+      
 
       const str = JSON.stringify(data.data.data.user);
       await AsyncStorage.setItem('user', str);

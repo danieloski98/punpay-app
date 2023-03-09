@@ -29,6 +29,9 @@ const Actions = ({ recieve, swap, buy, sell }) => {
     const theme = useTheme<Theme>();
     const navigation = useNavigation<any>();
     const isDrakmode = useSelector((state: RootState) => state.isDarkMode);
+    const coin = useSelector((state: RootState) => state.Coin);
+
+    console.log(coin);
 
   return (
     <Box backgroundColor="mainBackground" style={{...Style.parent, zIndex: -3, borderBottomColor: theme.textInput.backgroundColor, }}>
@@ -62,14 +65,16 @@ const Actions = ({ recieve, swap, buy, sell }) => {
             <CustomText variant="body">Buy</CustomText>
         </Pressable>
 
-        <Pressable 
+        {coin !== 'Tether' && (
+            <Pressable 
             onPress={() => swap(true)}
             style={{ alignItems: 'center' }}>
-            <View style={{...Style.actionIconContainer, backgroundColor: isDrakmode ? theme.textInput.backgroundColor:'white', shadowColor: 'black' }}>
-                <Wallet width={25} height={25} />
-            </View>
-            <CustomText variant="body">Swap</CustomText>
-        </Pressable>
+                <View style={{...Style.actionIconContainer, backgroundColor: isDrakmode ? theme.textInput.backgroundColor:'white', shadowColor: 'black' }}>
+                    <Wallet width={25} height={25} />
+                </View>
+                <CustomText variant="body">Swap</CustomText>
+            </Pressable>
+        )}
 
       </View>
     </Box>
