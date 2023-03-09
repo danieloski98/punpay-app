@@ -6,6 +6,7 @@ import { Feather } from '@expo/vector-icons'
 import { useTheme } from '@shopify/restyle'
 import { Theme } from '../../../style/theme'
 import { DrawerNavigationHelpers } from '@react-navigation/drawer/lib/typescript/src/types'
+import { openURL } from 'expo-linking'
 
 // svgs
 import User from '../../../res/svg-output/assets/User'
@@ -41,7 +42,10 @@ export const MenuItems: ISidebarButton[] = [
         text: "Contact Support",
         location: 'history',
         icon: <Message width={25} height={25} />,
-        backgroundColor: '#74BBFF'
+        backgroundColor: '#74BBFF',
+        action: async () => {
+        await openURL('https://wa.me/message/LX3XCNXKYMVVK1');
+        }
     },
 ];
 

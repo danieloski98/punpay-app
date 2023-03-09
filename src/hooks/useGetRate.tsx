@@ -6,7 +6,7 @@ import Axios from '../utils/api'
 import { useNavigation } from '@react-navigation/native'
 
 interface IProps {
-    currency: coinType,
+    currency?: coinType,
     transactionType: 'buy' | 'sell'
 }
 

@@ -18,6 +18,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query'
 import Axios from '../../../utils/api'
 import { IBank } from '../../../models/bank'
 import useOpenWhatsapp from '../../../hooks/useOpenWhatsapp'
+import CurrencyModal from '../../../components/Dashboard/Modals/Currency'
 
 const { height } = Dimensions.get('screen');
 
@@ -25,6 +26,8 @@ const COINS = ['Bitcoin', 'Ethereum', 'Tether', 'BUSD', 'XRP', 'DOGE', 'BNB', 'L
 
 export default function Home({ navigation }) {
   const isDarkMode = useSelector((state: RootState) => state.isDarkMode);
+  const [showModal, setShowModal] = React.useState(true);
+  const [currency, setCurrency] = React.useState(2)
   const user = useSelector((state: RootState) => state.User);
   const [loading, setLoading] = React.useState(false);
   const dispatch = useDispatch<Dispatch>()
@@ -78,11 +81,11 @@ export default function Home({ navigation }) {
 
       <View style={{ backgroundColor: theme.textInput.backgroundColor, flex: 1 }}>
         {/* portfolio section */}
-        <View style={{ width: '100%', height: (height / 100) * 25 }}>
-          <Portfolio />
+        <View style={{ width: '100%', height: (height / 100) * 30 }}>
+          <Portfolio currency={currency} open={() => setShowModal(true)} />
         </View>
 
-        <Box backgroundColor="mainBackground" style={{ width: '100%', height: (height / 100) * 60, backgroundColor: isDarkMode ? 'black' : 'white', borderTopLeftRadius: 30, borderTopRightRadius: 30 }}>
+        <Box backgroundColor="mainBackground" style={{ width: '100%', height: (height / 100) * 65, backgroundColor: isDarkMode ? 'black' : 'white', borderTopLeftRadius: 30, borderTopRightRadius: 30 }}>
 
           <ScrollView 
           refreshControl={<RefreshControl onRefresh={onRefresh} refreshing={loading} />}
@@ -146,9 +149,7 @@ export default function Home({ navigation }) {
 
       </View>
 
-
-
-
+    {showModal && <CurrencyModal change={setCurrency} close={() => setShowModal(false)} />}
     </Box>
   )
 }

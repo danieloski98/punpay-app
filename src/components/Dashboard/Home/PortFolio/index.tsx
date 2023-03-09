@@ -14,15 +14,42 @@ import Arrows from '../../../../res/svg-output/Arrows';
 import Wallet from '../../../../res/svg-output/Wallet';
 import useBalance from '../../../../hooks/useBalance'
 import { currencyFormat } from '../../../../utils/currencyconverter'
+import useGetRate from '../../../../hooks/useGetRate'
 
-export default function Portfolio() {
+interface IProps {
+  open: () => void;
+  currency: number;
+}
+
+export default function Portfolio({ open, currency }: IProps) {
     const theme = useTheme<Theme>();
     const navigation = useNavigation<any>();
+    const [usd, setUsd] = React.useState(0);
     const [show, setShow] = React.useState(false);
     const { isLoading, isError, data,refetch } = useBalance();
+    const { isLoading: RateLoading, data: rate } = useGetRate({ transactionType: 'buy' });
+
+    React.useEffect(() => {
+      if (currency === 2) {
+        const cal = data?.data.data.balance / rate.data.rate;
+        setUsd(cal);
+      }
+    }, [currency])
+
+    console.log(`This is from portfolio ${rate.data.rate}`);
+    console.log(rate);
+
+
+
 
   return (
     <View style={{...Style.parent, backgroundColor: theme.textInput.backgroundColor }}>
+      <Box width='100%' alignItems='center'>
+          <Pressable onPress={open} style={{...Style.switchbutton, borderColor: theme.colors.text }}>
+            <CustomText variant='xs'>{currency === 1 ? 'NGN':'USD'}</CustomText>
+            <Feather name='chevron-down' size={15} color={theme.colors.text} style={{ marginTop: 2, marginLeft: 5 }} />
+          </Pressable>
+      </Box>
       <CustomText variant="bodylight" textAlign="center" textTransform="uppercase">Portfolio Balance</CustomText>
       {isLoading && (
         <Box justifyContent='center' alignItems='center' pt='m'>
@@ -33,14 +60,14 @@ export default function Portfolio() {
         <CustomText variant="body" mt="m" textAlign="center" textTransform="uppercase" style={{color: 'red'}} onPress={async () => await refetch() }>Error while loading balance</CustomText>
       )}
       {!isLoading && !isError && (
-       <Box mt='l' flexDirection='row' justifyContent='center' mr='m'>
-         {show && <CustomText variant="subheader" textAlign="center" textTransform="uppercase" style={{ flex: 0.9 }}>NGN{currencyFormat(data?.data.data.balance)}</CustomText>}
-         {!show && <CustomText variant="subheader" textAlign="center" textTransform="uppercase" style={{ flex: 0.9 }}>****</CustomText>}
-         <Feather name={show ? 'eye-off':'eye'} size={25} color={theme.colors.text} onPress={() => setShow(prev => !prev)} style={{ flex: 0.1}} />
+       <Box mt='m' flexDirection='row' justifyContent='center'>
+         {show && <CustomText variant="subheader" textAlign="center" textTransform="uppercase" style={{ flex: 0 }}>{currency === 1 ? 'NGN':'$'}{currency === 1? currencyFormat(data?.data.data.balance):currencyFormat(usd)}</CustomText>}
+         {!show && <CustomText variant="subheader" textAlign="center" textTransform="uppercase" style={{  }}>****</CustomText>}
+         <Feather name={show ? 'eye-off':'eye'} size={20} color={theme.colors.text} onPress={() => setShow(prev => !prev)} style={{ marginLeft: 10, marginTop: 3 }} />
        </Box>
       )}
       
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between', flex: 1, alignItems: 'center', marginTop: 20 }}>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', flex: 1, alignItems: 'center', marginTop: 10 }}>
 
         <View style={{ alignItems: 'center' }}>
             <Pressable 
