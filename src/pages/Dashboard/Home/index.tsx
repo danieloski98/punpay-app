@@ -1,4 +1,4 @@
-import { View, Text, Dimensions, Pressable, ActivityIndicator, RefreshControl, Alert, Image } from 'react-native'
+import { View, Text, Dimensions, Pressable, ActivityIndicator, RefreshControl, Alert, Image, ScrollView } from 'react-native'
 import React from 'react'
 import { Box, Text as CustomText } from '../../../components/General'
 import HomeNavbar from '../../../components/Dashboard/Home/Navbar'
@@ -6,7 +6,7 @@ import { Feather } from '@expo/vector-icons'
 import Portfolio from '../../../components/Dashboard/Home/PortFolio'
 import { useTheme } from '@shopify/restyle'
 import { Theme } from '../../../style/theme'
-import { ScrollView } from 'react-native-gesture-handler'
+// import { ScrollView } from 'react-native-gesture-handler'
 import CoinTypeChip from '../../../components/Dashboard/Home/CoinType'
 import { useDispatch, useSelector } from 'react-redux'
 import { Dispatch, RootState } from '../../../state/Store'
@@ -19,22 +19,24 @@ import Axios from '../../../utils/api'
 import { IBank } from '../../../models/bank'
 import useOpenWhatsapp from '../../../hooks/useOpenWhatsapp'
 import CurrencyModal from '../../../components/Dashboard/Modals/Currency'
+import KycModal from '../../../components/Dashboard/Modals/KycModal'
 
 const { height } = Dimensions.get('screen');
 
 const COINS = ['Bitcoin', 'Ethereum', 'Tether', 'BUSD', 'XRP', 'DOGE', 'BNB', 'LTC'];
 
 export default function Home({ navigation }) {
-  const isDarkMode = useSelector((state: RootState) => state.isDarkMode);
-  const [showModal, setShowModal] = React.useState(true);
-  const [currency, setCurrency] = React.useState(2)
   const user = useSelector((state: RootState) => state.User);
+  const isDarkMode = useSelector((state: RootState) => state.isDarkMode);
+  const [showModal, setShowModal] = React.useState(false);
+  // for controlling kyc modal Verification Modal
+  const [vm, setVm] = React.useState(user.KYCVerified ? false : true);
+  const [currency, setCurrency] = React.useState(2)
   const [loading, setLoading] = React.useState(false);
   const dispatch = useDispatch<Dispatch>()
   const theme = useTheme<Theme>();
   const queryClient = useQueryClient();
   const { isLoading, isError, data, refetch } = useWallets();
-  const { openwhatsapp } = useOpenWhatsapp()
   const { isLoading: userLoading } = useQuery(['getUser'], () => Axios.get(`/user/profile/${user.id}`),{
     refetchOnMount: true,
     onSuccess: (data) => {
@@ -72,51 +74,35 @@ export default function Home({ navigation }) {
   return (
     <Box backgroundColor="mainBackground" flex={1}>
       <HomeNavbar />
-      <Pressable
+      {/* <Pressable
        onPress={() => navigation.navigate('kyc')}
-       style={{ width: '100%', height: 30, backgroundColor: '#FFC37D', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-        <Feather name="alert-triangle" size={15} />
-        <CustomText variant="xs" color="blackText" marginLeft="s">Account is limited. Click to verify KYC</CustomText>
-      </Pressable>
+       style={{ width: '100%', height: 30, backgroundColor: theme.colors.primaryColor, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+        <Feather name="alert-triangle" size={15} color='white' />
+        <CustomText variant="xs" color="whiteText" marginLeft="s">Complete your KYC</CustomText>
+      </Pressable> */}
 
       <View style={{ backgroundColor: theme.textInput.backgroundColor, flex: 1 }}>
         {/* portfolio section */}
-        <View style={{ width: '100%', height: (height / 100) * 30 }}>
+        <View style={{ width: '100%', height: (height / 100) * 30, backgroundColor: theme.colors.primaryColor }}>
           <Portfolio currency={currency} open={() => setShowModal(true)} />
         </View>
 
-        <Box backgroundColor="mainBackground" style={{ width: '100%', height: (height / 100) * 65, backgroundColor: isDarkMode ? 'black' : 'white', borderTopLeftRadius: 30, borderTopRightRadius: 30 }}>
+        <Box backgroundColor="mainBackground" style={{ width: '100%', height: (height / 100) * 65, backgroundColor: theme.colors.modalBg, borderTopLeftRadius: 0, borderTopRightRadius: 0 }}>
 
           <ScrollView 
-          refreshControl={<RefreshControl onRefresh={onRefresh} refreshing={loading} />}
+          refreshControl={<RefreshControl onRefresh={onRefresh} refreshing={loading} colors={[theme.colors.primaryColor]} />}
           style={{ width: '100%' }} 
           contentContainerStyle={{ width: '100%', paddingBottom: 100 }}>
 
             {/* {!user.KYCVerified && <Compaliance />} */}
 
 
-            <View style={{ paddingHorizontal: 40, paddingVertical: 20,  }}>
-              {
-                !isLoading && !isError && (
-                  <Pressable onPress={openwhatsapp}>
-                    <Box flexDirection='row' justifyContent='space-between' alignItems='center' height={60}>
-                    <Box flexDirection='row'>
-                      <Box width={20} height={20}>
-                        <Image source={require('../../../res/gift.png')} resizeMode='contain' style={{ width: '100%', height: '100%'}} />
-                      </Box>
-                      <CustomText ml='s'>Sell Gift Cards</CustomText>
-                    </Box>
-                    <Feather name='chevron-right' size={25} color={theme.colors.text} />
-                  </Box>
-                  </Pressable>
-                )
-              }
+            <View style={{ paddingHorizontal: 20, paddingBottom: 20, paddingTop: 20  }}>
 
               {
                 !isLoading && !isError && (
-                  <View style={{ flexDirection: 'row', justifyContent: 'space-between', height: 60, }}>
+                  <View style={{ flexDirection: 'row', justifyContent: 'space-between', height: 20, }}>
                     <CustomText variant="body">PORTFOLIO</CustomText>
-                    {/* <Feather name="search" size={25} color={theme.colors.text} /> */}
                   </View>
                 )
               }
@@ -149,7 +135,8 @@ export default function Home({ navigation }) {
 
       </View>
 
-    {showModal && <CurrencyModal change={setCurrency} close={() => setShowModal(false)} />}
+    {showModal && <CurrencyModal currency={currency} change={setCurrency} close={() => setShowModal(false)} />}
+    {vm && <KycModal close={() => setVm(false)} />}
     </Box>
   )
 }

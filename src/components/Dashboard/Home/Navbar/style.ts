@@ -3,9 +3,9 @@ import { StyleSheet } from 'react-native'
 export const Style = StyleSheet.create({
     parent: {
         width: '100%',
-        height: '15%',
+        height: '10%',
         flexDirection: 'row',
-        alignItems: 'center',
+        alignItems: 'flex-end',
         justifyContent: 'space-between',
         paddingHorizontal: 20,
         backgroundColor: 'red',

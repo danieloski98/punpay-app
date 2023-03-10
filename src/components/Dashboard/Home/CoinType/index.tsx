@@ -15,7 +15,7 @@ interface IProps {
  
 }
 
-const CoinTypeChip = ({ currency, converted_balance }: IProps & Wallet) => {
+const CoinTypeChip = ({ currency, converted_balance, balance }: IProps & Wallet) => {
   const theme = useTheme<Theme>();
   const navigation = useNavigation<any>();
   const dispatch = useDispatch<Dispatch>()
@@ -53,7 +53,7 @@ const CoinTypeChip = ({ currency, converted_balance }: IProps & Wallet) => {
           </View>
 
           <View style={{ marginLeft: 10 }}>
-            <CustomText variant="body">{getName(currency as any)}</CustomText>
+            <CustomText variant="body">{getName(currency as any)} {balance}</CustomText>
             <CustomText variant="xs">NGN {currencyFormat(parseFloat(converted_balance))}</CustomText>
           </View>
         </View>

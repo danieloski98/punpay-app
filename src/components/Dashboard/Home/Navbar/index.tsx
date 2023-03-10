@@ -1,4 +1,4 @@
-import { View, Text } from 'react-native'
+import { View, Text, StatusBar } from 'react-native'
 import React from 'react'
 import { Style } from './style'
 import { Feather, Ionicons } from '@expo/vector-icons'
@@ -22,17 +22,18 @@ export default function HomeNavbar() {
     }, [])
 
   return (
-    <View style={{...Style.parent, backgroundColor: theme.textInput.backgroundColor }}>
-      <Feather name="menu" size={25} color={theme.colors.text} onPress={() => navigation.dispatch(DrawerActions.toggleDrawer()) } />
+    <View style={{...Style.parent, backgroundColor: '#722f94' }}>
+      <StatusBar barStyle='light-content' />
+      <Feather name="menu" size={25} color='white' onPress={() => navigation.dispatch(DrawerActions.toggleDrawer()) } />
       <View style={Style.rightSide}>
-        <Feather name="settings" size={25} color={theme.colors.text} onPress={() => navigation.navigate('settings')} />
+        <Feather name="settings" size={25} color='white' onPress={() => navigation.navigate('settings')} />
        <View style={{
         position: 'relative'
        }}>
         {unreadNotificationCount > 0 && <View style={{ position: 'absolute', width: 18, height: 18, borderRadius: 9, backgroundColor: theme.colors.primaryColor, left: 35, bottom: 15, justifyContent: 'center', alignItems: 'center' }} >
           <CustomText variant='xs'>{unreadNotificationCount}</CustomText>
         </View>}
-        <Ionicons name="notifications" size={25} color={theme.colors.text} style={{ marginLeft: 20}} onPress={() => navigation.navigate('notification')} />
+        <Ionicons name="notifications" size={25} color='white' style={{ marginLeft: 20}} onPress={() => navigation.navigate('notification')} />
        </View>
       </View>
     </View>
