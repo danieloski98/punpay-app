@@ -48,7 +48,7 @@ const SellPage = ({ close, coin }: IProps) => {
     const user = useSelector((state: RootState) => state.User);
     const [state, dispatch] = React.useReducer(reducer, reducerState);
 
-    const navigation = useNavigation();
+    const navigation = useNavigation<any>();
     const bottomsheetRef = React.useRef<BottomSheetModal>(null);
     const theme = useTheme<Theme>();
     const { getShortName } = useIcons();
@@ -204,14 +204,29 @@ const SellPage = ({ close, coin }: IProps) => {
                  <View style={{ height: 30 }} />
  
                  <Pressable onPress={() => selectSell(1)} style={{ ...Style.conatiner, backgroundColor: theme.textInput.backgroundColor }}>
+                     <Box mt='s'>
                      <UserO width={30} height={30} />
+                     </Box>
                      <CustomText variant="bodylight" ml="m">Sell for FIAT</CustomText>
                  </Pressable>
  
-                 <Pressable onPress={() => selectSell(2)} style={{ ...Style.conatiner, backgroundColor: theme.textInput.backgroundColor, marginTop: 20 }}>
-                     <CardEdit width={30} height={30} />
+                 {
+                  user.KYCVerified && (
+                    <Pressable onPress={() => selectSell(2)} style={{ ...Style.conatiner, backgroundColor: theme.textInput.backgroundColor, marginTop: 20 }}>
+                     <Box mt='s'>
+                      <CardEdit width={30} height={30} />
+                     </Box>
                      <CustomText variant="bodylight" ml="m">Transfer to another wallet</CustomText>
-                 </Pressable>
+                    </Pressable>
+                  )
+                 }
+                 {
+                  !user.KYCVerified && (
+                    <Pressable onPress={() => navigation.navigate('kyc')} style={{ ...Style.conatiner, backgroundColor: theme.textInput.backgroundColor, marginTop: 20 }}>
+                     <CustomText variant="bodylight" ml="m" textAlign='center'>Verify KYC to be able to withdraw</CustomText>
+                    </Pressable>
+                  )
+                 }
 
                   <CustomText variant='body' mt='xl'>Have a transaction above $20k?</CustomText>
                   <Pressable onPress={openwhatsapp} style={{ ...Style.conatiner, backgroundColor: theme.textInput.backgroundColor, marginTop: 20 }}>

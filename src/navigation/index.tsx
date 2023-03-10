@@ -51,6 +51,7 @@ const Navigation = () => {
     }
       if (!isLoading && isError) {
         dispatch.loggedIn.logout();
+        SplashScreen.hideAsync();
       }
     })()
   }, [isLoading, isError])
@@ -64,6 +65,14 @@ const Navigation = () => {
   if (isError && status === 'error') {
     SplashScreen.hideAsync();
     dispatch.loggedIn.logout();
+    return (
+      <ThemeProvider theme={darkMode ? darkTheme : theme}>
+        <NavigationContainer>
+          <StatusBar translucent barStyle={darkMode ? 'light-content':'dark-content'} backgroundColor="transparent"  />
+         <AuthenticationFlow />
+        </NavigationContainer>
+      </ThemeProvider>
+    )
   } 
   return (
     <ThemeProvider theme={darkMode ? darkTheme : theme}>
