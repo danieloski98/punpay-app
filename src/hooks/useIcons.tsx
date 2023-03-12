@@ -3,6 +3,8 @@ import React, { useCallback } from 'react'
 
 export const COINS = ['Bitcoin', 'Ethereum', 'Tether', 'BUSD', 'XRP', 'DOGE', 'BNB', 'LTC', 'DOT'];
 
+export const COINSs = ['Bitcoin', 'Ethereum', 'Tether', 'BUSD', 'XRP', 'DOGE', 'BNB', 'Litecoin',];
+
 export type coinType = 'btc' | 'eth' | 'usdt' | 'busd' | 'xrp' | 'doge' | 'bnb' | 'ltc' | 'dot';
 
 export type Coin = 'Bitcoin' | 'Ethereum' | 'Tether' | 'BUSD' | 'XRP' | 'DOGE' | 'BNB' | 'Pokadot' | 'Litecoin'
@@ -39,6 +41,38 @@ const useIcons = () => {
             }
           }
     }
+
+    const getCoinShot = (icon: string, size?: number|string) => {
+      switch(icon) {
+          case 'Bitcoin': {
+            return 'btc'
+          }
+          case 'Ethereum': {
+            return 'eth'
+          }
+          case 'Tether': {
+            return 'usdt'
+          }
+          case 'XRP': {
+            return 'xrp'
+          }
+          case 'DOGE': {
+            return 'doge'
+          }
+          case 'BUSD': {
+            return 'busd'
+          }
+          case 'BNB': {
+            return 'bnb'
+          }
+          case 'Pokadot': {
+            return 'dot'
+          }
+          case 'Litecoin': {
+            return 'ltc'
+          }
+        }
+  }
 
     const getName = (name: coinType) => {
       switch(name) {
@@ -140,7 +174,8 @@ const useIcons = () => {
     COINS,
     getShortName,
     getName,
-    getNetwork
+    getNetwork,
+    getCoinShot
   }
 }
 
