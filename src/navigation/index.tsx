@@ -63,8 +63,8 @@ const Navigation = () => {
     );
   }
   if (isError && status === 'error') {
-    SplashScreen.hideAsync();
-    dispatch.loggedIn.logout();
+    // SplashScreen.hideAsync();
+    // dispatch.loggedIn.logout();
     return (
       <ThemeProvider theme={darkMode ? darkTheme : theme}>
         <NavigationContainer>

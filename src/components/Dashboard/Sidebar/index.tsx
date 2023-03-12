@@ -26,12 +26,12 @@ export const MenuItems: ISidebarButton[] = [
         icon: <User width={25} height={25} />,
         backgroundColor: '#FFC37D'
     },
-    // {
-    //     text: "Transaction History",
-    //     location: 'history',
-    //     icon: <Noti width={25} height={25} />,
-    //     backgroundColor: '#31CBD1'
-    // },
+    {
+        text: "Transaction History",
+        location: 'history',
+        icon: <Noti width={25} height={25} />,
+        backgroundColor: '#31CBD1'
+    },
     {
         text: "Share App",
         location: '',
@@ -40,7 +40,7 @@ export const MenuItems: ISidebarButton[] = [
     },
     {
         text: "Contact Support",
-        location: 'history',
+        location: '',
         icon: <Message width={25} height={25} />,
         backgroundColor: '#74BBFF',
         action: async () => {

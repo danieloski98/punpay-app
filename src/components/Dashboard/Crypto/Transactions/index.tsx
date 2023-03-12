@@ -29,7 +29,7 @@ const TransactionHistory = ({ type, open }: IProps) => {
     onError: (error: any) => {
       Alert.alert('Error', error);
     }
-  })
+  });
 
   const onRefresh = React.useCallback(async () => {
     await refetch();
