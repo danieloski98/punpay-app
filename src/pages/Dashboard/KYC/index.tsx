@@ -19,9 +19,9 @@ import VerificationModal from "../../../components/Dashboard/Modals/Verification
 
 export default function KYC() {
   const theme = useTheme<Theme>();
-  const modalRef = React.useRef<BottomSheetModal>(null);
-  const snapPoints = React.useMemo(() => ["80%", "80%"], []);
-  const [darkmode,] = useAtom(DarkModeAtom)
+  // const modalRef = React.useRef<BottomSheetModal>(null);
+  // const snapPoints = React.useMemo(() => ["80%", "80%"], []);
+  // const [darkmode,] = useAtom(DarkModeAtom)
   const [openModal, setOpenModal] = React.useState(false);
   const [type, setType] = React.useState('');
 
