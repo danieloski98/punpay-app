@@ -7,20 +7,23 @@ import { Dispatch } from '../state/Store'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const useVerifyToken = () => {
+  const [shown, setShown] = React.useState(false);
+
   const dispatch = useDispatch<Dispatch>();
     const { isLoading, status, isError, data } = useQuery(['tokenVerification'], () => Axios('/user-auth/verify-token'), {
-      // refetchInterval: 10000,
-      onError: async (error) => {
+      refetchInterval: 10000,
+      onError: async (error: any) => {
         const token = await AsyncStorage.getItem('token')
         if (token === null || token === '') {
           dispatch.loggedIn.logout();
           return;
         } else {
-          await AsyncStorage.setItem('token', '');
-          Alert.alert('Error', 'Session expired please login');
-          dispatch.loggedIn.logout();
+          if (!shown) {
+            await AsyncStorage.setItem('token', '');
+            Alert.alert('Error', error);
+            dispatch.loggedIn.logout();
+          }
         }
-        
       }
     })
   return {

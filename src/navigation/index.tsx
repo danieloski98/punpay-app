@@ -1,5 +1,5 @@
 import React from 'react'
-import {NavigationContainer } from '@react-navigation/native'
+import { NavigationContainer } from '@react-navigation/native'
 import AuthenticationFlow from './Authentication'
 import { useDispatch, useSelector } from 'react-redux'
 import { Dispatch, RootState } from '../state/Store'
@@ -11,75 +11,46 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import { DARKMODE, LOGGEDINSTATES } from '../enums/init.enum'
 import useVerifyToken from '../hooks/useVerifyToken'
 import * as SplashScreen from 'expo-splash-screen'
-import { Box } from '../components/General'
-import { useMutation, useQuery } from '@tanstack/react-query'
-import Axios from '../utils/api'
+// import { Box } from '../components/General'
+// import { useMutation, useQuery } from '@tanstack/react-query'
+// import Axios from '../utils/api'
 
 
 const Navigation = () => {
   const darkMode = useSelector((state: RootState) => state.isDarkMode);
   const loggedIn = useSelector((state: RootState) => state.loggedIn);
-  const { isLoading, isError, data, status } = useVerifyToken()
-  const dispatch = useDispatch<Dispatch>()
-
+  // const { isLoading, isError, data, status } = useVerifyToken()
+  const dispatch = useDispatch<Dispatch>();
 
   React.useEffect(() => {
     (async function() {
-      if (!isLoading && !isError) {
       const mode = await AsyncStorage.getItem(DARKMODE.DARKMODE);
-      const loggedIn = await AsyncStorage.getItem(LOGGEDINSTATES.LOGGEDIN);
       const bio = await AsyncStorage.getItem('biometric');
+
+      // check if they have bio metric enabled
       if (bio === 'true') {
         dispatch({ type: 'isBiometricEnabled/on' })
       } else {
         dispatch({ type: 'isBiometricEnabled/off' })
       }
-      if (mode !== null && mode === 'true') {
+      // check if they have dark mode enabled
+      if (mode === 'true') {
         dispatch({ type: 'isDarkMode/on' });
       } else {
         dispatch({ type: 'isDarkMode/off' });
       }
-      if (loggedIn !== null && loggedIn === 'true') {
-        console.log(loggedIn);
-        const usr = await AsyncStorage.getItem('user');
-        if (usr !== null) {
-          dispatch({ type: 'User/update', payload: JSON.parse(usr)})
-          dispatch.loggedIn.login();
-          SplashScreen.hideAsync();
-        }   
-      }
-    }
-      if (!isLoading && isError) {
-        dispatch.loggedIn.logout();
-        SplashScreen.hideAsync();
-      }
+      dispatch({ type: 'loggedIn/logout' });
+      SplashScreen.hideAsync()
+      
     })()
-  }, [isLoading, isError])
-  if (isLoading) {
-    return (
-      <Box style={{ flex: 1, justifyContent: 'center', alignItems:'center' }}>
-        <ActivityIndicator size='large' />
-      </Box>
-    );
-  }
-  if (isError && status === 'error') {
-    // SplashScreen.hideAsync();
-    // dispatch.loggedIn.logout();
-    return (
-      <ThemeProvider theme={darkMode ? darkTheme : theme}>
-        <NavigationContainer>
-          <StatusBar translucent barStyle={darkMode ? 'light-content':'dark-content'} backgroundColor="transparent"  />
-         <AuthenticationFlow />
-        </NavigationContainer>
-      </ThemeProvider>
-    )
-  } 
+  }, [])
+
   return (
     <ThemeProvider theme={darkMode ? darkTheme : theme}>
       <NavigationContainer>
-        <StatusBar translucent barStyle={darkMode ? 'light-content':'dark-content'} backgroundColor="transparent"  />
-       {!loggedIn &&  <AuthenticationFlow />}
-       {loggedIn && <DashboardRoutes />}
+        <StatusBar translucent barStyle={darkMode ? 'light-content' : 'dark-content'} backgroundColor="transparent" />
+        {!loggedIn && <AuthenticationFlow />}
+        {loggedIn && <DashboardRoutes />}
       </NavigationContainer>
     </ThemeProvider>
   )

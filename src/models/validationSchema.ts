@@ -51,4 +51,9 @@ const nextofkinSchema = yup.object().shape({
     relationship: yup.string().required(),
 })
 
-export { VerifyEmailSchema, BankSchema, forgotPasswordSchema, resetPasswordSchema, changePasswordSchema, nextofkinSchema };
+const verificationSchema = yup.object().shape({
+    identification_number: yup.string().required(),
+    identification_name: yup.string().required(),
+});
+
+export { VerifyEmailSchema, BankSchema, forgotPasswordSchema, resetPasswordSchema, changePasswordSchema, nextofkinSchema, verificationSchema };

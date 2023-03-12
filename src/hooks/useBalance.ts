@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query'
 import Axios from '../utils/api';
 
 const useBalance = () => {
-    const { isLoading, isError, data, refetch } = useQuery(['balance'], () => Axios.get('/user/balance'), {
+    const { isLoading, isError, data, refetch, fetchStatus } = useQuery(['balance'], () => Axios.get('/user/balance'), {
         onError: (error: any) => {
             Alert.alert('Error', error);
         }

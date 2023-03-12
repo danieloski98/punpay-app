@@ -30,7 +30,7 @@ const Onboarding = ({ navigation }: IProps) => {
           </View>
           <View style={{ paddingRight: 0, height: '60%', width: '100%' }}>
 
-          <PagerView style={{ flex: 1, alignItems: 'center' }} orientation='horizontal' initialPage={0} transitionStyle='scroll' onPageScroll={(e:PagerViewOnPageScrollEvent) =>  setPostion(e.nativeEvent.position)} showPageIndicator >
+          <PagerView style={{ flex: 1, alignItems: 'center' }} orientation='horizontal' initialPage={0} transitionStyle='scroll' onPageScroll={(e:PagerViewOnPageScrollEvent) =>  setPostion(e.nativeEvent.position)}>
             <View style={{ flex: 1, alignItems: 'center', width: '100%' }}>
               <Image source={require('../../../res/phone1.png')} resizeMode='contain' style={{ width: '80%', height: '100%'}} />
             </View>
