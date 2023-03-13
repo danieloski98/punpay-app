@@ -33,7 +33,7 @@ export default function SetPin({navigation}: IProps) {
             Alert.alert('Success', data.data.message);
             setPin('')
             setStep(1)
-            navigation.navigate('biometric');
+            navigation.navigate('index');
         },
         onError: (error: any) => {
             Alert.alert('Error', error);

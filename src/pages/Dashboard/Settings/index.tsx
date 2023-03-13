@@ -99,7 +99,7 @@ export default function Settings({ navigation }: any) {
         <View style={{ marginTop: 40 }}>
           <CustomText variant="body">Account Security</CustomText>
 
-          <ElevatedComponent title="Enable Biometrics" type="SWITCH" onChange={() => triggerBiometrics()} isChecked={bio} />
+          {/* <ElevatedComponent title="Enable Biometrics" type="SWITCH" onChange={() => triggerBiometrics()} isChecked={bio} /> */}
           <ElevatedComponent title="Change Password" type="LINK" link='changepassword' />
           <ElevatedComponent title="Change PIN" type="LINK" link='changepin' />
           <ElevatedComponent title="Next Of Kin" type="LINK" link='nextofkin' />
