@@ -26,7 +26,6 @@ export default function NextOfKin({ navigation }: any) {
       navigation.navigate('settings')
     },
     onError: (error: any) => {
-      console.log(error);
       Alert.alert('Error', error);
     }
   })
@@ -34,7 +33,6 @@ export default function NextOfKin({ navigation }: any) {
 
   const submit = (data: any) => {
     delete data.confirmPassword;
-    console.log(data);
     const obj = {
       ...data,
       id: user.id,

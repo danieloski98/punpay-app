@@ -61,7 +61,6 @@ const Swap = ({ close, coin }: IProps) => {
   })
 
   const createSwap = React.useCallback(() => {
-    console.log(state);
     const obj = {
       userId: user.id,
       transactionCurrency: state.transactionCurrency,

@@ -50,16 +50,13 @@ export default function ChangePin({navigation}: IProps) {
             let newp = pin + e;
             setPin(newp);
         }
-        console.log(pin);
     }
 
     React.useEffect(() => {
-        console.log(pin);
     }, [pin])
 
     React.useEffect(() => {
         if (holder.length === 4) {
-            console.log(holder);
         }
     }, [holder])
 

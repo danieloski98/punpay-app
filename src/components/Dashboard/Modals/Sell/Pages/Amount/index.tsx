@@ -35,7 +35,6 @@ const AmountPage = ({ change, dispatch, coinUSDValue }: IProps) => {
 
 
     const handleconversion = React.useCallback(() => {
-      console.log(`this is the usd coin value --- ${coinUSDValue}`)
       if (coin === 'Tether' || coin === 'BUSD') {
         return data.data.rate * parseFloat(amount);
       }

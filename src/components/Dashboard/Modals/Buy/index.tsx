@@ -48,7 +48,6 @@ const BuyPage = ({ close, coin }: IProps) => {
     },
     onError: (error: any) => {
       Alert.alert('Error', error)
-      console.log(error);
     }
   })
   const { isLoading: coinDataLoading, data: coinData, isError } = useQuery(['getCoinDetails'], () => STAT.get(`/coins/${getApiName()}`), {
@@ -81,7 +80,6 @@ const BuyPage = ({ close, coin }: IProps) => {
   
 
   const trade = React.useCallback((bank: IBank) => {
-    console.log(bank);
     dispatch({ type: 'bank', payload: bank });
     //make api request
     const obj = {
@@ -101,7 +99,6 @@ const BuyPage = ({ close, coin }: IProps) => {
     if (isLoading || coinDataLoading) {
       return <ActivityIndicator size='large' />
     } else {
-      console.log(`this is the usd = ${usd}`)
       switch (stage) {
         case 1: {
           return <AmountPage next={setStage} coin={coin} dispatch={dispatch} rate={isLoading ? '0' : data.data.rate} coinUSDValue={!coinData ? '0' : usd} />

@@ -31,7 +31,6 @@ const reducer = (state, action: action) => {
   switch (action.type) {
     case 'UPDATE': {
       state = { ...action.payload, bankname: action.payload.name };
-      console.log(state);
     }
       return state;
   }
@@ -49,7 +48,6 @@ const LinkBank = ({ navigation }) => {
     mutationKey: ['createBank'],
     mutationFn: (data) => Axios.post('/bank/create', data),
     onSuccess: (data) => {
-      console.log(data.data);
       reduxDispatch.Bank.update(data.data.data, null);
       Alert.alert(data.data.message);
       navigation.goBack()
@@ -64,7 +62,6 @@ const LinkBank = ({ navigation }) => {
     mutationKey: ['createBank'],
     mutationFn: (data) => Axios.put('/bank/update', data),
     onSuccess: (data) => {
-      console.log(data.data.message);
       reduxDispatch.Bank.update(data.data.data, null);
       Alert.alert(data.data.message);
       navigation.goBack();

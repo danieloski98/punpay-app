@@ -15,6 +15,9 @@ import { Theme } from '../../../../style/theme';
 import DateTimePicker, { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 import { useMutation } from '@tanstack/react-query';
 import Axios from '../../../../utils/api';
+import { useDispatch } from 'react-redux';
+import { Dispatch } from '../../../../state/Store';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface IProps {
     close: React.Dispatch<React.SetStateAction<boolean>>;
@@ -27,6 +30,7 @@ const VerificationModal = ({ close, type }: IProps) => {
     const [picked, setPicked] = React.useState(false);
     const [showPicker, setShowPicker] = React.useState(false);
     const bottomSheetRef = React.useRef<BottomSheetModal>(null);
+    const dispatch = useDispatch<Dispatch>();
     // mutation function
     const { isLoading, mutate } = useMutation({
         mutationFn: (data: any) => Axios.post('/verification/create', data),
@@ -34,7 +38,13 @@ const VerificationModal = ({ close, type }: IProps) => {
             Alert.alert('Success', data.data.message);
             close(false);
         },
-        onError: (error: string) => {
+        onError: async (error: string) => {
+            const token = await AsyncStorage.getItem('token');
+            if (token === '' || token === null) {
+                Alert.alert('Error', error);
+                dispatch.loggedIn.logout();
+                return;
+            }
             Alert.alert('Error', error);
         }
     })
@@ -44,7 +54,6 @@ const VerificationModal = ({ close, type }: IProps) => {
 
     const onChange = React.useCallback((e, date: Date) => {
         if (Platform.OS === 'android') {
-            console.log(date);
             setDate(date);
             setPicked(true);
         } else {

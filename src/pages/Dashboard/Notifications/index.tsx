@@ -18,11 +18,9 @@ const NotificationCard = ({ message, title, notification_id }: INotification) =>
     setLoading(true);
     deleteIndieNotificationInbox(user.id, notification_id, 6405, 'JhIbh6BDeO8Z5mEBHU50Dh')
     .then((data) => {
-      console.log(data);
       setLoading(false);
     })
     .catch((error) => {
-      console.log(error);
     });
   }, [notification_id]);
   const theme = useTheme<Theme>();

@@ -1,5 +1,5 @@
 import { QueryClientProvider, QueryClient } from '@tanstack/react-query'
-import {Provider } from 'react-redux';
+import { Provider } from 'react-redux';
 import Navigation from './src/navigation';
 import { Fragment, useCallback } from 'react';
 import * as SplashScreen from 'expo-splash-screen'
@@ -23,21 +23,8 @@ export default function App() {
     'Axiforma-Bold': require('./assets/fonts/Axiforma-Bold.ttf'),
   })
 
-  // React.useEffect(() => {
-  //   Updates.checkForUpdateAsync()
-  //   .then((data) => {
-  //     if (data.isAvailable) {
-  //       Alert.alert('Update', 'An update is available')
-  //       Updates.fetchUpdateAsync()
-  //       .then((data) => {
-  //         data.isNew
-  //       })
-  //     }
-  //   })
-  // }, [])
   const onLayout = useCallback(() => {
     if (fontLoaded) {
-      // SplashScreen.hideAsync();
     }
   }, [fontLoaded]);
 
@@ -50,13 +37,13 @@ export default function App() {
       style={{ flex: 1 }}
     >
       <ToastProvider>
-      <QueryClientProvider client={queryClient}>
-      <Provider store={store}>
-        <Fragment>
-          <Navigation />
-        </Fragment>
-      </Provider>
-    </QueryClientProvider>
+        <QueryClientProvider client={queryClient}>
+          <Provider store={store}>
+            <Fragment>
+              <Navigation />
+            </Fragment>
+          </Provider>
+        </QueryClientProvider>
       </ToastProvider>
     </View>
   );

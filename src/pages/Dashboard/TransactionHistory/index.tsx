@@ -41,8 +41,6 @@ export default function TransactionHistory({ navigation }: any) {
     }
   });
 
-  console.log(navigation);
-
   const Select = React.useCallback((coin: string) => {
     setCoin(coin)
   }, [])

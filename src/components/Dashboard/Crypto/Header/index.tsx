@@ -11,8 +11,7 @@ import { useNavigation } from '@react-navigation/native';
 import useIcons from '../../../../hooks/useIcons'
 import Axios from '../../../../utils/api';
 import { useQuery } from '@tanstack/react-query';
-
-const os = Platform.OS;
+import { currencyFormat } from '../../../../utils/currencyconverter'
 
 const CryptoPageHeader = ({ coinName }) => {
     const theme = useTheme<Theme>();
@@ -22,6 +21,9 @@ const CryptoPageHeader = ({ coinName }) => {
     // get the users coin details
   const { isLoading, data, isError } = useQuery(['getCoin'], () => Axios.get(`/user/wallet/${getShortName(coinName)}`), {
     refetchOnMount: true,
+    onSuccess: (data) => {
+      console.log(data.data)
+    },
     onError: (error) => {
       Alert.alert('An error occured');
       navigation.goBack();
@@ -46,6 +48,7 @@ const CryptoPageHeader = ({ coinName }) => {
        {!isLoading && !isError &&  <CustomText variant="subheader" style={{ fontSize: 18, textAlign: 'left' }}>{data.data.data.balance}{getShortName(coinName)}</CustomText>}
        {isLoading && <ActivityIndicator size="small" color={theme.colors.primaryColor} />}
         {/* <ActivityIndicator size="small" color={theme.colors.primaryColor} /> */}
+        {!isLoading && !isError &&  <CustomText variant="body" style={{ fontSize: 18, textAlign: 'left' }}>{currencyFormat(parseFloat(data.data.data.converted_balance))}NGN</CustomText>}
       </View>
     </Box>
   )

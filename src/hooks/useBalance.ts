@@ -1,11 +1,19 @@
-import { View, Text, Alert } from 'react-native'
-import React from 'react'
+import { Alert } from 'react-native'
 import { useQuery } from '@tanstack/react-query'
 import Axios from '../utils/api';
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import { useDispatch } from 'react-redux';
+import { Dispatch } from '../state/Store';
 
 const useBalance = () => {
-    const { isLoading, isError, data, refetch, fetchStatus } = useQuery(['balance'], () => Axios.get('/user/balance'), {
-        onError: (error: any) => {
+  const dispatch = useDispatch<Dispatch>();
+    const { isLoading, isError, data, refetch } = useQuery(['balance'], () => Axios.get('/user/balance'), {
+        refetchInterval: 10000,
+        onError: async (error: any) => {
+            const token = await AsyncStorage.getItem('token');
+            if (token === null || token === '') {
+              dispatch.loggedIn.logout();
+            }
             Alert.alert('Error', error);
         }
     })

@@ -52,14 +52,7 @@ export default function SetPin({navigation}: IProps) {
             let newp = pin + e;
             setPin(newp);
         }
-        console.log(pin);
     }
-
-    React.useEffect(() => {
-        if (holder.length === 4) {
-            console.log(holder);
-        }
-    }, [holder])
 
     React.useEffect(() => {
        (async function() {

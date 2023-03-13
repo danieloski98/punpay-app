@@ -1,4 +1,4 @@
-import { View, Share, ActivityIndicator } from "react-native";
+import { View, Share, ActivityIndicator, Alert } from "react-native";
 import React from "react";
 import { Style } from "./style";
 import {
@@ -17,7 +17,9 @@ import Axios from '../../../../utils/api'
 import ModalWrapper from '../../../General/ModalWrapper'
 import * as Clipboard from 'expo-clipboard'
 import {useToast} from 'react-native-toast-notifications'
-
+import { useDispatch } from "react-redux";
+import { Dispatch } from "../../../../state/Store";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
 interface IProps {
@@ -31,17 +33,26 @@ const RecieveModal = ({ close, coin }: IProps) => {
   const [darkmode] = useAtom(DarkModeAtom);
   const [address, setAddress] = React.useState('');
   const [c, setC] = React.useState<any>(null);
-  const { getIcon, getShortName, getName, getNetwork } = useIcons()
+  const { getIcon, getShortName, getName, getNetwork } = useIcons();
   const bottomSheetRef = React.useRef<BottomSheetModal>(null);
   const toast = useToast();
+  const dispatch = useDispatch<Dispatch>()
 
-  console.log(coin);
   const { isLoading, isError } = useQuery(['get_wallet'], () => Axios.get(`/user/wallet/${getShortName(coin as any)}`), {
     refetchOnMount: true,
-    refetchInterval: 100,
+    refetchInterval: 10000,
     onSuccess: (data) => {
-      console.log(data.data);
       setAddress(data.data.data.deposit_address);
+    },
+    onError: async (error: any) => {
+      const token = await AsyncStorage.getItem('token');
+      if (token === '' || token === null) {
+        dispatch.loggedIn.logout();
+        Alert.alert('Error', error);
+        return;
+      }
+      Alert.alert('Error', error);
+      close(false);
     }
   })
 

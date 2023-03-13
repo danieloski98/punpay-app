@@ -20,7 +20,6 @@ const CoinTypeChip = ({ currency, converted_balance, balance }: IProps & Wallet)
   const navigation = useNavigation<any>();
   const dispatch = useDispatch<Dispatch>()
   const { getIcon, getName } = useIcons();
-  console.log(currency);
 
   const navigate = () => {
     dispatch({ type: 'Coin/update', payload: getName(currency as any)});

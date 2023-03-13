@@ -11,7 +11,7 @@ const useVerifyToken = () => {
 
   const dispatch = useDispatch<Dispatch>();
     const { isLoading, status, isError, data } = useQuery(['tokenVerification'], () => Axios('/user-auth/verify-token'), {
-      refetchInterval: 10000,
+      refetchInterval: 1000,
       onError: async (error: any) => {
         const token = await AsyncStorage.getItem('token')
         if (token === null || token === '') {
