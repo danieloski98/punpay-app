@@ -63,7 +63,7 @@ const RecieveModal = ({ close, coin }: IProps) => {
     } else {
       toast.show('Address loding');
     }
-  }, [])
+  }, [address, isLoading])
 
   React.useEffect(() => {
     bottomSheetRef.current?.present();
