@@ -14,6 +14,53 @@ const VerificationPage = () => {
   const theme = useTheme<Theme>();
   const dispatch = useDispatch<Dispatch>();
 
+  // timer
+  const [seconds, setSeconds] = React.useState(0);
+  const [minutes, setMinutes] = React.useState(0);
+  const [showTimer, setShowTimer] = React.useState(false);
+
+  // using ref 
+  const second = React.useRef<number>(0)
+  const min = React.useRef<number>(0);
+
+  // state Timeer
+  const startTimer = React.useCallback(() => {
+    if (!showTimer) {
+      min.current = 1;
+      second.current = 59;
+      setMinutes(min.current);
+      mutate()
+      setShowTimer(true);
+      const interval = setInterval(() => {
+        if (second.current > 0) {
+          second.current = second.current - 1;
+          setSeconds(second.current);
+        } else {
+          if (min.current === 0 && second.current === 0) {
+            // setShowTimer(false);
+            second.current = 0;
+            min.current = 0
+            setSeconds(second.current);
+            setMinutes(min.current);
+            setShowTimer(false);
+            clearInterval(interval);
+          } else if (min.current === 1 && second.current === 0) {
+            min.current = 0;
+            second.current = 59;
+            setMinutes(min.current);
+            setSeconds(59);
+          }
+          else {
+            min.current = min.current - 1;
+            second.current = 59;
+            setMinutes(min.current);
+            setSeconds(second.current);
+          }
+        }
+      }, 1000);
+    }
+  }, [])
+
   // request otp
    // Request for an otp
    const { isLoading, mutate } = useMutation({
@@ -43,14 +90,14 @@ const VerificationPage = () => {
       <View style={Styles.imageContainer}>
             <Image source={require('../../../res/logo2.png')} style={{ width: 80, height: 80 }} resizeMode='contain' />
       </View>
-      <CustomText variant='body' mt='l'>Verify Your Email</CustomText>
+      
 
       <View style={{ marginTop: 30 }}>
-        <CustomText variant="subheader" style={{ fontSize: 16 }}>OTP Sent To Email</CustomText>
+      <CustomText variant='body' mb='m'>Verify Your Email</CustomText>
         <View style={{ width: '100%', backgroundColor: theme.textInput.backgroundColor, flexDirection: 'row', padding: 10, borderRadius: 10, height: 55 }}>
             <TextInput keyboardType="number-pad" value={code} onChangeText={(e) => setCode(e)} placeholderTextColor={theme.colors.text} style={{ flex: 1, color: theme.colors.text, fontSize: 16 }} />
             <View style={{ width: '30%', height: '100%' }}>
-                <BorderButton text='Send OTP' action={mutate} height='100%' isLoading={isLoading}  />
+                <BorderButton text={showTimer ? `${minutes}:${seconds}`:'Send OTP'} action={ showTimer ? () => {} : startTimer} height='100%' isLoading={isLoading}  />
             </View>
         </View>
       </View>

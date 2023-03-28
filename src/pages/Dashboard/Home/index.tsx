@@ -128,7 +128,7 @@ export default function Home({ navigation }) {
                 }
                 return 0
               }).map((item, index) => (
-                <CoinTypeChip {...item} key={index.toString()} />
+                <CoinTypeChip {...item} countryCurrency={currency} key={index.toString()} />
               ))}
 
             </View>
