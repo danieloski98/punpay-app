@@ -38,7 +38,6 @@ const AwaitingPaymentPage = ({ next, state }: IProps) => {
   });
 
   const handlePress = React.useCallback(() => {
-    console.log(state);
     mutate();
   }, [state]);
 

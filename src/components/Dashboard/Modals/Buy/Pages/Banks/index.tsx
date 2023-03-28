@@ -16,9 +16,7 @@ const Bank = ({ action }: IProps) => {
     refetchOnMount: true,
     refetchInterval: 2000
   })
-  if (!isLoading && data) {
-    console.log();
-  }
+
   return (
     <Box flex={1}>
         <CustomText variant='subheader'>P2P Transaction</CustomText>

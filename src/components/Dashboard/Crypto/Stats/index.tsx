@@ -14,24 +14,7 @@ const StatsTab = () => {
     const [time, setTime] = React.useState('24h');
     const theme = useTheme<Theme>();
 
-    // const data2 = [
-    //   {
-    //     timestamp: 1625948100000,
-    //     value: 33215.25,
-    //   },
-    //   {
-    //     timestamp: 1625947200000,
-    //     value: 33510.25,
-    //   },
-    //   {
-    //     timestamp: 1625946300000,
-    //     value: 33545.25,
-    //   },
-    //   {
-    //     timestamp: 1625945400000,
-    //     value: 33575.25,
-    //   },  
-    // ];
+  
     new Date().getTime()
     const data2 = [
       { timestamp: 1668449551463, value: 20725.111685463908 },

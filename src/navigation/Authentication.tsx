@@ -11,6 +11,7 @@ import SetPin from '../pages/Auth/setpin';
 import ForgotPassword from '../pages/Auth/forgotpassword';
 import ResetCode from '../pages/Auth/ResetCode';
 import ResetPassword from '../pages/Auth/resetpassword';
+import VerificationPage from '../pages/Auth/verification';
 
 const { Navigator, Screen } = createNativeStackNavigator();
 
@@ -21,6 +22,7 @@ const AuthenticationFlow = () => {
         <Screen name="login" component={Login} />
         <Screen name='onboarding' component={Onboarding} />
         <Screen name="verifyemail" component={VerifyEmail} />
+        <Screen name="verification" component={VerificationPage} />
         <Screen name="biometric" component={BioMetricSetup} />
         <Screen name="setpin" component={SetPin} />
         <Screen name="forgotpassword" component={ForgotPassword} />

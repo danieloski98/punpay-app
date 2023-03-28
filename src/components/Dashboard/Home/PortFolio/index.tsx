@@ -70,7 +70,7 @@ export default function Portfolio({ open, currency }: IProps) {
 
 
   return (
-    <View style={{...Style.parent, backgroundColor: '#722f94' }}>
+    <View style={{...Style.parent, backgroundColor: theme.colors.primaryColor }}>
       <Box width='100%' alignItems='center'>
           <Pressable onPress={open} style={{...Style.switchbutton, borderColor: 'white' }}>
             <CustomText variant='xs' color='whiteText'>{currency === 1 ? 'NGN':'USD'}</CustomText>

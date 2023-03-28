@@ -23,7 +23,6 @@ const TransactionHistory = ({ type, open }: IProps) => {
   const [data, setData] = React.useState([] as Array<Transaction>)
   const { isLoading, isError, refetch } = useQuery(['get Transactions'], () => Axios.get(`transaction/user/coin/${getShortName(type as Coin)}`), {
     onSuccess: (data) => {
-      console.log(data.data);
       setData(data.data.data);
     },
     onError: (error: any) => {

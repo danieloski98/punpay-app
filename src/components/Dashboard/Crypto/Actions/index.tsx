@@ -31,8 +31,6 @@ const Actions = ({ recieve, swap, buy, sell }) => {
     const isDrakmode = useSelector((state: RootState) => state.isDarkMode);
     const coin = useSelector((state: RootState) => state.Coin);
 
-    console.log(coin);
-
   return (
     <Box backgroundColor="mainBackground" style={{...Style.parent, zIndex: -3, borderBottomColor: theme.textInput.backgroundColor, }}>
       

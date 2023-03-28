@@ -57,7 +57,6 @@ interface IProps {
 export default function SideBar({ navigation }: IProps) {
     const theme = useTheme<Theme>()
     const user = useSelector((state: RootState) => state.User);
-    console.log(user);
     const { logout } = useLogout()
     
     const nav = (route: string) => {

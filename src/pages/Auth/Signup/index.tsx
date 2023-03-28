@@ -99,14 +99,14 @@ export default function Signup({ navigation }: IProps) {
                   style={{ marginTop: 10, color: theme.colors.iconColor }}
                 />
               }
-              label="First Name"
+              label="Legal First Name"
             />
           </View>
 
           <View style={Style.box}>
             <TextInput
               name="lastName"
-              label="Last Name"
+              label="Legal Last Name"
               leftElement={
                 <Feather
                   name="user"

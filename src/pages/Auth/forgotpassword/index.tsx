@@ -33,7 +33,6 @@ export default function ForgotPassword({ navigation }: IProps) {
   const theme = useTheme<Theme>();
 
   const submit = (data: { email: string }) => {
-    console.log(data);
     mutate(data.email);
   };
 

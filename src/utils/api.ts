@@ -20,15 +20,21 @@ Axios.interceptors.request.use(async(config) => {
 
 Axios.interceptors.response.use((data) => {
     return data;
-}, (error: AxiosError<any, any>) => {
-    if (error.response?.data.message instanceof Array) {
-        const msg = error.response?.data.message as Array<any>;        
-        return Promise.reject(JSON.stringify(error.response?.data.message));
+}, async(error: AxiosError<any, any>) => {
+    console.log(error.response.data);
+    if (!error.response) {
+        return Promise.reject(error.message);
     } else {
-        if (error.response?.data.message === undefined || error.response?.data === undefined) {
-            return Promise.reject('An error occured');
+        if (error.response?.data.message instanceof Array) {
+            const msg = error.response?.data.message as Array<any>;        
+            return Promise.reject(JSON.stringify(error.response?.data.message));
+        } else {
+            if (error.response.status === 401 || error.response.status === 403) {
+                await AsyncStorage.setItem('token', '');
+            }
+            
+            return Promise.reject(error.response?.data.message);
         }
-        return Promise.reject(error.response?.data.message);
     }
 });
 

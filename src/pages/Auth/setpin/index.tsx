@@ -11,8 +11,8 @@ import { useAsyncStorage } from '@react-native-async-storage/async-storage'
 import {} from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { useMutation } from '@tanstack/react-query'
-import { useSelector } from 'react-redux'
-import { RootState } from '../../../state/Store'
+import { useDispatch, useSelector } from 'react-redux'
+import { Dispatch, RootState } from '../../../state/Store'
 import Axios from '../../../utils/api'
 
 interface IProps {
@@ -24,7 +24,8 @@ export default function SetPin({navigation}: IProps) {
     const [step, setStep] = React.useState(1);
     const [holder, setHolder] = React.useState('');
     const [match, setMatch] = React.useState(false);
-    const user = useSelector((state: RootState) => state.User)
+    const user = useSelector((state: RootState) => state.User);
+    const dispatch = useDispatch<Dispatch>();
 
     // create Pin
     const { isLoading, mutate } = useMutation({
@@ -32,8 +33,8 @@ export default function SetPin({navigation}: IProps) {
         onSuccess: (data) => {
             Alert.alert('Success', data.data.message);
             setPin('')
-            setStep(1)
-            navigation.navigate('biometric');
+            setStep(1);
+            dispatch.loggedIn.login();
         },
         onError: (error: any) => {
             Alert.alert('Error', error);
@@ -52,14 +53,7 @@ export default function SetPin({navigation}: IProps) {
             let newp = pin + e;
             setPin(newp);
         }
-        console.log(pin);
     }
-
-    React.useEffect(() => {
-        if (holder.length === 4) {
-            console.log(holder);
-        }
-    }, [holder])
 
     React.useEffect(() => {
        (async function() {

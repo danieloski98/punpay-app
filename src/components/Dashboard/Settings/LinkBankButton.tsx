@@ -19,7 +19,7 @@ const LinkBankButton = () => {
     // refetchInterval: 1200,
     refetchOnMount: true,
     onSuccess: (data) => {
-      dispatch.Bank.update(data.data.data);
+      dispatch({ type: 'Bank/update', payload: data.data.data })
       setHasBank(true);
     },
     onError: (error: any) => {

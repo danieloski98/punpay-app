@@ -20,6 +20,7 @@ import { IBank } from '../../../models/bank'
 import useOpenWhatsapp from '../../../hooks/useOpenWhatsapp'
 import CurrencyModal from '../../../components/Dashboard/Modals/Currency'
 import KycModal from '../../../components/Dashboard/Modals/KycModal'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const { height } = Dimensions.get('screen');
 
@@ -31,7 +32,7 @@ export default function Home({ navigation }) {
   const [showModal, setShowModal] = React.useState(false);
   // for controlling kyc modal Verification Modal
   const [vm, setVm] = React.useState(user.KYCVerified ? false : true);
-  const [currency, setCurrency] = React.useState(2)
+  const [currency, setCurrency] = React.useState(1)
   const [loading, setLoading] = React.useState(false);
   const dispatch = useDispatch<Dispatch>()
   const theme = useTheme<Theme>();
@@ -59,6 +60,13 @@ export default function Home({ navigation }) {
         } else {
           dispatch({ type: 'Bank/update', payload: data.data.data.bank })
         }
+    },
+    onError: async (error: any) => {
+      const token = await AsyncStorage.getItem('token');
+      if (token === null || token === '') {
+        dispatch.loggedIn.logout();
+      }
+      Alert.alert('Error', error);
     }
   })
 
@@ -74,12 +82,7 @@ export default function Home({ navigation }) {
   return (
     <Box backgroundColor="mainBackground" flex={1}>
       <HomeNavbar />
-      {/* <Pressable
-       onPress={() => navigation.navigate('kyc')}
-       style={{ width: '100%', height: 30, backgroundColor: theme.colors.primaryColor, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-        <Feather name="alert-triangle" size={15} color='white' />
-        <CustomText variant="xs" color="whiteText" marginLeft="s">Complete your KYC</CustomText>
-      </Pressable> */}
+      
 
       <View style={{ backgroundColor: theme.textInput.backgroundColor, flex: 1 }}>
         {/* portfolio section */}
@@ -125,7 +128,7 @@ export default function Home({ navigation }) {
                 }
                 return 0
               }).map((item, index) => (
-                <CoinTypeChip {...item} key={index.toString()} />
+                <CoinTypeChip {...item} countryCurrency={currency} key={index.toString()} />
               ))}
 
             </View>

@@ -56,7 +56,7 @@ export default function Login({ navigation }: IProps) {
       } else {
         // await AsyncStorage.removeItem('PIN');
         dispatch.User.update(data.data.data.user, null);
-        dispatch.loggedIn.login();
+        navigation.navigate('verification');
       }
     },
     onError: (error: any) => {
@@ -118,10 +118,9 @@ export default function Login({ navigation }: IProps) {
 
           <View style={Style.box}>
           <TextInput 
-            keyboardType="visible-password"
             name="password"
-            label="Password"
-            isPassword={showPass}
+            label="password"
+            isPassword={!showPass}
             leftElement={
               <Feather
               name="lock"
@@ -132,7 +131,7 @@ export default function Login({ navigation }: IProps) {
             rightElement={
               <Feather
               onPress={() => setShowPass((prev) => !prev)}
-              name={showPass ? "eye-off" : "eye"}
+              name={showPass ? "eye" : "eye-off"}
               size={25}
               style={{ marginTop: 10, color: theme.colors.iconColor }}
             />
