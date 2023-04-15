@@ -32,12 +32,24 @@ export default function Home({ navigation }) {
   const [showModal, setShowModal] = React.useState(false);
   // for controlling kyc modal Verification Modal
   const [vm, setVm] = React.useState(user.KYCVerified ? false : true);
+  const [verificationUploaded, setVerificationUpload] = React.useState(false);
   const [currency, setCurrency] = React.useState(1)
   const [loading, setLoading] = React.useState(false);
   const dispatch = useDispatch<Dispatch>()
   const theme = useTheme<Theme>();
   const queryClient = useQueryClient();
   const { isLoading, isError, data, refetch } = useWallets();
+  // get verification
+  const { isLoading: verificationLoading } = useQuery(['getVerification'], () => Axios.get('/verification'), {
+    onSuccess: (data) => {
+      console.log(data.data);
+      if (data.data.data === null) {
+        setVerificationUpload(false);
+      } else {
+        setVerificationUpload(true);
+      }
+    }
+  })
   const { isLoading: userLoading } = useQuery(['getUser'], () => Axios.get(`/user/profile/${user.id}`),{
     refetchOnMount: true,
     onSuccess: (data) => {
@@ -139,7 +151,7 @@ export default function Home({ navigation }) {
       </View>
 
     {showModal && <CurrencyModal currency={currency} change={setCurrency} close={() => setShowModal(false)} />}
-    {vm && <KycModal close={() => setVm(false)} />}
+    {vm && !verificationLoading && <KycModal close={() => setVm(false)} />}
     </Box>
   )
 }

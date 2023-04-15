@@ -1,10 +1,10 @@
-const local = 'http://192.168.120.97:8000'
+const local = 'http://192.168.177.97:8080'
 const router5g = 'http://192.168.0.132:8080'
-const note = 'http://192.168.117.97:8080'
+const note = 'http://192.168.251.97:8080'
 const liveurl = 'https://api.punpay.co'
 const smile = 'http://192.168.10.101:8080'
 
-export const url = liveurl;
+export const url = local;
 
 export default url;
 

@@ -21,7 +21,8 @@ Axios.interceptors.request.use(async(config) => {
 Axios.interceptors.response.use((data) => {
     return data;
 }, async(error: AxiosError<any, any>) => {
-    console.log(error.response.data);
+    console.log(error.message);
+    // return Promise.reject('An Error occurred');
     if (!error.response) {
         return Promise.reject(error.message);
     } else {
