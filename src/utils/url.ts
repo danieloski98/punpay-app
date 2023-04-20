@@ -4,7 +4,7 @@ const note = 'http://192.168.251.97:8080'
 const liveurl = 'https://api.punpay.co'
 const smile = 'http://192.168.10.101:8080'
 
-export const url = local;
+export const url = liveurl;
 
 export default url;
 
