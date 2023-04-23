@@ -6,12 +6,6 @@ import { useTheme } from '@shopify/restyle';
 import { Theme } from "../../../../style/theme";
 import { Style } from "./style";
 import { Box, Text as CustomText } from '../../../General'
-import { View, Pressable, Alert } from 'react-native'
-import * as Linking from 'expo-linking'
-
-// svgs
-import CardEdit from '../../../../res/svg-output/CardEdit'
-import UserO from '../../../../res/svg-output/Usero'
 import AmountPage from './Pages/Amount';
 import ReviewSellPage from './Pages/Review';
 import VerificationPage from '../Swap/Pages/VerificationPage';
@@ -31,6 +25,16 @@ import { Link, useNavigation } from '@react-navigation/native';
 import { reducer, state as reducerState } from './state';
 import Axios from '../../../../utils/api';
 import useOpenWhatsapp from '../../../../hooks/useOpenWhatsapp';
+import { openURL } from 'expo-linking'
+import { View, Pressable, Alert, NativeEventEmitter, NativeModules } from 'react-native'
+import { MetaMapRNSdk} from 'react-native-metamap-sdk';
+
+
+// svgs
+import CardEdit from '../../../../res/svg-output/CardEdit'
+import UserO from '../../../../res/svg-output/Usero'
+
+
 
 
 interface IProps {
@@ -53,6 +57,28 @@ const SellPage = ({ close, coin }: IProps) => {
     const theme = useTheme<Theme>();
     const { getShortName } = useIcons();
     const { openwhatsapp } = useOpenWhatsapp()
+
+    React.useEffect(() => {
+      const MetaMapVerifyResult = new NativeEventEmitter()
+      MetaMapVerifyResult.addListener('verificationSuccess', (data) => console.log(data))
+      MetaMapVerifyResult.addListener('verificationCanceled', (data) => console.log(data))
+
+      return () => {
+          MetaMapVerifyResult.removeAllListeners('verificationSuccess');
+          MetaMapVerifyResult.removeAllListeners('verificationCanceled');
+      }
+      
+  })
+
+    const handleMetaMapClickButton = () => {
+          //set 3 params clientId (cant be null), flowId, metadata
+
+          MetaMapRNSdk.showFlow("642be3a4547081001c4eb417", "642be3a4547081001c4eb416", { userId: user.id });
+    }
+
+    const handleLink = async() => {
+      await openURL('https://wa.me/message/LX3XCNXKYMVVK1');
+}
 
     // Custom hooks
     const { isLoading, data } = useGetRate({ currency: getShortName(coin as Coin), transactionType: 'buy' });
@@ -209,24 +235,42 @@ const SellPage = ({ close, coin }: IProps) => {
                      </Box>
                      <CustomText variant="bodylight" ml="m">Sell for FIAT</CustomText>
                  </Pressable>
+
+                {
+                  user.accountDisabled ?
+                  (
+                    <>
+                       <Pressable onPress={handleLink} style={{ ...Style.conatiner, backgroundColor: theme.textInput.backgroundColor, marginTop: 20 }}>
+                          <CustomText variant="bodylight" ml="m" textAlign='center' style={{ color: '#790014' }}>Your account is locked. Contact Support</CustomText>
+                      </Pressable>
+                    </>
+                  )
+                  : 
+                  (
+                    <>
+                     {
+                        user.KYCVerified && (
+                          <Pressable onPress={() => selectSell(2)} style={{ ...Style.conatiner, backgroundColor: theme.textInput.backgroundColor, marginTop: 20 }}>
+                          <Box mt='s'>
+                            <CardEdit width={30} height={30} />
+                          </Box>
+                          <CustomText variant="bodylight" ml="m">Transfer to another wallet</CustomText>
+                          </Pressable>
+                        )
+                      }
+                      {
+                        !user.KYCVerified && (
+                          <Pressable onPress={handleMetaMapClickButton} style={{ ...Style.conatiner, backgroundColor: theme.textInput.backgroundColor, marginTop: 20 }}>
+                          <CustomText variant="bodylight" ml="m" textAlign='center'>Verify KYC to be able to withdraw</CustomText>
+                          </Pressable>
+                        )
+                    }
+                    </>
+                  )
+                }
+                
  
-                 {
-                  user.KYCVerified && (
-                    <Pressable onPress={() => selectSell(2)} style={{ ...Style.conatiner, backgroundColor: theme.textInput.backgroundColor, marginTop: 20 }}>
-                     <Box mt='s'>
-                      <CardEdit width={30} height={30} />
-                     </Box>
-                     <CustomText variant="bodylight" ml="m">Transfer to another wallet</CustomText>
-                    </Pressable>
-                  )
-                 }
-                 {
-                  !user.KYCVerified && (
-                    <Pressable onPress={() => navigation.navigate('kyc')} style={{ ...Style.conatiner, backgroundColor: theme.textInput.backgroundColor, marginTop: 20 }}>
-                     <CustomText variant="bodylight" ml="m" textAlign='center'>Verify KYC to be able to withdraw</CustomText>
-                    </Pressable>
-                  )
-                 }
+                
 
                   <CustomText variant='body' mt='xl'>Have a transaction above $20k?</CustomText>
                   <Pressable onPress={openwhatsapp} style={{ ...Style.conatiner, backgroundColor: theme.textInput.backgroundColor, marginTop: 20 }}>

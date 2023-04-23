@@ -4,8 +4,9 @@ import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import ModalWrapper from '../../../General/ModalWrapper';
 import { Box, PrimaryButton } from '../../../General';
 import CustomText from '../../../General/Text';
-import { useNavigation } from '@react-navigation/native';
 import { MetaMapRNSdk} from 'react-native-metamap-sdk';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../../state/Store';
 
 interface IProps {
     close: () => void;
@@ -13,31 +14,30 @@ interface IProps {
 
 const KycModal = ({ close }: IProps) => {
     const bottomsheetRef = React.useRef<BottomSheetModal>(null);
-    const navigation = useNavigation<any>();
+    const user = useSelector((state: RootState) => state.User);
+
 
     React.useEffect(() => {
         bottomsheetRef.current.present();
     }, []);
 
     React.useEffect(() => {
-        const MetaMapVerifyResult = new NativeEventEmitter(NativeModules.MetaMapRNSdk)
-        MetaMapVerifyResult.addListener('verificationSuccess', (data) => console.log(data))
-        MetaMapVerifyResult.addListener('verificationCanceled', (data) => console.log(data))
+        const MetaMapVerifyResult = new NativeEventEmitter()
+        MetaMapVerifyResult.addListener('verificationSuccess', (data) => console.log('verification successful'))
+        MetaMapVerifyResult.addListener('verificationCanceled', (data) => console.log('verification cancelled'))
+
+        return () => {
+            MetaMapVerifyResult.removeAllListeners('verificationSuccess');
+            MetaMapVerifyResult.removeAllListeners('verificationCanceled');
+        }
         
     })
 
     const handleMetaMapClickButton = () => {
-
         //set 3 params clientId (cant be null), flowId, metadata
-     var yourMetadata = { param1: "value1", param2: "value2" }
-     console.log(MetaMapRNSdk);
-     MetaMapRNSdk.showFlow("642be3a4547081001c4eb417", "642be3a4547081001c4eb416", { name: 'daniel' });
+     MetaMapRNSdk.showFlow("642be3a4547081001c4eb417", "642be3a4547081001c4eb416", { userId: user.id });
   }
 
-    const handlePress = React.useCallback(() => {
-        navigation.navigate('kyc');
-        close();
-    }, [])
   return (
     <ModalWrapper
         onClose={close}

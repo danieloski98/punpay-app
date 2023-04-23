@@ -2,7 +2,6 @@ import { View, Text, Dimensions, Pressable, ActivityIndicator, RefreshControl, A
 import React from 'react'
 import { Box, Text as CustomText } from '../../../components/General'
 import HomeNavbar from '../../../components/Dashboard/Home/Navbar'
-import { Feather } from '@expo/vector-icons'
 import Portfolio from '../../../components/Dashboard/Home/PortFolio'
 import { useTheme } from '@shopify/restyle'
 import { Theme } from '../../../style/theme'
@@ -10,17 +9,17 @@ import { Theme } from '../../../style/theme'
 import CoinTypeChip from '../../../components/Dashboard/Home/CoinType'
 import { useDispatch, useSelector } from 'react-redux'
 import { Dispatch, RootState } from '../../../state/Store'
-import Compaliance from '../../../components/Dashboard/Compliance'
 import useWallets from '../../../hooks/useWallets';
 import { Wallet } from '../../../models/wallet'
-import useVerifyToken from '../../../hooks/useVerifyToken'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import Axios from '../../../utils/api'
 import { IBank } from '../../../models/bank'
-import useOpenWhatsapp from '../../../hooks/useOpenWhatsapp'
 import CurrencyModal from '../../../components/Dashboard/Modals/Currency'
 import KycModal from '../../../components/Dashboard/Modals/KycModal'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { Feather } from '@expo/vector-icons'
+import { openURL } from 'expo-linking'
+
 
 const { height } = Dimensions.get('screen');
 
@@ -82,6 +81,10 @@ export default function Home({ navigation }) {
     }
   })
 
+  const handleLink = React.useCallback( async() => {
+    await openURL('https://wa.me/message/LX3XCNXKYMVVK1');
+  }, [])
+
   const onRefresh = React.useCallback(() => {
     setLoading(true);
     queryClient.invalidateQueries()
@@ -101,6 +104,16 @@ export default function Home({ navigation }) {
         <View style={{ width: '100%', height: (height / 100) * 30, backgroundColor: theme.colors.primaryColor }}>
           <Portfolio currency={currency} open={() => setShowModal(true)} />
         </View>
+
+        {
+          user.accountDisabled && (
+            <Pressable onPress={handleLink} style={{ width: '100%', height: (height / 100) * 4, backgroundColor: '#790014', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                <Feather name="alert-triangle" size={20} color="white" />
+                <CustomText variant="body" style={{ color: 'white', marginLeft: 10 }} mx='m'>Your account is locked. Contact Support</CustomText>
+                <Feather name='arrow-right' size={20} color="white" />
+            </Pressable>
+          )
+        }
 
         <Box backgroundColor="mainBackground" style={{ width: '100%', height: (height / 100) * 65, backgroundColor: theme.colors.modalBg, borderTopLeftRadius: 0, borderTopRightRadius: 0 }}>
 

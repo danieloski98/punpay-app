@@ -9,6 +9,7 @@ export const User = createModel<RootModel>()({
         id: '',
         KYCVerified: false,
         emailVerified: false,
+        accountDisabled: false,
     },
     reducers: {
         update(state, payload) {

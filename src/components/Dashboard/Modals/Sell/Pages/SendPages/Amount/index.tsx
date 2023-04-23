@@ -10,6 +10,7 @@ import { RootState } from '../../../../../../../state/Store'
 import useIcons, { Coin } from '../../../../../../../hooks/useIcons'
 import { Action } from '../../../state'
 import { BarCodeScanner } from 'expo-barcode-scanner';
+import useMinimiumWithdrawal from '../../../../../../../hooks/useMinimiumWithdrawal'
 
 interface IProps {
   change: React.Dispatch<React.SetStateAction<number>>;
@@ -28,6 +29,9 @@ const SendAmountPage = ({ change, dispatch }: IProps) => {
   const [scanned, setScanned] = React.useState(false);
   const [showScanner, setShowScanner] = React.useState(false);
 
+  // custom hooks
+  const { getMinimiumAmount } = useMinimiumWithdrawal(coin as any);
+
   React.useEffect(() => {
     const getBarCodeScannerPermissions = async () => {
       const { status } = await BarCodeScanner.requestPermissionsAsync();
@@ -43,6 +47,10 @@ const SendAmountPage = ({ change, dispatch }: IProps) => {
     }
     if (amount === '0' || amount === '') {
       Alert.alert('Warning', 'You must enter an amount greater than 0');
+      return;
+    }
+    if (parseFloat(amount) < getMinimiumAmount()) {
+      Alert.alert('Warning', `Minimium withdrawal amount for ${coin} is ${getMinimiumAmount()}`);
       return;
     }
     dispatch({ type: 'transaction_currency', payload: getShortName(coin as Coin) });
@@ -74,7 +82,7 @@ const SendAmountPage = ({ change, dispatch }: IProps) => {
                 <TextInput defaultValue='0.00' value={amount} onChangeText={(e) => setAmount(e)} style={{ flex: 1, fontSize: 16, color: theme.colors.text }} />
                 <CustomText variant="subheader" style={{ fontSize: 16 }}>{getShortName(coin as any)}</CustomText>
               </View>
-
+              <CustomText variant="bodylight" style={{ fontSize: 15 }}>Minimium withrawal amount - {getMinimiumAmount()} {coin}</CustomText>
             </View>
 
             <View style={{ marginTop: 20 }}>

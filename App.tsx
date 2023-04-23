@@ -8,7 +8,7 @@ import { store } from './src/state/Store';
 import { Alert, View } from 'react-native';
 import * as Updates from 'expo-updates';
 import React from 'react';
-import registerNNPushToken from 'native-notify';
+// import registerNNPushToken from 'native-notify'
 import { ToastProvider } from 'react-native-toast-notifications'
 
 export const queryClient = new QueryClient();
@@ -16,7 +16,7 @@ export const queryClient = new QueryClient();
 SplashScreen.preventAutoHideAsync();
 
 export default function App() {
-  registerNNPushToken(6405, 'JhIbh6BDeO8Z5mEBHU50Dh');
+  // registerNNPushToken(6405, 'JhIbh6BDeO8Z5mEBHU50Dh');
   // load fonts
   const [fontLoaded] = useFonts({
     'Jakarta-Sans': require('./assets/fonts/PlusJakartaSans-Regular.ttf'),

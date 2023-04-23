@@ -19,7 +19,7 @@ export default function HomeNavbar() {
        <View style={{
         position: 'relative'
        }}>
-        <Ionicons name="notifications" size={25} color='white' style={{ marginLeft: 20}} onPress={() => navigation.navigate('notification')} />
+        {/* <Ionicons name="notifications" size={25} color='white' style={{ marginLeft: 20}} onPress={() => navigation.navigate('notification')} /> */}
        </View>
       </View>
     </View>
