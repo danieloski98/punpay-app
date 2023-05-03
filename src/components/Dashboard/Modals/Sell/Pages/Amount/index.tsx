@@ -1,4 +1,4 @@
-import { View, TextInput, Pressable, ActivityIndicator } from 'react-native'
+import { View, TextInput, Pressable, ActivityIndicator, Alert } from 'react-native'
 import { Style } from './style'
 import React from 'react'
 import {Text as CustomText, PrimaryButton } from '../../../../../General'
@@ -13,6 +13,8 @@ import { useNavigation } from '@react-navigation/native'
 import { Action } from '../../state'
 import { currencyFormat } from '../../../../../../utils/currencyconverter'
 import uuid from 'react-native-uuid';
+import Axios from '../../../../../../utils/api'
+import { useQuery } from '@tanstack/react-query'
 
 
 interface IProps {
@@ -32,6 +34,17 @@ const AmountPage = ({ change, dispatch, coinUSDValue }: IProps) => {
     const navigation= useNavigation<any>();
     // get rate
     const { isLoading, data } = useGetRate({ currency: getShortName(coin as any), transactionType: 'buy' })
+
+        // get the users coin details
+        const { isLoading: CoinDetailsLoading , data: coinData, isError } = useQuery(['getCoin'], () => Axios.get(`/user/wallet/${getShortName(coin as any)}`), {
+          refetchOnMount: true,
+          onSuccess: (data) => {
+            console.log(data.data)
+          },
+          onError: (error) => {
+            Alert.alert('An error occured');
+          }
+        })
 
 
     const handleconversion = React.useCallback(() => {
@@ -71,6 +84,17 @@ const AmountPage = ({ change, dispatch, coinUSDValue }: IProps) => {
             <TextInput defaultValue='0.00' value={amount} onChangeText={(e) => setAmount(e)} style={{ flex: 1, fontSize: 16, color: theme.colors.text }} />
             <CustomText variant="subheader" style={{ fontSize: 16 }}>{getShortName(coin as any)}</CustomText>
         </View>
+
+        <View style={{ height: 30 }}>
+         {CoinDetailsLoading && <ActivityIndicator color={theme.colors.primaryColor} size='small' />}
+         {!CoinDetailsLoading && (
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+             <CustomText variant='xs'>Balance {coinData.data.data.balance}<CustomText variant='xs' fontWeight='600'>{coin}</CustomText></CustomText>
+             <CustomText onPress={() => setAmount(coinData.data.data.balance)}>use max</CustomText>
+          </View>
+         )}
+        </View>
+
         <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
             <CustomText variant="body" style={{ fontSize: 18 }}>You'll recieve </CustomText>
             <CustomText variant="subheader" style={{ fontSize: 18 }}>NGN{currencyFormat(handleconversion())}</CustomText>

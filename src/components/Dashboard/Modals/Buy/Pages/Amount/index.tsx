@@ -10,6 +10,8 @@ import { Action, State } from '../../State'
 import * as Crypto from 'expo-random';
 import uuid from 'react-native-uuid';
 import { currencyFormat } from '../../../../../../utils/currencyconverter'
+const randomNumber = require('random-number');
+
 
 /**
  * ACCOUNT DUMMY DATA
@@ -29,12 +31,19 @@ const AmountPage = ({ next, coin, dispatch, rate, coinUSDValue }: IProps) => {
     const { getShortName, getNetwork } = useIcons()
 
     const handlePress = React.useCallback(() => {
-      dispatch({ type: 'transaction_amount', payload:  handleconversion() });
+      dispatch({ type: 'transaction_amount', payload:  parseFloat(amount) });
       dispatch({ type: 'payout_currency', payload: getShortName(coin as any) });
       dispatch({ type: 'transaction_currency', payload: 'ngn' });
-      dispatch({ type: 'payout_amount', payload: parseFloat(amount) })
+      dispatch({ type: 'payout_amount', payload: parseFloat(handleCalculation() )})
       const ref =  uuid.v4()
-      dispatch({ type: 'reference', payload: ref });
+      const options = {
+        min: 100,
+        max: 999,
+        integer: true,
+      };
+      const code1 = randomNumber(options).toString() as number;
+      const code2 = randomNumber(options).toString() as number;
+      dispatch({ type: 'reference', payload: `${code1}-${code2}` });
       next(2);
     }, [amount]);
 
@@ -48,12 +57,9 @@ const AmountPage = ({ next, coin, dispatch, rate, coinUSDValue }: IProps) => {
 
 
     const handleCalculation = React.useCallback(() => {
-      if (coin === 'Tether' || coin === 'BUSD') {
-        return currencyFormat(rate * parseInt(amount))
-      }
-      const usd = parseFloat(coinUSDValue) * parseFloat(amount);
-      return parseFloat(currencyFormat(usd * rate)) < 1 ? 0: currencyFormat(usd * rate);
-      
+
+      const usdValue = parseFloat(amount) / parseFloat(rate.toString());
+      return currencyFormat(usdValue / parseFloat(coinUSDValue))
     }, [amount, coinUSDValue, rate])
   return (
     <View style={Style.parent}>
@@ -64,7 +70,7 @@ const AmountPage = ({ next, coin, dispatch, rate, coinUSDValue }: IProps) => {
         <TextInput  value={amount} keyboardType='phone-pad' 
         onChangeText={(e) => setAmount(e)}
         style={[Style.input, {  fontSize: 55, fontFamily: theme.textVariants.subheader.fontFamily, fontWeight: theme.textVariants.subheader.fontWeight as any, color: theme.colors.text }]} />
-        <CustomText variant="bodylight" ml="s">{getShortName(coin as any)}</CustomText>
+        <CustomText variant="bodylight" ml="s">{'NGN'}</CustomText>
       </View>
 
       <View style={Style.network}>
@@ -73,7 +79,7 @@ const AmountPage = ({ next, coin, dispatch, rate, coinUSDValue }: IProps) => {
         </View>
       </View>
 
-      <CustomText variant="bodylight" textAlign="center" mt="m">(NGN{handleCalculation()})</CustomText>
+      <CustomText variant="bodylight" textAlign="center" mt="m">{handleCalculation()}{getShortName(coin as any)}</CustomText>
       <CustomText variant="bodylight" textAlign="center" mt="m">(RATE - {rate}/$)</CustomText>
 
       <View style={{ marginTop: 40 }}>

@@ -1,4 +1,4 @@
-import { View, Text, TextInput } from 'react-native'
+import { View, Text, TextInput, Alert, ActivityIndicator } from 'react-native'
 import React from 'react'
 import { Style } from './style'
 import { useTheme } from '@shopify/restyle'
@@ -10,6 +10,8 @@ import { Feather, FontAwesome } from '@expo/vector-icons'
 import {Text as CustomText, PrimaryButton } from '../../../../../General'
 import useIcons, { Coin } from '../../../../../../hooks/useIcons'
 import { Action, State } from '../../state'
+import { useQuery } from '@tanstack/react-query'
+import Axios from '../../../../../../utils/api'
 
 interface IProps {
   next: React.Dispatch<React.SetStateAction<number>>;
@@ -23,6 +25,28 @@ const AmountPage = ({ next, coin, dispatch, usd, state }: IProps) => {
   const [amount, setAmount] = React.useState(state.transactionAmount.toString() || '0');
   const theme = useTheme<Theme>();
   const { getIcon, getShortName } = useIcons();
+  const [swapPercentage, setSwapPercentage] = React.useState(0);
+
+  // get swap perrcentage
+  const { isLoading } = useQuery(['getSwapPercentage'], () => Axios.get('/rate/swap-rate'), {
+    onSuccess: (data) => {
+      setSwapPercentage(data.data.data.percentage);
+    },
+    onError: (error: any) => {
+      Alert.alert('Error', error);
+    }
+  });
+
+      // get the users coin details
+      const { isLoading: CoinDetailsLoading , data, isError } = useQuery(['getCoin'], () => Axios.get(`/user/wallet/${getShortName(coin as any)}`), {
+        refetchOnMount: true,
+        onSuccess: (data) => {
+          console.log(data.data)
+        },
+        onError: (error) => {
+          Alert.alert('An error occured');
+        }
+      })
 
   const handleconversion = React.useCallback(() => {
     const usdV = parseFloat(usd) * parseFloat(amount);
@@ -30,7 +54,7 @@ const AmountPage = ({ next, coin, dispatch, usd, state }: IProps) => {
   }, [amount, usd]);
 
   const hanldePercentage = React.useCallback(() => {
-    const percenter = (handleconversion()/100) * 5;
+    const percenter = (handleconversion()/100) * swapPercentage;
     return percenter
   }, [amount, usd]);
 
@@ -62,7 +86,15 @@ const AmountPage = ({ next, coin, dispatch, usd, state }: IProps) => {
           </View>
 
         </View>
-        {/* <CustomText>0.0034BTC Avaliable</CustomText> */}
+        <View style={{ height: 30 }}>
+         {CoinDetailsLoading && <ActivityIndicator color={theme.colors.primaryColor} size='small' />}
+         {!CoinDetailsLoading && (
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+             <CustomText variant='xs'>Balance {data.data.data.balance}<CustomText variant='xs' fontWeight='600'>{coin}</CustomText></CustomText>
+             <CustomText onPress={() => setAmount(data.data.data.balance)}>use max</CustomText>
+          </View>
+         )}
+        </View>
       </View>
 
       <View style={{ height: 100, justifyContent: 'center' }}>
@@ -87,6 +119,7 @@ const AmountPage = ({ next, coin, dispatch, usd, state }: IProps) => {
           </View>
 
         </View>
+       
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <CustomText variant="subheader" style={{ fontSize: 16 }}>Transaction Fee</CustomText>
           <CustomText variant="bodylight" ml="s">{hanldePercentage().toFixed(2)}usdt</CustomText>
@@ -98,9 +131,9 @@ const AmountPage = ({ next, coin, dispatch, usd, state }: IProps) => {
         </View>
       </View>
 
-      <View style={{ padding: 15, borderRadius: 20, backgroundColor: '#ff886049', marginTop: 20 }}>
+      {/* <View style={{ padding: 15, borderRadius: 20, backgroundColor: '#ff886049', marginTop: 20 }}>
         <CustomText variant="bodylight">Swap is only available for USDT BEP20</CustomText>
-      </View>
+      </View> */}
 
       <View style={{ marginTop: 30 }}>
         <PrimaryButton text='Swap' action={handlePress} />

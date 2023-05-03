@@ -16,6 +16,8 @@ import { useToast } from "react-native-toast-notifications";
 import { currencyFormat } from '../../../../../../utils/currencyconverter'
 import Axios from '../../../../../../utils/api'
 import { useQuery } from '@tanstack/react-query'
+import { openURL } from 'expo-linking'
+const randomNumber = require('random-number');
 
 
 interface IProps {
@@ -126,7 +128,7 @@ const ConfirmPaymentPage = ({ state }: IProps) => {
       </View>
 
       <View style={{ marginTop: 20 }}>
-        <PrimaryButton text='Contact Support' action={() => { }} />
+        <PrimaryButton text='Contact Support' action={async() => await openURL('https://wa.me/message/LX3XCNXKYMVVK1')} />
       </View>
     </View>
   )

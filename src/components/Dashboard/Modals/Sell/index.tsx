@@ -59,9 +59,12 @@ const SellPage = ({ close, coin }: IProps) => {
     const { openwhatsapp } = useOpenWhatsapp()
 
     React.useEffect(() => {
-      const MetaMapVerifyResult = new NativeEventEmitter()
-      MetaMapVerifyResult.addListener('verificationSuccess', (data) => console.log(data))
-      MetaMapVerifyResult.addListener('verificationCanceled', (data) => console.log(data))
+      const MetaMapVerifyResult = new NativeEventEmitter(NativeModules.MetaMapRNSdk)
+      MetaMapVerifyResult.addListener('verificationSuccess', () => {
+        console.log(data);
+            Alert.alert('Alert', 'You document has been uploaded successfully, This usually take about 1 - 2 business days');
+      })
+      MetaMapVerifyResult.addListener('verificationCanceled', (data) => Alert.alert('Alert', 'You can always verify your identity again'))
 
       return () => {
           MetaMapVerifyResult.removeAllListeners('verificationSuccess');
@@ -73,7 +76,7 @@ const SellPage = ({ close, coin }: IProps) => {
     const handleMetaMapClickButton = () => {
           //set 3 params clientId (cant be null), flowId, metadata
 
-          MetaMapRNSdk.showFlow("642be3a4547081001c4eb417", "642be3a4547081001c4eb416", { userId: user.id });
+          MetaMapRNSdk.showFlow("642be3a4547081001c4eb417", "642be3a4547081001c4eb416", { ...user });
     }
 
     const handleLink = async() => {
@@ -268,8 +271,6 @@ const SellPage = ({ close, coin }: IProps) => {
                     </>
                   )
                 }
-                
- 
                 
 
                   <CustomText variant='body' mt='xl'>Have a transaction above $20k?</CustomText>

@@ -26,10 +26,58 @@ const VerificationPage = ({ changeStep, goBack, action, loading }: IProps) => {
     const [code, setCode] = React.useState('');
     const [pin, setPin] = React.useState('');
     const [holder, setHolder] = React.useState([]);
-    const user = useSelector((state: RootState) => state.User);    
+    const user = useSelector((state: RootState) => state.User);   
+    
+     // timer
+    const [seconds, setSeconds] = React.useState(0);
+    const [minutes, setMinutes] = React.useState(0);
+    const [showTimer, setShowTimer] = React.useState(false);
+
+    // using ref 
+    const second = React.useRef<number>(0)
+    const min = React.useRef<number>(0);
+
+    // state Timeer
+  const startTimer = React.useCallback(() => {
+    if (!showTimer) {
+      min.current = 1;
+      second.current = 59;
+      setMinutes(min.current);
+      mutate()
+      setShowTimer(true);
+      const interval = setInterval(() => {
+        if (second.current > 0) {
+          second.current = second.current - 1;
+          setSeconds(second.current);
+        } else {
+          if (min.current === 0 && second.current === 0) {
+            // setShowTimer(false);
+            second.current = 0;
+            min.current = 0
+            setSeconds(second.current);
+            setMinutes(min.current);
+            setShowTimer(false);
+            clearInterval(interval);
+          } else if (min.current === 1 && second.current === 0) {
+            min.current = 0;
+            second.current = 59;
+            setMinutes(min.current);
+            setSeconds(59);
+          }
+          else {
+            min.current = min.current - 1;
+            second.current = 59;
+            setMinutes(min.current);
+            setSeconds(second.current);
+          }
+        }
+      }, 1000);
+    }
+  }, []);
 
     // Request for an otp
     const { isLoading, mutate } = useMutation({
+      retry: 4,
       mutationFn: () => Axios.get('/user/request-otp'),
       onSuccess: (data) => {
         Alert.alert(data.data.message);
@@ -90,7 +138,7 @@ const VerificationPage = ({ changeStep, goBack, action, loading }: IProps) => {
         <View style={{ width: '100%', backgroundColor: theme.textInput.backgroundColor, flexDirection: 'row', padding: 10, borderRadius: 10, height: 55 }}>
             <TextInput keyboardType="number-pad" value={code} onChangeText={(e) => setCode(e)} placeholderTextColor={theme.colors.text} style={{ flex: 1, color: theme.colors.text, fontSize: 16 }} />
             <View style={{ width: '30%', height: '100%' }}>
-                <BorderButton text='Send OTP' action={mutate} height='100%' isLoading={isLoading}  />
+              <BorderButton text={showTimer ? `${minutes}:${seconds}`:'Send OTP'} action={ showTimer ? () => {} : startTimer} height='100%' isLoading={isLoading}  />
             </View>
         </View>
       </View>
@@ -103,7 +151,7 @@ const VerificationPage = ({ changeStep, goBack, action, loading }: IProps) => {
       </View>
 
       <View style={{ marginTop: 30 }}>
-        <PrimaryButton text='Continue' action={handlePress} isLoading={verifyOtp.isLoading || loading}  />
+        <PrimaryButton text='Continue' action={verifyOtp.isLoading || loading ? () => {} : handlePress} isLoading={verifyOtp.isLoading || loading}  />
       </View>
     </View>
   )

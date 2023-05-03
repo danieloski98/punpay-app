@@ -1,4 +1,4 @@
-import { Image, NativeEventEmitter, NativeModules } from 'react-native'
+import { Alert, Image, NativeEventEmitter, NativeModules } from 'react-native'
 import React from 'react'
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import ModalWrapper from '../../../General/ModalWrapper';
@@ -22,9 +22,13 @@ const KycModal = ({ close }: IProps) => {
     }, []);
 
     React.useEffect(() => {
-        const MetaMapVerifyResult = new NativeEventEmitter()
-        MetaMapVerifyResult.addListener('verificationSuccess', (data) => console.log('verification successful'))
-        MetaMapVerifyResult.addListener('verificationCanceled', (data) => console.log('verification cancelled'))
+        const MetaMapVerifyResult = new NativeEventEmitter(NativeModules.MetaMapRNSdk)
+        MetaMapVerifyResult.addListener('verificationSuccess', (data) => {
+            console.log(data);
+            Alert.alert('Alert', 'You document has been uploaded successfully, This usually take about 1 - 2 business days');
+            close();
+        })
+        MetaMapVerifyResult.addListener('verificationCanceled', (data) => Alert.alert('Alert', 'You can always verify your identity again'))
 
         return () => {
             MetaMapVerifyResult.removeAllListeners('verificationSuccess');
@@ -35,7 +39,7 @@ const KycModal = ({ close }: IProps) => {
 
     const handleMetaMapClickButton = () => {
         //set 3 params clientId (cant be null), flowId, metadata
-     MetaMapRNSdk.showFlow("642be3a4547081001c4eb417", "642be3a4547081001c4eb416", { userId: user.id });
+     MetaMapRNSdk.showFlow("642be3a4547081001c4eb417", "642be3a4547081001c4eb416", { lastName: user.lastName, firstName: user.firstName, email: user.email });
   }
 
   return (

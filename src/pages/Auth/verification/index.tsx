@@ -59,14 +59,14 @@ const VerificationPage = () => {
         }
       }, 1000);
     }
-  }, [])
+  }, []);
 
   // request otp
    // Request for an otp
    const { isLoading, mutate } = useMutation({
     mutationFn: () => Axios.get('/user/request-otp'),
     onSuccess: (data) => {
-      Alert.alert(data.data.message);
+      Alert.alert('Success', data.data.message);
     },
     onError: (error: any) => {
       Alert.alert('Error', error);

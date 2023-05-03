@@ -1,4 +1,4 @@
-import { Alert, View } from "react-native";
+import { Alert, View, StatusBar } from "react-native";
 import React, { useState } from "react";
 import Box from "../../../components/General//Box";
 import CustomText from "../../../components/General//Text";
@@ -73,6 +73,8 @@ export default function Signup({ navigation }: IProps) {
         flex={1}
         style={{ paddingHorizontal: 0 }}
       >
+              {/* <StatusBar translucent backgroundColor='transparent' barStyle='light-content' /> */}
+
         <View style={{ ...Style.text, paddingHorizontal: 20, backgroundColor: theme.colors.primaryColor }}>
           <CustomText variant="subheader" style={{ color: 'white' }}>Create Account</CustomText>
           <CustomText variant="bodylight" style={{ color: 'white' }}>Getting started is easy</CustomText>
@@ -99,14 +101,14 @@ export default function Signup({ navigation }: IProps) {
                   style={{ marginTop: 10, color: theme.colors.iconColor }}
                 />
               }
-              label="Legal First Name"
+              label="First Name"
             />
           </View>
 
           <View style={Style.box}>
             <TextInput
               name="lastName"
-              label="Legal Last Name"
+              label="Last Name"
               leftElement={
                 <Feather
                   name="user"
@@ -154,23 +156,6 @@ export default function Signup({ navigation }: IProps) {
             />
           </View>
 
-          {/* <View style={Style.box}>
-  <View style={Style.checkbox}>
-    <Checkbox value={alpha} color={theme.colors.primaryColor}  />
-    <CustomText variant="bodylight" marginLeft="s">Use alphabets & numbers</CustomText>
-  </View>
-
-  <View style={Style.checkbox}>
-    <Checkbox value={len} color={theme.colors.primaryColor}  />
-    <CustomText variant="bodylight" marginLeft="s">At least 8 characters</CustomText>
-  </View>
-
-  <View style={Style.checkbox}>
-    <Checkbox value={sym} color={theme.colors.primaryColor}  />
-    <CustomText variant="bodylight" marginLeft="s">Use a special character e.g @,#,% etc</CustomText>
-  </View>
-</View> */}
-
           <View style={Style.btnC}>
             <Submit text="Submit" isLoading={isLoading} />
           </View>
@@ -187,7 +172,7 @@ export default function Signup({ navigation }: IProps) {
                 textDecorationLine="underline"
                 marginLeft="s"
               >
-                Login
+                 Login
               </CustomText>
             </CustomText>
           </View>

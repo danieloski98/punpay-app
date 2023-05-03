@@ -27,6 +27,7 @@ const AwaitingPaymentPage = ({ next, state }: IProps) => {
   const coin = useSelector((state: RootState) => state.Coin);
   const { getIcon, getShortName } = useIcons();
   const { isLoading, mutate } = useMutation({
+    retry: 4,
     mutationFn: () => Axios.put(`/transaction/${state.transactionId}`),
     onSuccess: () => {
       Alert.alert('Transaction status updated');
@@ -99,14 +100,14 @@ const AwaitingPaymentPage = ({ next, state }: IProps) => {
 
       <View style={{ marginTop: 20 }}>
         <CustomText variant="subheader" style={{ fontSize: 16 }}>Reference Code</CustomText>
-        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          <CustomText variant="body" mr="m">{state.referenceCode}</CustomText>
+        <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
+          <CustomText variant="subheader" mr="m">{state.referenceCode}</CustomText>
           <Ionicons name="copy-outline" size={30} color={theme.colors.text} onPress={copyReference} />
         </View>
       </View>
 
       <View style={{ marginTop: 20 }}>
-        <PrimaryButton text='I have made payment' action={handlePress} isLoading={isLoading} />
+        <PrimaryButton text='I have made payment' action={!isLoading ? handlePress:null} isLoading={isLoading} />
       </View>
     </View>
   )

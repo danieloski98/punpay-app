@@ -23,7 +23,7 @@ const Onboarding = ({ navigation }: IProps) => {
   const [postion, setPostion] = React.useState(0);
   const theme = useTheme<Theme>();
   return (
-      <Box backgroundColor="mainBackground" flex={1} style={Style.parent}>
+      <Box backgroundColor="mainBackground" flex={1} style={Style.parent} paddingTop='m'>
         <View style={Style.imgContainer}>
           <View>
             <Image source={require('../../../res/logo2.png')} style={{ width: 80, height: 80 }} resizeMode='contain' />
@@ -42,24 +42,30 @@ const Onboarding = ({ navigation }: IProps) => {
             </View>
           </PagerView>
 
-          <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+          <View style={{ flexDirection: 'row', justifyContent: 'center', height: 40, alignItems: 'center' }}>
             <View style={[Style.indicators, { backgroundColor: postion === 0 ? theme.colors.primaryColor: 'lightgrey' }]}></View>
             <View style={[Style.indicators, { backgroundColor: postion === 1 ? theme.colors.primaryColor: 'lightgrey' }]}></View>
             <View style={[Style.indicators, { backgroundColor: postion === 2 ? theme.colors.primaryColor: 'lightgrey'}]}></View>
           </View>
 
           </View>
-          <Text variant="header" marginTop="s" textAlign="left" style={Style.text} >Buy, Sell & Swap Crypto on the go</Text>
-          <Text variant="bodylight" marginTop="s" textAlign="left" style={Style.text}>PunPay ensures you get the best rates and secure transactions</Text>
-        </View>
-        <View style={Style.btnContainer}>
-          <View style={{ width: '48%', }}>
-            <PrimaryButton text="Get Started" action={() => {navigation.navigate('signup')}} />
-          </View>
 
-          <View style={{ width: '48%', }}>
-            <BorderButton text="Login" action={() => {navigation.navigate('login')}} />
+        <View style={{ flex: 1, width: '100%', justifyContent: 'center' }}>
+          <Text variant="header" marginTop="s" textAlign="left" style={Style.text} >Buy, Sell & Swap Crypto on the go</Text>
+            <Text variant="bodylight" marginTop="s" textAlign="left" style={Style.text}>PunPay ensures you get the best rates and secure transactions</Text>
+
+            <View style={Style.btnContainer}>
+            <View style={{ width: '48%', }}>
+              <PrimaryButton text="Get Started" action={() => {navigation.navigate('signup')}} />
+            </View>
+
+            <View style={{ width: '48%', }}>
+              <BorderButton text="Login" action={() => {navigation.navigate('login')}} />
+            </View>
           </View>
+        </View>
+
+       
         </View>
       </Box>
   )

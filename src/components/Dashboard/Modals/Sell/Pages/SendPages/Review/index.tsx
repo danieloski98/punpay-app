@@ -1,4 +1,4 @@
-import { View, Text } from 'react-native'
+import { View, Text, Alert } from 'react-native'
 import React from 'react'
 import { Style } from './style'
 import { useTheme } from '@shopify/restyle'
@@ -8,6 +8,8 @@ import { useSelector } from 'react-redux'
 import { RootState } from '../../../../../../../state/Store'
 import useIcons from '../../../../../../../hooks/useIcons'
 import { State } from '../../../state'
+import { useQuery } from '@tanstack/react-query'
+import Axios from '../../../../../../../utils/api'
 
 interface IProps {
   change: React.Dispatch<React.SetStateAction<number>>;
@@ -18,6 +20,22 @@ const ReviewSendPage = ({ change, state }: IProps) => {
     const theme = useTheme<Theme>()
     const coin = useSelector((state: RootState) => state.Coin);
     const { getShortName } = useIcons()
+
+    // get transaction fee 
+    const { data, refetch , isError, isLoading } = useQuery(['getFees', coin], () => Axios.get(`/transaction/withdrawal-fee/${getShortName(coin as any)}`), {
+      retry: 4,
+      onError: (error: any) => {
+        Alert.alert('Error', error);
+      }
+    });
+
+    const handlePress = React.useCallback(() => {
+      if (isLoading || isError ) {
+        Alert.alert('Error', 'Fee loading');
+      } else {
+        change(3)
+      }
+    }, [data, isLoading, isError]);
   return (
     <View style={Style.parent}>
       <CustomText variant="bodylight">SEND CRYPTO</CustomText>
@@ -46,12 +64,14 @@ const ReviewSendPage = ({ change, state }: IProps) => {
         </View>
 
         <View style={{ marginLeft: 20, flexWrap: 'wrap', flex: 1 }}>
-            <CustomText variant="body" mt="m" style={{ fontSize: 16 }}>NGN8,300($2.23)</CustomText>
+            {isLoading &&  <CustomText variant="body" mt="m" style={{ fontSize: 16 }}>Loading</CustomText>}
+            {!isLoading && !isError && <CustomText variant="body" mt="m" style={{ fontSize: 16 }}>{data.data.data.fee} {coin}</CustomText>}
+            {!isLoading && isError && <CustomText variant="body" mt="m" style={{ fontSize: 16 }} onPress={() => refetch()}>refresh withdrawal fee</CustomText>}
         </View>
       </View>
 
 
-    <PrimaryButton text='Confirm Send' action={() => change(3)} />
+    <PrimaryButton text='Confirm Send' action={handlePress} />
 
     </View>
   )

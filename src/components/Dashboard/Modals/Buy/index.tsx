@@ -21,6 +21,7 @@ import { RootState } from '../../../../state/Store';
 import { useToast } from 'react-native-toast-notifications';
 
 
+
 interface IProps {
   close: React.Dispatch<React.SetStateAction<boolean>>;
   coin: string;
@@ -36,7 +37,7 @@ const BuyPage = ({ close, coin }: IProps) => {
 
   // CUSTOM HOOKS
   const { getShortName } = useIcons()
-  const { isLoading, data } = useGetRate({ currency: getShortName(coin as Coin), transactionType: 'sell' });
+  const { isLoading, data } = useGetRate({ currency: getShortName(coin as Coin), transactionType: 'buy' });
   const { getApiName } = useCoin(coin as Coin);
   const { isLoading: createTransactionMutation, mutate } = useMutation({
     mutationFn: (data: any) => Axios.post('/transaction/buy', data),
@@ -81,6 +82,7 @@ const BuyPage = ({ close, coin }: IProps) => {
 
   const trade = React.useCallback((bank: IBank) => {
     dispatch({ type: 'bank', payload: bank });
+    
     //make api request
     const obj = {
       userId: user.id,
