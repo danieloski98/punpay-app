@@ -17,7 +17,7 @@ export default function PrimaryButton({ text, action, height, radius = 10, isLoa
     const { height:btnH } = theme.button;
     const { primaryColor } = theme.colors;
   return (
-    <Pressable onPress={() => action()} style={{...Style.parent, height: height ? height:btnH, borderColor: primaryColor, borderRadius: radius, }}>
+    <Pressable onPress={() => isLoading ? null : action()} style={{...Style.parent, height: height ? height:btnH, borderColor: primaryColor, borderRadius: radius, }}>
         {!isLoading && <Text variant="body" style={{ color: primaryColor }}>{text}</Text>}
         {isLoading && <ActivityIndicator size="small" color={theme.colors.primaryColor} />}
     </Pressable>

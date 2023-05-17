@@ -103,7 +103,7 @@ export default function Settings({ navigation }: any) {
           <ElevatedComponent title="Change Password" type="LINK" link='changepassword' />
           <ElevatedComponent title="Change PIN" type="LINK" link='changepin' />
           <ElevatedComponent title="Next Of Kin" type="LINK" link='nextofkin' />
-
+          <ElevatedComponent title="KYC" type="LINK" link='kyc' />
           <Box marginTop='xl' />
 
         </View>

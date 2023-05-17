@@ -15,7 +15,7 @@ export default function PrimaryButton({ text, action, isLoading }: IProps) {
     // const { height } = theme.button;
     const { primaryColor } = theme.colors;
   return (
-    <Pressable testID='primaryButton' onPress={() => action()} style={{...Style.parent, height: 55, backgroundColor: primaryColor }}>
+    <Pressable testID='primaryButton' onPress={() => isLoading ? null : action()} style={{...Style.parent, height: 55, backgroundColor: primaryColor }}>
         {!isLoading && <Text variant="body" style={{...Style.text}}>{text}</Text>}
         {isLoading && <ActivityIndicator color="white" size="large" />} 
     </Pressable>

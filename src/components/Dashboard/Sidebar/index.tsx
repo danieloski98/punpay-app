@@ -7,6 +7,7 @@ import { useTheme } from '@shopify/restyle'
 import { Theme } from '../../../style/theme'
 import { DrawerNavigationHelpers } from '@react-navigation/drawer/lib/typescript/src/types'
 import { openURL } from 'expo-linking'
+import { Ionicons } from '@expo/vector-icons'
 
 // svgs
 import User from '../../../res/svg-output/assets/User'
@@ -46,6 +47,12 @@ export const MenuItems: ISidebarButton[] = [
         action: async () => {
         await openURL('https://wa.me/message/LX3XCNXKYMVVK1');
         }
+    },
+    {
+        text: "About App",
+        location: 'about',
+        icon: <Ionicons name="information-circle-outline" size={25} color='white' />,
+        backgroundColor: '#61E0A1'
     },
 ];
 

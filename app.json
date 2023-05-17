@@ -25,7 +25,7 @@
     },
     "android": {
       "icon": "./assets/logo2.png",
-      "versionCode": 22,
+      "versionCode": 24,
       "adaptiveIcon": {
         "foregroundImage": "./assets/logo2.png",
         "backgroundColor": "#FFFFFF"
@@ -40,16 +40,20 @@
         "projectId": "9de872ed-876f-4cbe-b0ae-d44d65cf4917"
       }
     },
-    "runtimeVersion": {
-      "policy": "sdkVersion"
-    },
+    "runtimeVersion": "exposdk:46.0.21",
     "plugins": [
+      [
+        "expo-updates",
+        {
+          "username": "account-username"
+        }
+      ],
       [
         "expo-barcode-scanner",
         {
           "cameraPermission": "Allow $(PRODUCT_NAME) to access camera."
         }
       ]
-    ]
+    ],
   }
 }

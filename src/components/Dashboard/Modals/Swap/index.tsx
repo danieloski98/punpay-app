@@ -57,6 +57,7 @@ const Swap = ({ close, coin }: IProps) => {
     },
     onSuccess: (data) => {
       Alert.alert('Success', data.data.message);
+      setStage(3);
     }
   })
 
@@ -69,7 +70,6 @@ const Swap = ({ close, coin }: IProps) => {
       payoutAmount: state.payoutAmount,
     }
     mutate(obj);
-    setStage(3)
   }, [state, coin])
 
   React.useEffect(() => {

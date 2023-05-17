@@ -39,7 +39,7 @@ const KycModal = ({ close }: IProps) => {
 
     const handleMetaMapClickButton = () => {
         //set 3 params clientId (cant be null), flowId, metadata
-     MetaMapRNSdk.showFlow("642be3a4547081001c4eb417", "642be3a4547081001c4eb416", { lastName: user.lastName, firstName: user.firstName, email: user.email });
+     MetaMapRNSdk.showFlow("642be3a4547081001c4eb417", "642be3a4547081001c4eb416", { lastName: user.lastName, firstName: user.firstName, email: user.email, userId: user.id });
   }
 
   return (

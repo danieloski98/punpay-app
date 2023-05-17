@@ -51,12 +51,25 @@ const SellPage = ({ close, coin }: IProps) => {
     const [usd, setUsd] = React.useState('')
     const user = useSelector((state: RootState) => state.User);
     const [state, dispatch] = React.useReducer(reducer, reducerState);
+    const [verificationUploaded, setVerificationUpload] = React.useState(false);
+
 
     const navigation = useNavigation<any>();
     const bottomsheetRef = React.useRef<BottomSheetModal>(null);
     const theme = useTheme<Theme>();
     const { getShortName } = useIcons();
     const { openwhatsapp } = useOpenWhatsapp()
+
+     // get verification
+    const { isLoading: verificationLoading } = useQuery(['getVerification'], () => Axios.get('/verification'), {
+      refetchOnMount: true,
+      onSuccess: (data) => {
+        setVerificationUpload(true);
+      },
+      onError: (error: any) => {
+        setVerificationUpload(false);
+      }
+    });
 
     React.useEffect(() => {
       const MetaMapVerifyResult = new NativeEventEmitter(NativeModules.MetaMapRNSdk)
@@ -76,7 +89,7 @@ const SellPage = ({ close, coin }: IProps) => {
     const handleMetaMapClickButton = () => {
           //set 3 params clientId (cant be null), flowId, metadata
 
-          MetaMapRNSdk.showFlow("642be3a4547081001c4eb417", "642be3a4547081001c4eb416", { ...user });
+          MetaMapRNSdk.showFlow("642be3a4547081001c4eb417", "642be3a4547081001c4eb416", { lastName: user.lastName, firstName: user.firstName, email: user.email, userId: user.id });
     }
 
     const handleLink = async() => {
@@ -252,7 +265,7 @@ const SellPage = ({ close, coin }: IProps) => {
                   (
                     <>
                      {
-                        user.KYCVerified && (
+                        !verificationLoading && verificationUploaded && user.KYCVerified && (
                           <Pressable onPress={() => selectSell(2)} style={{ ...Style.conatiner, backgroundColor: theme.textInput.backgroundColor, marginTop: 20 }}>
                           <Box mt='s'>
                             <CardEdit width={30} height={30} />
@@ -262,9 +275,17 @@ const SellPage = ({ close, coin }: IProps) => {
                         )
                       }
                       {
-                        !user.KYCVerified && (
+                        !verificationLoading && !verificationUploaded && !user.KYCVerified && (
                           <Pressable onPress={handleMetaMapClickButton} style={{ ...Style.conatiner, backgroundColor: theme.textInput.backgroundColor, marginTop: 20 }}>
                           <CustomText variant="bodylight" ml="m" textAlign='center'>Verify KYC to be able to withdraw</CustomText>
+                          </Pressable>
+                        )
+                    }
+
+{
+                        !verificationLoading && verificationUploaded && !user.KYCVerified && (
+                          <Pressable style={{ ...Style.conatiner, backgroundColor: theme.textInput.backgroundColor, marginTop: 20 }}>
+                          <CustomText variant="bodylight" ml="m" textAlign='center'>KYC under review</CustomText>
                           </Pressable>
                         )
                     }

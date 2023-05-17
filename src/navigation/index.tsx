@@ -11,6 +11,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import { DARKMODE, LOGGEDINSTATES } from '../enums/init.enum'
 import useVerifyToken from '../hooks/useVerifyToken'
 import * as SplashScreen from 'expo-splash-screen'
+import * as Updates from 'expo-updates';
+import { Box as View } from '../components/General'
+
 // import { Box } from '../components/General'
 // import { useMutation, useQuery } from '@tanstack/react-query'
 // import Axios from '../utils/api'
@@ -22,10 +25,39 @@ const Navigation = () => {
   // const { isLoading, isError, data, status } = useVerifyToken()
   const dispatch = useDispatch<Dispatch>();
 
+  const checkForUpdates = React.useCallback(async() => {
+      try {
+          const update = await Updates.checkForUpdateAsync();
+    
+          if (update.isAvailable) {
+              Alert.alert('Update Availabe', 'Seems like you have an update. Would you like to update now?', [
+                  {text: 'No', onPress: () => {}, },
+                  {text: 'Yes', onPress: async() => {
+                      await Updates.fetchUpdateAsync();
+                      await Updates.reloadAsync();
+                  }, }
+              ]);          
+          } else {
+            return
+          }
+        } catch (error) {
+          // You can also add an alert() to see the error message in case of an error when fetching updates.
+          // Alert.alert(`Error fetching latest Expo update:`, `${error}`, [
+          //     {text: 'No', onPress: () => {}, },
+          //     {text: 'Yes', onPress: async() => {
+          //         // await Updates.fetchUpdateAsync();
+          //         // await Updates.reloadAsync();
+          //     }, }
+          // ]);
+        }
+  }, []);
+
   React.useEffect(() => {
     (async function() {
       const mode = await AsyncStorage.getItem(DARKMODE.DARKMODE);
       const bio = await AsyncStorage.getItem('biometric');
+
+      checkForUpdates();
 
       // check if they have bio metric enabled
       if (bio === 'true') {
@@ -51,6 +83,9 @@ const Navigation = () => {
         <StatusBar translucent barStyle={darkMode ? 'light-content' : 'dark-content'} backgroundColor="transparent" />
         {!loggedIn && <AuthenticationFlow />}
         {loggedIn && <DashboardRoutes />}
+        {/* <View style={{ width:'100%', height: 50, backgroundColor: 'transparent', position: 'absolute', bottom: 0  }}>
+
+        </View> */}
       </NavigationContainer>
     </ThemeProvider>
   )

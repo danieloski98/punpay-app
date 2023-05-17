@@ -40,15 +40,14 @@ export default function Home({ navigation }) {
   const { isLoading, isError, data, refetch } = useWallets();
   // get verification
   const { isLoading: verificationLoading } = useQuery(['getVerification'], () => Axios.get('/verification'), {
+    refetchOnMount: true,
     onSuccess: (data) => {
-      console.log(data.data);
-      if (data.data.data === null) {
-        setVerificationUpload(false);
-      } else {
-        setVerificationUpload(true);
-      }
+      setVerificationUpload(true);
+    },
+    onError: (error: any) => {
+      setVerificationUpload(false);
     }
-  })
+  });
   const { isLoading: userLoading } = useQuery(['getUser'], () => Axios.get(`/user/profile/${user.id}`),{
     refetchOnMount: true,
     onSuccess: (data) => {
@@ -164,7 +163,7 @@ export default function Home({ navigation }) {
       </View>
 
     {showModal && <CurrencyModal currency={currency} change={setCurrency} close={() => setShowModal(false)} />}
-    {vm && !verificationLoading && <KycModal close={() => setVm(false)} />}
+    {!verificationUploaded && !verificationLoading && <KycModal close={() => setVm(false)} />}
     </Box>
   )
 }
