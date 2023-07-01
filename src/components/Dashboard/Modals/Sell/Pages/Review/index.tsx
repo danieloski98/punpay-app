@@ -1,4 +1,4 @@
-import { View, Text } from 'react-native'
+import { View, Text, Alert } from 'react-native'
 import React from 'react'
 import { Style } from './style'
 import { useTheme } from '@shopify/restyle'
@@ -8,6 +8,10 @@ import { useSelector } from 'react-redux'
 import { RootState } from '../../../../../../state/Store'
 import { State } from '../../state'
 import { currencyFormat } from '../../../../../../utils/currencyconverter'
+import { useQuery } from '@tanstack/react-query'
+import Axios from '../../../../../../utils/api'
+import useIcons from '../../../../../../hooks/useIcons'
+import { showMessage } from 'react-native-flash-message'
 
 interface IProps {
   change: React.Dispatch<React.SetStateAction<number>>;
@@ -18,6 +22,34 @@ const ReviewSellPage = ({ change, state }: IProps) => {
     const theme = useTheme<Theme>()
     const coin = useSelector((state: RootState) => state.Coin);
     const bank = useSelector((state: RootState) => state.Bank);
+    const {getShortName} = useIcons();
+
+
+    const { isLoading: feeLoading , data: feeData, isError: feeHasError } = useQuery(['getWithdrawalFeesSend'], () => Axios.get(`/transaction/withdrawal-fee/${getShortName(coin as any)}?quidax=${true}`), {
+      refetchOnMount: true,
+      onSuccess: (data) => {
+        console.log(data.data.data)
+      },
+      onError: (error) => {
+        Alert.alert('An error occured');
+      }
+    });
+
+    const handlePress = React.useCallback(() => {
+      if (feeLoading) {
+        showMessage({
+          message: 'Fetching Transaction Fee..',
+          description: `We are fetching the transaction fee`,
+          floating: false,
+          autoHide: true,
+          duration: 6,
+          type: 'info',
+        })
+        return;
+      } else {
+        change(3)
+      }
+    }, [feeLoading])
   return (
     <View style={Style.parent}>
       <CustomText variant="bodylight">SELL CRYPTO</CustomText>
@@ -53,7 +85,7 @@ const ReviewSellPage = ({ change, state }: IProps) => {
         </View>
       </View> */}
 
-      <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 10, marginBottom: 20 }}>
+      <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 10, marginBottom: 0 }}>
         <View>
             <CustomText variant="subheader" mt="m" style={{ fontSize: 16 }}>Current Rate</CustomText>
         </View>
@@ -63,7 +95,20 @@ const ReviewSellPage = ({ change, state }: IProps) => {
         </View>
       </View>
 
-    <PrimaryButton text='Confirm Sell' action={() => change(3)} />
+      <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 10, marginBottom: 20 }}>
+        <View>
+            <CustomText variant="subheader" mt="m" style={{ fontSize: 16 }}>Transaction Fee</CustomText>
+        </View>
+
+        <View style={{ marginLeft: 20 }}>
+            {!feeLoading && <CustomText variant="body" mt="m" style={{ fontSize: 18 }}>{feeData.data.data.fee} {getShortName(coin as any)}</CustomText>}
+            {feeLoading && <CustomText variant="body" mt="m" style={{ fontSize: 18 }}>Loaidng Transaction Fee</CustomText>}
+        </View>
+      </View>
+
+      
+
+    <PrimaryButton text='Confirm Sell' action={handlePress} />
 
     </View>
   )

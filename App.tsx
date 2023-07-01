@@ -10,6 +10,8 @@ import * as Updates from 'expo-updates';
 import React from 'react';
 // import registerNNPushToken from 'native-notify'
 import { ToastProvider } from 'react-native-toast-notifications'
+import FlashMessage from "react-native-flash-message";
+import { useNetInfo } from '@react-native-community/netinfo';
 
 export const queryClient = new QueryClient();
 
@@ -41,6 +43,7 @@ export default function App() {
           <Provider store={store}>
             <Fragment>
               <Navigation />
+              <FlashMessage position="top" />
             </Fragment>
           </Provider>
         </QueryClientProvider>

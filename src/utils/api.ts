@@ -8,12 +8,26 @@ const Axios = axios.create({
 
 Axios.interceptors.request.use(async(config) => {
     const token = await AsyncStorage.getItem('token')
-    config.headers!['content-type'] = 'application/json';
-    if (token === null) {
+    if (config.data instanceof FormData) {
+        console.log('ITS FORMDATA');
+        config.headers['Content-Type'] = 'multipart/form-data'
+        if (token === null) {
+            return config;
+        }
+        config.headers!['authorization'] = `Bearer ${token}`;
+    
+        return config;
+    } else {
+        config.headers!['Content-Type'] = 'application/json';
+        if (token === null) {
+            return config;
+        }
+        config.headers!['authorization'] = `Bearer ${token}`;
+    
         return config;
     }
-    config.headers!['authorization'] = `Bearer ${token}`;
-    return config;
+    
+   
 },  error => {
     return Promise.reject(error)
 }); 

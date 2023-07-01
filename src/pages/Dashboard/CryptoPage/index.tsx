@@ -29,6 +29,7 @@ import { useQuery } from "@tanstack/react-query";
 import Axios from "../../../utils/api";
 import { Transaction } from "../../../models/transaction";
 import TransactionDetails from "../../../components/Dashboard/Modals/TransactionDetails";
+import { useModalState } from "../TransactionType/state";
 
 const os = Platform.OS;
 export const { width: SIZE } = Dimensions.get("window");
@@ -37,6 +38,7 @@ const timeline = ["24h", "7d", "2w", "1m", "6m", "1y"];
 export default function CryptoPage({ route }) {
   const [time, setTime] = React.useState("24h");
   const [tab, setTab] = React.useState(2);
+  const { openBuy, openDeposit, openSell, openSwap } = useModalState((state) => state);
   const coin = useSelector((state: RootState) => state.Coin);
   const [transaction, setTransaction] = React.useState({} as Transaction);
   const theme = useTheme<Theme>();
@@ -48,11 +50,6 @@ export default function CryptoPage({ route }) {
   }, [transaction]);
 
 
-  // MODAL STATES
-  const [showRecieve, setShowRecieve] = React.useState(false);
-  const [showSwap, setShowSwap] = React.useState(false);
-  const [showBuy, setShowBuy] = React.useState(false);
-  const [showSell, setShowSell] = React.useState(false);
   const [showModal, setShowModal] = React.useState(false);
  
 
@@ -61,17 +58,17 @@ export default function CryptoPage({ route }) {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <Box backgroundColor="mainBackground" style={{ flex: 1, zIndex: 2 }}>
         <CryptoPageHeader coinName={type} />
-        <Actions recieve={setShowRecieve} swap={setShowSwap} buy={setShowBuy} sell={setShowSell} />
+        <Actions />
         <CryptoTab tab={tab} setTab={setTab} />
         <View style={Style.scrollContainer}>
           {/* {tab === 1 && <StatsTab />} */}
           {tab === 2 && <TransactionHistory type={type}  open={open}/>}
         </View>
         {/* MODALS */}
-        {showRecieve && <RecieveModal close={setShowRecieve} coin={coin} />}
-        {showSwap && <Swap close={setShowSwap} coin={coin} />}
-        {showBuy && <BuyPage close={setShowBuy} coin={coin} />}
-        {showSell && <SellPage close={setShowSell} coin={coin} />}
+        {openDeposit && <RecieveModal coin={coin} />}
+        {openSwap && <Swap coin={coin} />}
+        {openBuy && <BuyPage coin={coin} />}
+        {openSell && <SellPage coin={coin} />}
         {showModal && <TransactionDetails transaction={transaction} close={setShowModal} />}
         {/* END MODALS */}
       </Box>

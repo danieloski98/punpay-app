@@ -36,10 +36,20 @@ const AmountPage = ({ change, dispatch, coinUSDValue }: IProps) => {
     const { isLoading, data } = useGetRate({ currency: getShortName(coin as any), transactionType: 'buy' })
 
         // get the users coin details
-        const { isLoading: CoinDetailsLoading , data: coinData, isError } = useQuery(['getCoin'], () => Axios.get(`/user/wallet/${getShortName(coin as any)}`), {
+        const { isLoading: CoinDetailsLoading , data: coinData, isError } = useQuery(['getCoinSend'], () => Axios.get(`/user/wallet/${getShortName(coin as any)}`), {
           refetchOnMount: true,
           onSuccess: (data) => {
             console.log(data.data)
+          },
+          onError: (error) => {
+            Alert.alert('An error occured');
+          }
+        })
+
+        const { isLoading: feeLoading , data: feeData, isError: feeHasError } = useQuery(['getWithdrawalFeesSend'], () => Axios.get(`/transaction/withdrawal-fee/${getShortName(coin as any)}?quidax=${true}`), {
+          refetchOnMount: true,
+          onSuccess: (data) => {
+            console.log(data.data.data)
           },
           onError: (error) => {
             Alert.alert('An error occured');
@@ -101,10 +111,18 @@ const AmountPage = ({ change, dispatch, coinUSDValue }: IProps) => {
         </View>
       </View>
 
-      <View style={{ marginTop: 10 }}>
-        <CustomText variant="subheader" style={{ fontSize: 18 }}>Current Rate</CustomText>
-        {!isLoading && <CustomText variant="body" style={{ fontSize: 18 }}>NGN{data.data.rate}/$1</CustomText>}
-        {isLoading && <ActivityIndicator size="small" color={theme.colors.primaryColor} />}
+      <View style={{ width: '100%', flexDirection: 'row', justifyContent: 'space-between' }}>
+        <View style={{ marginTop: 10 }}>
+          <CustomText variant="subheader" style={{ fontSize: 18 }}>Current Rate</CustomText>
+          {!isLoading && <CustomText variant="body" style={{ fontSize: 18 }}>NGN{data.data.rate}/$1</CustomText>}
+          {isLoading && <ActivityIndicator size="small" color={theme.colors.primaryColor} />}
+        </View>
+
+        <View style={{ marginTop: 10 }}>
+          <CustomText variant="subheader" style={{ fontSize: 18 }}>Transaction Fee</CustomText>
+          {!feeLoading && <CustomText variant="body" style={{ fontSize: 18 }}>{feeData.data.data.fee} {getShortName(coin as any)}</CustomText>}
+          {feeLoading && <ActivityIndicator size="small" color={theme.colors.primaryColor} />}
+        </View>
       </View>
 
       {bank.accountNumber && (

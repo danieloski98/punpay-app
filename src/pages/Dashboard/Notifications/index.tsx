@@ -10,25 +10,25 @@ import { Theme } from '../../../style/theme';
 import { Feather } from '@expo/vector-icons';
 import { useSelector } from 'react-redux'
 import { RootState } from '../../../state/Store'
+import { useMutation, useQuery } from '@tanstack/react-query';
+import Axios from '../../../utils/api';
 
-const NotificationCard = ({ message, title, notification_id }: INotification) => {
+
+const NotificationCard = ({ title, userId, body, id }: INotification) => {
   const user = useSelector((state: RootState) => state.User);
   const [loading, setLoading] = React.useState(false);
+  const { mutate, isLoading } = useMutation({
+    mutationFn: (data: string) => Axios.delete(`/notification/${data}`),
+  })
   const handleDelete = React.useCallback(() => {
-    setLoading(true);
-    deleteIndieNotificationInbox(user.id, notification_id, 6405, 'JhIbh6BDeO8Z5mEBHU50Dh')
-    .then((data) => {
-      setLoading(false);
-    })
-    .catch((error) => {
-    });
-  }, [notification_id]);
+    mutate(id)
+  }, []);
   const theme = useTheme<Theme>();
   return (
     <View style={{ width: '100%', borderBottomWidth: 2, borderBottomColor: theme.textInput.backgroundColor, paddingVertical: 20, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
       <View>
       <CustomText variant='body'>{title}</CustomText>
-      <CustomText variant='bodylight' mt='s'>{message}</CustomText>
+      <CustomText variant='bodylight' mt='s'>{body}</CustomText>
       </View>
 
       <Pressable onPress={handleDelete} style={{ width: 50, height: 50, borderRadius: 30, justifyContent: 'center', alignItems: 'center', backgroundColor: theme.textInput.backgroundColor }}>
@@ -43,18 +43,15 @@ const Notifications = () => {
   const user = useSelector((state: RootState) => state.User);
   const [data, setData] = useState<INotification[]>([]);
   const theme = useTheme<Theme>();
-  useEffect(() => {
-       (async function() {
-        const general = await getNotificationInbox(6405, 'JhIbh6BDeO8Z5mEBHU50Dh')
-          let notifications = await getIndieNotificationInbox(user.id, 6405, 'JhIbh6BDeO8Z5mEBHU50Dh');
-          const notif = [...notifications]
-          setData(notif);
-       })()
 
-       return () => {
-        //mark all as read
-       }
-  }, []);
+  const { isLoading, error } = useQuery(['getNotifications'], () => Axios.get('/notification/user'), {
+    // refetchInterval: 1000,
+    onSuccess: (data) => {
+      setData(data.data.data);
+      console.log(data.data.data);
+    }
+  });
+  
   return (
     <Box backgroundColor='mainBackground' style={{ flex: 1 }}>
         <Box width='100%' backgroundColor='cardPrimaryBackground' height='10%' paddingHorizontal='m' justifyContent='flex-end' elevation={1} shadowColor='mainBackground' >
@@ -66,9 +63,9 @@ const Notifications = () => {
           </Box>
         )}
 
-        <Box backgroundColor='mainBackground' style={{ flex: 1, paddingHorizontal: 20 }}>
+        <Box backgroundColor='mainBackground' style={{ flex: 1, paddingHorizontal: 0 }}>
         {data.length > 0 && (
-          <ScrollView style={{ flex: 1 }} horizontal={false} contentContainerStyle={{ paddingBottom: 20, backgroundColor: theme.colors.mainBackground }}>
+          <ScrollView style={{ flex: 1 }} horizontal={false} contentContainerStyle={{ padding: 20, backgroundColor: theme.colors.mainBackground }}>
             {data.map((item, index) => (
               <NotificationCard {...item} key={index} />
             ))}

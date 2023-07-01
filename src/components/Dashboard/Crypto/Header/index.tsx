@@ -12,6 +12,7 @@ import useIcons from '../../../../hooks/useIcons'
 import Axios from '../../../../utils/api';
 import { useQuery } from '@tanstack/react-query';
 import { currencyFormat } from '../../../../utils/currencyconverter'
+import { showMessage } from 'react-native-flash-message'
 
 const CryptoPageHeader = ({ coinName }) => {
     const theme = useTheme<Theme>();
@@ -22,10 +23,18 @@ const CryptoPageHeader = ({ coinName }) => {
   const { isLoading, data, isError } = useQuery(['getCoin'], () => Axios.get(`/user/wallet/${getShortName(coinName)}`), {
     refetchOnMount: true,
     onSuccess: (data) => {
-      console.log(data.data)
     },
     onError: (error) => {
       Alert.alert('An error occured');
+      showMessage({
+        message: 'Error',
+        description: 'An error occured',
+        floating: false,
+        animated: true,
+        type: 'danger',
+        autoHide: true,
+        duration: 6000,
+      })
       navigation.goBack();
     }
   })
@@ -39,16 +48,16 @@ const CryptoPageHeader = ({ coinName }) => {
             {getIcon(coinName, '70%')}
         </View>
         <View>
-            <CustomText variant="subheader" style={{ fontWeight: 'bold', fontSize: 18 }}>{coinName}</CustomText>
+            <CustomText variant="subheader" style={{ fontSize: 18 }}>{coinName}</CustomText>
             {/* <CustomText variant="bodylight" style={{ fontWeight: '400', color: theme.colors.text }}>BTC</CustomText> */}
         </View>
       </View>
       <View style={Style.right}>
         <CustomText style={{ color: theme.colors.text }}>YOUR BALANCE</CustomText>
-       {!isLoading && !isError &&  <CustomText variant="subheader" style={{ fontSize: 18, textAlign: 'left' }}>{data.data.data.balance}{getShortName(coinName)}</CustomText>}
+       {!isLoading && !isError &&  <CustomText variant="subheader" style={{ fontSize: 16, textAlign: 'left' }}>{data.data.data.balance}{getShortName(coinName)}</CustomText>}
        {isLoading && <ActivityIndicator size="small" color={theme.colors.primaryColor} />}
         {/* <ActivityIndicator size="small" color={theme.colors.primaryColor} /> */}
-        {!isLoading && !isError &&  <CustomText variant="body" style={{ fontSize: 18, textAlign: 'left' }}>{currencyFormat(parseFloat(data.data.data.converted_balance))}NGN</CustomText>}
+        {!isLoading && !isError &&  <CustomText variant="body" style={{ fontSize: 16, textAlign: 'left' }}>{currencyFormat(parseFloat(data.data.data.converted_balance))}NGN</CustomText>}
       </View>
     </Box>
   )

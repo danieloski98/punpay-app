@@ -15,10 +15,15 @@ const BankChip = ({bank, action}: IProps) => {
   const [isLoading, setIsLoading] = React.useState(false);
   const theme = useTheme<Theme>()
   const handleClick = React.useCallback(() => {
+   if (isLoading) {
+    return;
+   }
+   else {
     setIsLoading(true);
     action(bank);
     setIsLoading(false);
-  }, [])
+   }
+  }, [isLoading])
   return (
     <View style={{ flex: 1, flexDirection: 'row', marginBottom: 20, alignItems: 'center' }}>
         <View style={{ flex: 1 }}>

@@ -70,14 +70,14 @@ export default function Portfolio({ open, currency }: IProps) {
 
 
   return (
-    <View style={{...Style.parent, backgroundColor: theme.colors.primaryColor }}>
+    <View style={{...Style.parent }}>
       <Box width='100%' alignItems='center'>
-          <Pressable onPress={open} style={{...Style.switchbutton, borderColor: 'white' }}>
-            <CustomText variant='xs' color='whiteText'>{currency === 1 ? 'NGN':'USD'}</CustomText>
-            <Feather name='chevron-down' size={15} color='white' style={{ marginTop: 2, marginLeft: 5 }} />
+          <Pressable onPress={open} style={{...Style.switchbutton, borderColor: theme.colors.text }}>
+            <CustomText variant='xs' >{currency === 1 ? 'NGN':'USD'}</CustomText>
+            <Feather name='chevron-down' size={15} color={theme.colors.text} style={{ marginTop: 2, marginLeft: 5 }} />
           </Pressable>
       </Box>
-      <CustomText variant="bodylight" textAlign="center" textTransform="uppercase" color='whiteText'>Portfolio Balance</CustomText>
+      <CustomText variant="bodylight" textAlign="center" textTransform="uppercase">Portfolio Balance</CustomText>
       {isLoading && (
         <Box justifyContent='center' alignItems='center' pt='m'>
             <ActivityIndicator color={theme.colors.primaryColor} size='large' />
@@ -88,9 +88,9 @@ export default function Portfolio({ open, currency }: IProps) {
       )}
       {!isLoading && !isError && (
        <Box mt='m' flexDirection='row' justifyContent='center'>
-         {show && <CustomText variant="subheader" textAlign="center" color='whiteText' textTransform="uppercase" style={{ fontSize: 25 }}>{currency === 1 ? 'NGN':'$'}{currency === 1? currencyFormat(data?.data.data.balance):currencyFormat(usd)}</CustomText>}
-         {!show && <CustomText variant="subheader" textAlign="center" color='whiteText' textTransform="uppercase" style={{ marginTop: 5, fontSize: 25 }}>****</CustomText>}
-         <Feather name={show ? 'eye-off':'eye'} size={20} color='white' onPress={() => setShow(prev => !prev)} style={{ marginLeft: 10, marginTop: 3 }} />
+         {show && <CustomText variant="subheader" textAlign="center" textTransform="uppercase" style={{ fontSize: 25 }}>{currency === 1 ? 'NGN':'$'}{currency === 1? currencyFormat(data?.data.data.balance):currencyFormat(usd)}</CustomText>}
+         {!show && <CustomText variant="subheader" textAlign="center" textTransform="uppercase" style={{ marginTop: 5, fontSize: 25 }}>****</CustomText>}
+         <Feather name={show ? 'eye-off':'eye'} size={20} color={theme.colors.text} onPress={() => setShow(prev => !prev)} style={{ marginLeft: 10, marginTop: 3 }} />
        </Box>
       )}
       

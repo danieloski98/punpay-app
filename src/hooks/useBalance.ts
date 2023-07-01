@@ -8,7 +8,7 @@ import { Dispatch } from '../state/Store';
 const useBalance = () => {
   const dispatch = useDispatch<Dispatch>();
     const { isLoading, isError, data, refetch } = useQuery(['balance'], () => Axios.get('/user/balance'), {
-        refetchInterval: 10000,
+        refetchInterval: 50000,
         onError: async (error: any) => {
             const token = await AsyncStorage.getItem('token');
             if (token === null || token === '') {

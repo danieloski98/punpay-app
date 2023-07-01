@@ -48,12 +48,12 @@ export const MenuItems: ISidebarButton[] = [
         await openURL('https://wa.me/message/LX3XCNXKYMVVK1');
         }
     },
-    {
-        text: "About App",
-        location: 'about',
-        icon: <Ionicons name="information-circle-outline" size={25} color='white' />,
-        backgroundColor: '#61E0A1'
-    },
+    // {
+    //     text: "About App",
+    //     location: 'about',
+    //     icon: <Ionicons name="information-circle-outline" size={25} color='white' />,
+    //     backgroundColor: '#61E0A1'
+    // },
 ];
 
 

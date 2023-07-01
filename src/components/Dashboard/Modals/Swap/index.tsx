@@ -7,10 +7,10 @@ import { BottomSheetModal, BottomSheetModalProvider, BottomSheetScrollView, Bott
 import VerificationPage from './Pages/VerificationPage';
 import ProcessingPage from './Pages/ProcessingPage';
 import ModalWrapper from '../../../General/ModalWrapper';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import Axios from '../../../../utils/api';
 import { reducer, state as reducerState } from './state';
-import { Alert } from 'react-native';
+import { Alert, BackHandler } from 'react-native';
 import { IStat } from '../../../../models/Stat';
 import STAT from '../../../../utils/stats';
 import { useNavigation } from '@react-navigation/native';
@@ -18,14 +18,16 @@ import { Coin } from '../../../../hooks/useIcons';
 import useCoin from '../../../../hooks/useCoin';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../../state/Store';
+import { useModalState } from '../../../../pages/Dashboard/TransactionType/state';
+import { showMessage } from 'react-native-flash-message';
 
 
 interface IProps {
-  close: React.Dispatch<React.SetStateAction<boolean>>;
   coin: string;
 }
 
-const Swap = ({ close, coin }: IProps) => {
+const Swap = ({ coin }: IProps) => {
+  const { setOpenModal, setAll } = useModalState((state) => state)
   const [stage, setStage] = React.useState(1)
   const bottomsheetRef = React.useRef<BottomSheetModal>(null);
   const [usd, setUsd] = React.useState('');
@@ -33,12 +35,40 @@ const Swap = ({ close, coin }: IProps) => {
   const { getApiName } = useCoin(coin as Coin);
   const navigation = useNavigation();
   const user = useSelector((state: RootState) => state.User);
+  const queryClient = useQueryClient();
+
+  React.useEffect(() => {
+    const unsubscribe = BackHandler.addEventListener('hardwareBackPress', () => {
+      if (stage === 1) {
+        setAll({ openSwap: false });
+        return true;
+      } else {
+        if (stage === 3) {
+          showMessage({
+            message: 'Confirm transaction',
+            description: `You can't go back , your transaction has already been created`,
+            floating: false,
+            statusBarHeight: 20,
+            animated: true,
+            autoHide: true,
+            duration: 6000,
+            type: 'warning'
+          })
+          return true;
+        }
+        setStage(prev => prev - 1)
+
+        return true;
+      }
+    });
+
+    return () => unsubscribe.remove();
+  }, [stage])
 
 
   // get the coin usd value from the coingecko api
   const { isLoading: coinDataLoading, data: coinData, isError } = useQuery(['getCoinDetails'], () => STAT.get(`/coins/${getApiName()}`), {
     refetchOnMount: true,
-    notifyOnChangeProps: 'all',
     onSuccess: (data) => {
       const res = data.data as IStat
       setUsd(res.market_data.current_price.usd);
@@ -56,7 +86,16 @@ const Swap = ({ close, coin }: IProps) => {
       Alert.alert('Error', error);
     },
     onSuccess: (data) => {
-      Alert.alert('Success', data.data.message);
+      showMessage({
+        message: 'Success',
+        description: `Your swap was successful`,
+        floating: false,
+        statusBarHeight: 30,
+        autoHide: false,
+        duration: 6000,
+        type: 'success'
+      });
+      queryClient.invalidateQueries(['getCoin']);
       setStage(3);
     }
   })
@@ -95,7 +134,7 @@ const Swap = ({ close, coin }: IProps) => {
   return (
     <ModalWrapper
       ref={bottomsheetRef}
-      onClose={() => close(false)}
+      onClose={() => setAll({ openSwap: false })}
     >
       {switchPages()}
     </ModalWrapper>

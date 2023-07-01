@@ -17,15 +17,11 @@ import ArrowUp from "../../../../res/svg-output/ArrowUp";
 import Arrows from '../../../../res/svg-output/Arrows';
 import Wallet from '../../../../res/svg-output/Wallet';
 import { BottomSheetModal } from '@gorhom/bottom-sheet'
+import { useModalState } from '../../../../pages/Dashboard/TransactionType/state'
 
-interface IProps {
-    recieve: React.Dispatch<React.SetStateAction<boolean>>;
-    swap: React.Dispatch<React.SetStateAction<boolean>>;
-    buy: React.Dispatch<React.SetStateAction<boolean>>;
-    sell: React.Dispatch<React.SetStateAction<boolean>>;
-}
 
-const Actions = ({ recieve, swap, buy, sell }) => {
+const Actions = () => {
+    const { setAll } = useModalState((state) => state);
     const theme = useTheme<Theme>();
     const navigation = useNavigation<any>();
     const isDrakmode = useSelector((state: RootState) => state.isDarkMode);
@@ -38,7 +34,7 @@ const Actions = ({ recieve, swap, buy, sell }) => {
 
         <View style={{ alignItems: 'center' }}>
             <Pressable 
-                onPress={() => recieve(true)}
+                onPress={() => setAll({ openDeposit: true }) }
                 style={{...Style.actionIconContainer, backgroundColor: isDrakmode ? theme.textInput.backgroundColor:'white', shadowColor: 'black' }}>
                 <ArrowDown width={25} height={25} style={{ marginLeft: 7 }} />
             </Pressable>
@@ -47,7 +43,7 @@ const Actions = ({ recieve, swap, buy, sell }) => {
 
         <View style={{ alignItems: 'center' }}>
             <Pressable 
-                onPress={() => sell(true)}
+                onPress={() => setAll({ openSell: true })}
                 style={{...Style.actionIconContainer, backgroundColor: isDrakmode ? theme.textInput.backgroundColor:'white', shadowColor: 'black' }}>
                 <ArrowUp width={25} height={25} style={{ marginLeft: 7 }} />
             </Pressable>
@@ -55,7 +51,7 @@ const Actions = ({ recieve, swap, buy, sell }) => {
         </View>
 
         <Pressable 
-            onPress={() => buy(true)}
+            onPress={() => setAll({ openBuy: true })}
             style={{ alignItems: 'center' }}>
             <View style={{...Style.actionIconContainer, backgroundColor: isDrakmode ? theme.textInput.backgroundColor:'white', shadowColor: 'black' }}>
                 <Arrows width={20} height={30} />
@@ -65,7 +61,7 @@ const Actions = ({ recieve, swap, buy, sell }) => {
 
         {coin !== 'Tether' && (
             <Pressable 
-            onPress={() => swap(true)}
+            onPress={() => setAll({ openSwap: true })}
             style={{ alignItems: 'center' }}>
                 <View style={{...Style.actionIconContainer, backgroundColor: isDrakmode ? theme.textInput.backgroundColor:'white', shadowColor: 'black' }}>
                     <Wallet width={25} height={25} />

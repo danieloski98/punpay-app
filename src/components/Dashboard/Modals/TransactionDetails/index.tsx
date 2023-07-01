@@ -87,6 +87,22 @@ const TransactionDetails = ({ close, transaction }: IProps) => {
         </View>
 
         <View style={{ paddingVertical: 20, borderBottomWidth: 2, borderBottomColor: theme.textInput.backgroundColor }}>
+          <CustomText variant="subheader" style={{ fontSize: 16 }}>Transaction Type</CustomText>
+          <CustomText variant="bodylight" style={{ fontSize: 16 }} selectable>
+            {transactionType()}
+          </CustomText>
+        </View>
+
+        {transaction.transactionType === 2 && (
+          <View style={{ paddingVertical: 20, borderBottomWidth: 2, borderBottomColor: theme.textInput.backgroundColor }}>
+            <CustomText variant="subheader" style={{ fontSize: 16 }}>Transaction Reference</CustomText>
+            <CustomText variant="bodylight" style={{ fontSize: 16 }} selectable selectionColor={theme.colors.primaryColor}>
+              {transaction.transactionReference}
+            </CustomText>
+          </View>
+        )}
+
+        <View style={{ paddingVertical: 20, borderBottomWidth: 2, borderBottomColor: theme.textInput.backgroundColor }}>
           <CustomText variant="subheader" style={{ fontSize: 16 }}>{transactionType()} Currency</CustomText>
           <CustomText variant="bodylight" style={{ fontSize: 16 }}>
             {transaction.transactionCurrency}

@@ -72,7 +72,7 @@ export default function Verifyemail({ navigation, route }: IProps) {
         <ScrollView bounces style={{ flex: 1, marginBottom: 50, backgroundColor: 'transparent', paddingHorizontal: 0 }} contentContainerStyle={{ marginBottom: 50 }}>
 
           <Box>
-            <TextInput name="code" leftElement={<Feather name="lock" size={25} style={{ marginTop: 10 }} />} keyboardType="number-pad"
+            <TextInput name="code" leftElement={<Feather name="lock" size={25} style={{ marginTop: 10, color: theme.colors.text }} />} keyboardType="number-pad"
                 isPassword={false} />
           </Box>
 

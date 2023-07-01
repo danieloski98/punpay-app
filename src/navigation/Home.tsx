@@ -7,6 +7,7 @@ import KYC from '../pages/Dashboard/KYC';
 import TransactionType from '../pages/Dashboard/TransactionType'
 import CryptoPage from '../pages/Dashboard/CryptoPage'
 import Pin from '../pages/Auth/Pin';
+import UploadKYCDoc from '../pages/Dashboard/UploadKycDocs'
 
 
 const { Navigator, Screen } = createNativeStackNavigator()
@@ -19,6 +20,7 @@ const Home = () => {
         <Screen name="notification" component={Notifications} />
         <Screen name="kyc" component={KYC} />
         <Screen name="transactiontype" component={TransactionType} />
+        <Screen name='verification' component={UploadKYCDoc} />
         <Screen name="crypto" component={CryptoPage} />
         <Screen name="pin" component={Pin} options={{ presentation: 'modal' }} />
    </Navigator>

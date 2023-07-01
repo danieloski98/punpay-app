@@ -8,7 +8,7 @@ import { Ionicons } from '@expo/vector-icons'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../../../../../state/Store'
 import useIcons from '../../../../../../hooks/useIcons'
-import { State } from '../../State'
+import { State, useBuyState } from '../../State'
 import { useMutation } from '@tanstack/react-query'
 import Axios from '../../../../../../utils/api'
 import { currencyFormat } from '../../../../../../utils/currencyconverter'
@@ -17,21 +17,22 @@ import { useToast } from 'react-native-toast-notifications'
 
 
 interface IProps {
-  next: React.Dispatch<React.SetStateAction<number>>;
-  state: State
+  createTransaction: (data: any) => void
 }
 
-const AwaitingPaymentPage = ({ next, state }: IProps) => {
+const AwaitingPaymentPage = () => {
   const theme = useTheme<Theme>()
   const toast = useToast();
   const coin = useSelector((state: RootState) => state.Coin);
   const { getIcon, getShortName } = useIcons();
+  const transaction = useBuyState((state) => state);
+
   const { isLoading, mutate } = useMutation({
     retry: 4,
-    mutationFn: () => Axios.put(`/transaction/${state.transactionId}`),
+    mutationFn: () => Axios.put(`/transaction/${transaction.transactionId}`),
     onSuccess: () => {
       Alert.alert('Transaction status updated');
-      next(4)
+      transaction.setAll({ stage: 4 });
     },
     onError: (error: any) => {
       Alert.alert('Error', error);
@@ -40,10 +41,10 @@ const AwaitingPaymentPage = ({ next, state }: IProps) => {
 
   const handlePress = React.useCallback(() => {
     mutate();
-  }, [state]);
+  }, [transaction]);
 
   const copyAccount = async () => {
-    await Clipboard.setStringAsync(`BankName-${state.bank?.name}, AccountNumber-${state.bank?.accountName} AccoutName:-${state.bank?.accountNumber}`);
+    await Clipboard.setStringAsync(`BankName-${transaction.bank?.name}, AccountNumber-${transaction.bank?.accountName} AccoutName:-${transaction.bank?.accountNumber}`);
     toast.show('Account Details copied!', {
       type: 'success',
       icon: <Ionicons name='add' size={10} />
@@ -51,7 +52,7 @@ const AwaitingPaymentPage = ({ next, state }: IProps) => {
   }
 
   const copyReference = async () => {
-    await Clipboard.setStringAsync(state.referenceCode);
+    await Clipboard.setStringAsync(transaction.referenceCode);
     toast.show('Reference code copied!', {
       type: 'success',
       icon: <Ionicons name='add' size={10} />
@@ -66,17 +67,17 @@ const AwaitingPaymentPage = ({ next, state }: IProps) => {
       <View style={[Style.accountContainer, { borderBottomColor: theme.textInput.backgroundColor }]}>
 
         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-          <CustomText variant="subheader" style={{ fontSize: 18 }}>{state.bank?.accountName || ''}</CustomText>
+          <CustomText variant="subheader" style={{ fontSize: 18 }}>{transaction.bank?.accountName || ''}</CustomText>
           <Ionicons name="copy-outline" size={30} color={theme.colors.text} onPress={copyAccount} />
         </View>
 
-        <CustomText variant="body" mt="s">{state.bank?.accountNumber || ''}</CustomText>
-        <CustomText variant="body" mt="s">{state.bank?.name || ''}</CustomText>
+        <CustomText variant="body" mt="s">{transaction.bank?.accountNumber || ''}</CustomText>
+        <CustomText variant="body" mt="s">{transaction.bank?.name || ''}</CustomText>
 
       </View>
 
       <CustomText variant="body" mt="m">Amount</CustomText>
-      <CustomText variant="subheader" mt="m">N{currencyFormat(state.transactionAmount)}</CustomText>
+      <CustomText variant="subheader" mt="m">N{currencyFormat(parseInt(transaction.transactionAmount))}</CustomText>
 
       <View style={{ flexDirection: 'row', marginTop: 20 }}>
 
@@ -84,7 +85,7 @@ const AwaitingPaymentPage = ({ next, state }: IProps) => {
           <CustomText variant="subheader" style={{ fontSize: 16 }}>You'll Recieve</CustomText>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             {getIcon(coin, 20)}
-            <CustomText variant="subheader" mx="s" style={{ fontSize: 18 }}>{state.payoutAmount}</CustomText>
+            <CustomText variant="subheader" mx="s" style={{ fontSize: 18 }}>{transaction.payoutAmount}</CustomText>
             <CustomText variant="body">{getShortName(coin as any)}</CustomText>
           </View>
         </View>
@@ -101,7 +102,7 @@ const AwaitingPaymentPage = ({ next, state }: IProps) => {
       <View style={{ marginTop: 20 }}>
         <CustomText variant="subheader" style={{ fontSize: 16 }}>Reference Code</CustomText>
         <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
-          <CustomText variant="subheader" mr="m">{state.referenceCode}</CustomText>
+          <CustomText variant="subheader" mr="m">{transaction.referenceCode}</CustomText>
           <Ionicons name="copy-outline" size={30} color={theme.colors.text} onPress={copyReference} />
         </View>
       </View>

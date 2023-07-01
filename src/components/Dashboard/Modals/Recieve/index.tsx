@@ -1,10 +1,10 @@
-import { View, Share, ActivityIndicator, Alert } from "react-native";
+import { View, Share, ActivityIndicator, Alert, BackHandler } from "react-native";
 import React from "react";
 import { Style } from "./style";
 import {
   BottomSheetModal,
 } from "@gorhom/bottom-sheet";
-import {Box, Text as CustomText, PrimaryButton } from '../../../General'
+import {Box, Text as CustomText, PrimaryButton, Text } from '../../../General'
 import { useTheme } from "@shopify/restyle";
 import { Theme } from "../../../../style/theme";
 import { Ionicons } from '@expo/vector-icons'
@@ -20,15 +20,17 @@ import {useToast} from 'react-native-toast-notifications'
 import { useDispatch } from "react-redux";
 import { Dispatch } from "../../../../state/Store";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { showMessage } from "react-native-flash-message";
+import { ref } from "yup";
+import { useModalState } from "../../../../pages/Dashboard/TransactionType/state";
 
 
 interface IProps {
-    close: React.Dispatch<React.SetStateAction<boolean>>;
     coin: string;
 }
 
-const RecieveModal = ({ close, coin }: IProps) => {
-  
+const RecieveModal = ({ coin }: IProps) => {
+  const { setOpenModal, setAll } = useModalState((state) => state)
   const theme = useTheme<Theme>();
   const [darkmode] = useAtom(DarkModeAtom);
   const [address, setAddress] = React.useState('');
@@ -38,13 +40,32 @@ const RecieveModal = ({ close, coin }: IProps) => {
   const toast = useToast();
   const dispatch = useDispatch<Dispatch>()
 
-  const { isLoading, isError } = useQuery(['get_wallet'], () => Axios.get(`/user/wallet/${getShortName(coin as any)}`), {
+  React.useEffect(() => {
+    const unsubscribe = BackHandler.addEventListener('hardwareBackPress', () => {
+      setAll({ openDeposit: false });
+      return true;
+    });
+
+    return () => unsubscribe.remove();
+  }, [])
+
+  const { isLoading, isError, refetch } = useQuery(['get_wallet_1'], () => Axios.get(`/user/wallet/${getShortName(coin as any)}`), {
     refetchOnMount: true,
-    refetchInterval: 10000,
     onSuccess: (data) => {
       setAddress(data.data.data.deposit_address);
     },
     onError: async (error: any) => {
+      showMessage({
+        message: 'An Error occured',
+        description: error,
+        floating: false,
+        type: 'danger',
+        duration: 5000,
+        position: 'top',
+        style: {
+          height: 100,
+        }
+      })
       const token = await AsyncStorage.getItem('token');
       if (token === '' || token === null) {
         dispatch.loggedIn.logout();
@@ -52,7 +73,7 @@ const RecieveModal = ({ close, coin }: IProps) => {
         return;
       }
       Alert.alert('Error', error);
-      close(false);
+      setOpenModal(false);
     }
   })
 
@@ -79,12 +100,28 @@ const RecieveModal = ({ close, coin }: IProps) => {
     }).then()
     }
   }, [coin, address]);
+
+  const handleRefresh = React.useCallback(async() => {
+    await refetch({
+      exact: true,
+    });
+  }, []);
   return (
    <ModalWrapper
     ref={bottomSheetRef}
-    onClose={() => close(false)}
+    onClose={() => setAll({ openDeposit: false })}
    >
-     <Box flexDirection='row' alignItems='center' justifyContent='center'>
+      {
+        isLoading && (
+          <Box alignItems='center' height={150} justifyContent={'center'}>
+            <ActivityIndicator color={theme.colors.primaryColor} size='large' />
+            <CustomText variant='subheader' style={{ fontSize: 22 }}>Loading Wallet Details...</CustomText>
+          </Box>
+        )
+      }
+      { !isLoading && !isError && (
+        <>
+          <Box flexDirection='row' alignItems='center' justifyContent='center'>
                 <CustomText variant='body'>Deposit { coin }</CustomText>
             </Box>
             <View style={Style.writeupContainer}>
@@ -131,6 +168,17 @@ const RecieveModal = ({ close, coin }: IProps) => {
             )}
 
             <PrimaryButton text="Share Address" action={getData} isLoading={isLoading} />
+        </>
+      )}
+      {
+       !isLoading && isError && (
+          <Box alignItems='center' height={150} justifyContent={'center'}>
+            <CustomText variant='subheader' style={{ fontSize: 22 }}>An Error occured</CustomText>
+            <Text variant='body' marginBottom='m' marginTop='s'>Something went wrong!</Text>
+            <PrimaryButton text="Refresh" action={handleRefresh} isLoading={isLoading} />
+          </Box>
+        )
+      }
    </ModalWrapper>
   );
 };

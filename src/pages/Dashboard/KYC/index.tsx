@@ -1,4 +1,4 @@
-import { View, Pressable } from "react-native";
+import { View, Pressable, ActivityIndicator, Image } from "react-native";
 import React from "react";
 import { Style } from "./style";
 import { Box, Text as CustomText, PrimaryButton } from "../../../components/General";
@@ -12,7 +12,8 @@ import Axios from "../../../utils/api";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../state/Store";
 import { Alert, NativeEventEmitter, NativeModules } from 'react-native'
-import { MetaMapRNSdk } from 'react-native-metamap-sdk';
+import { VerificationModel } from "../../../models/verification";
+// import { MetaMapRNSdk } from 'react-native-metamap-sdk';
 
 
 
@@ -20,31 +21,14 @@ import { MetaMapRNSdk } from 'react-native-metamap-sdk';
 
 export default function KYC({ navigation }: { navigation: any }) {
   const user = useSelector((state: RootState) => state.User);
+  const darkMode = useSelector((state: RootState) => state.isDarkMode);
   const [verificationUploaded, setVerificationUpload] = React.useState(false);
 
   const queryClient = useQueryClient();
 
-  React.useEffect(() => {
-    const MetaMapVerifyResult = new NativeEventEmitter(NativeModules.MetaMapRNSdk)
-    MetaMapVerifyResult.addListener('verificationSuccess', () => {
-      queryClient.invalidateQueries();
-      navigation.navigate('index');
-      Alert.alert('Alert', 'You document has been uploaded successfully, This usually take about 1 - 2 business days');
-    })
-    MetaMapVerifyResult.addListener('verificationCanceled', (data) => Alert.alert('Alert', 'You can always verify your identity again'))
-
-    return () => {
-      MetaMapVerifyResult.removeAllListeners('verificationSuccess');
-      MetaMapVerifyResult.removeAllListeners('verificationCanceled');
-    }
-
-  })
-
 
   // get verification
-  const { isLoading } = useQuery(['getVerification'], () => Axios.get('/verification'), {
-    refetchInterval:  1000 * 60,
-    refetchOnMount: true,
+  const { isLoading, data, isError, refetch } = useQuery(['getVerification'], () => Axios.get('/verification'), {
     onSuccess: (data) => {
       setVerificationUpload(true);
     },
@@ -53,56 +37,96 @@ export default function KYC({ navigation }: { navigation: any }) {
     }
   });
 
-  const handleMetaMapClickButton = () => {
-    //set 3 params clientId (cant be null), flowId, metadata
+  // const handleMetaMapClickButton = () => {
 
-    MetaMapRNSdk.showFlow("642be3a4547081001c4eb417", "642be3a4547081001c4eb416", { lastName: user.lastName, firstName: user.firstName, email: user.email, userId: user.id });
+  if (!isLoading && isError) {
+    return (
+      <Box flex={1}>
+        <CustomText variant='subheader'>Error occured</CustomText>
+        <CustomText variant='body' textAlign='center' marginTop='s'>An error occured while trying to get your verification Details, please try again</CustomText>
+
+        <PrimaryButton action={() => refetch()} text="Retry" checkNetwork isLoading={isLoading} />
+      </Box>
+    )
   }
-
 
   return (
     <Box backgroundColor="mainBackground" style={Style.parent}>
 
+     
+
       <Pressable style={Style.header} onPress={() => { navigation.navigate('index') }}>
 
-        <Feather name="chevron-left" size={25} color={theme.colors.text} />
+        <Feather name="chevron-left" size={25} color={darkMode ? theme.colors.whiteText : theme.colors.blackText} />
         <CustomText variant="body" marginLeft="s" style={{ marginBottom: 4 }}>Back</CustomText>
       </Pressable>
 
+      {/* IMAGES FOR VERIFICATION */}
+
+      {
+        !isLoading && !verificationUploaded && !user.KYCVerified && (
+          <Box alignItems='center'>
+            <Image source={ darkMode ? require('../../../../assets/verificationl.png'): require('../../../../assets/verification.png')} style={{ width: 70, height: 70 }}/>
+          </Box>
+            )
+      }
+
+{
+        !isLoading && verificationUploaded && !user.KYCVerified && (
+          <Box alignItems='center'>
+            <Image source={ darkMode ? require('../../../../assets/verificationl.png'): require('../../../../assets/verification.png')} style={{ width: 70, height: 70 }} />
+          </Box>
+            )
+      }
+
+      { !isLoading && verificationUploaded && user.KYCVerified && (
+        <Box alignItems='center'>
+          <Image source={ darkMode ? require('../../../../assets/acceptedl.png'): require('../../../../assets/accepted.png')} style={{ width: 70, height: 70 }} />
+        </Box>
+      )}
+
+      {
+        isLoading && (
+          <Box justifyContent='center' alignItems='center'>
+            <ActivityIndicator size='large' color={darkMode ? 'white': theme.colors.primaryColor} />
+          </Box>
+        )
+      }
+
       {
         !isLoading && !verificationUploaded && (
-          <Box backgroundColor='mainBackground'>
-            <CustomText variant='body'>You have not uploaded you verification document yet. Please upload it to continue.</CustomText>
-            <Pressable onPress={handleMetaMapClickButton} style={{ ...Style.conatiner, backgroundColor: theme.textInput.backgroundColor, marginTop: 20 }}>
-              <CustomText variant="bodylight" ml="m" textAlign='center'>Verify KYC to be able to withdraw</CustomText>
+          <Box style={{ backgroundColor:  'transparent' }} mt='m'>
+            <CustomText variant='bodylight'>You have not uploaded you verification document yet. Please upload it to continue.</CustomText>
+            <Pressable onPress={() => navigation.navigate('verification')} style={{ ...Style.conatiner, backgroundColor: theme.textInput.backgroundColor, marginTop: 20 }}>
+              <CustomText variant="bodylight" textAlign='center' style={{ color: 'black', width: '100%' }}>Verify KYC to be able to withdraw</CustomText>
             </Pressable>
           </Box>
         )
       }
 
     {
-        !isLoading && verificationUploaded && !user.KYCVerified && (
-          <Box backgroundColor='mainBackground'>
+        !isLoading && verificationUploaded && (
+          <Box style={{ backgroundColor:  'transparent' }} mt='m'>
             <CustomText variant='body'>Your document is currently undergoing review, you will be alert when it has been approved.</CustomText>
-            <View style={{ ...Style.conatiner, backgroundColor: theme.textInput.backgroundColor, marginTop: 20, justifyContent: 'space-between' }}>
+            <View style={{ ...Style.conatiner, backgroundColor: theme.colors.primaryColor, marginTop: 20, justifyContent: 'space-between' }}>
               <CustomText variant="bodylight" ml="m" textAlign='center'> STATUS</CustomText>
-              <CustomText variant="bodylight" ml="m" textAlign='center'> UNDER REVIEW</CustomText>
+              <CustomText variant="bodylight" ml="m" textAlign='center'>{(data.data.data as VerificationModel).status}</CustomText>
             </View>
           </Box>
         )
       }
 
-    {
+    {/* {
         !isLoading && verificationUploaded && user.KYCVerified && (
-          <Box backgroundColor='mainBackground'>
+          <Box style={{ backgroundColor: 'transparent' }} mt='m'>
             <CustomText variant='body'>Your KYC document has been approved. You can withdraw your funds now.</CustomText>
-            <View style={{ ...Style.conatiner, backgroundColor: theme.textInput.backgroundColor, marginTop: 20, justifyContent: 'space-between' }}>
+            <View style={{ ...Style.conatiner, backgroundColor:theme.colors.primaryColor, marginTop: 20, justifyContent: 'space-between' }}>
               <CustomText variant="bodylight" ml="m" textAlign='center'> STATUS</CustomText>
-              <CustomText variant="bodylight" ml="m" textAlign='center'> APPROVED</CustomText>
+              <CustomText variant="bodylight" ml="m" textAlign='center'> {(data.data.data as VerificationModel).status}</CustomText>
             </View>
           </Box>
         )
-      }
+      } */}
 
     </Box>
   );

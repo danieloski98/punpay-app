@@ -1,7 +1,7 @@
 export interface INotification {
     data: string;
-    message: string;
-    notification_id: string;
-    pushData: any;
+    body: string;
+    userId: string;
     title: string;
+    id: string;
 }

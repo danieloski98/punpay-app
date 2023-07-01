@@ -14,6 +14,8 @@ import BuyPage from '../../../components/Dashboard/Modals/Buy'
 import {Box, Text as CustomText, PrimaryButton } from "../../../components/General";
 import { useDispatch } from 'react-redux'
 import { Dispatch } from '../../../state/Store'
+import { useModalState } from './state'
+import { state } from '../../../components/Dashboard/Modals/Sell/state'
 
 const COINS = ['Bitcoin', 'Ethereum', 'Tether', 'BUSD', 'XRP', 'DOGE', 'BNB', 'Litecoin' ];
 const COINS_T = ['Bitcoin', 'Ethereum', 'BUSD', 'XRP', 'DOGE', 'BNB', 'Litecoin' ];
@@ -23,7 +25,7 @@ interface IProps {
 }
 
 const TransactionType = ({ route, navigation }: IProps) => {
-  const [openModal, setOpenModal] = React.useState(false);
+  const { openModal, setOpenModal, openBuy, openSell, openDeposit, openSwap, setAll } = useModalState((state) => state);
   const [coin, setCoin] = React.useState('');
   const [search, setSearch] = React.useState<string>('')
   const { type } = route.params as { type: string };
@@ -33,16 +35,16 @@ const TransactionType = ({ route, navigation }: IProps) => {
   const switchPageType = () => {
     switch(type) {
       case 'Deposit': {
-        return <RecieveModal close={setOpenModal} coin={coin} />
+        return <RecieveModal coin={coin} />
       }
       case 'Withdraw': {
-        return <SellPage close={setOpenModal} coin={coin} />
+        return <SellPage coin={coin} />
       }
       case 'Swap': {
-        return <Swap close={setOpenModal} coin={coin} />
+        return <Swap coin={coin} />
       }
       case 'Buy': {
-        return <BuyPage close={setOpenModal} coin={coin} />
+        return <BuyPage coin={coin} />
       }
     }
   }
@@ -50,7 +52,24 @@ const TransactionType = ({ route, navigation }: IProps) => {
   const registerCoin = (co: string) => {
     setCoin(co);
     dispatch({ type: 'Coin/update', payload: co });
-    setOpenModal(true);
+    switch(type) {
+      case 'Deposit': {
+        setAll({ openDeposit: true });
+        break;
+      }
+      case 'Withdraw': {
+        setAll({ openSell: true });
+        break;
+      }
+      case 'Swap': {
+        setAll({ openSwap: true });
+        break;
+      }
+      case 'Buy': {
+        setAll({ openBuy: true });
+        break;
+      }
+    }
   };
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
@@ -93,7 +112,10 @@ const TransactionType = ({ route, navigation }: IProps) => {
             ))}
           </ScrollView>
         </View>
-            {openModal && switchPageType()}
+            {openBuy && <BuyPage coin={coin} />}
+            {openSell && <SellPage coin={coin} />}
+            {openSwap && <Swap coin={coin} />}
+            {openDeposit && <RecieveModal coin={coin} />}
       </Box>
     </GestureHandlerRootView>
   )

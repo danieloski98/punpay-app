@@ -8,49 +8,42 @@ import { MetaMapRNSdk} from 'react-native-metamap-sdk';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../../state/Store';
 import { useNavigation } from '@react-navigation/native';
+import { TextInput } from 'react-native-gesture-handler';
+import { useTheme } from '@shopify/restyle';
+import { Theme } from '../../../../style/theme';
+import { showMessage } from 'react-native-flash-message';
+import CameraScreen from '../../Verrification/CameraScreen';
+import { CameraCapturedPicture } from 'expo-camera';
 
 interface IProps {
     close: () => void;
+    action: (data: CameraCapturedPicture) => void;
 }
 
-const KycModal = ({ close }: IProps) => {
+const InputNinModal = ({ close, action }: IProps) => {
     const bottomsheetRef = React.useRef<BottomSheetModal>(null);
     const user = useSelector((state: RootState) => state.User);
     const navigation = useNavigation<any>();
+
+    const theme = useTheme<Theme>();
 
 
     React.useEffect(() => {
         bottomsheetRef.current.present();
     }, []);
 
-    const handleClick = () => {
-        close();
-        bottomsheetRef.current.forceClose();
-        navigation.navigate('verification');
-  }
 
   return (
     <ModalWrapper
         onClose={close}
         ref={bottomsheetRef}
-        snapPoints={['45%']}
+        snapPoints={['90%']}
     >
-        <Box width='100%' alignItems='center' mt='m'>
-            <Image source={require('../../../../res/id-card.png')} style={{ width: 100, height: 100 }} resizeMode='contain' />
-        </Box>
-
-        <CustomText textAlign='center' variant='body' mt='l'>
-            KYC not verified
-        </CustomText>
-
-        <CustomText  textAlign='center' variant='bodylight' mt='s' mb='l'>
-            You have to verify your identity, so you would be granted full access to our platform
-        </CustomText>
-
-        <PrimaryButton text='Verify KYC' action={handleClick} />
+       
+        <CameraScreen action={action} />
 
     </ModalWrapper>
   )
 }
 
-export default KycModal
+export default InputNinModal;

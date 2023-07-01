@@ -19,6 +19,7 @@ import KycModal from '../../../components/Dashboard/Modals/KycModal'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Feather } from '@expo/vector-icons'
 import { openURL } from 'expo-linking'
+import { VerificationModel } from '../../../models/verification'
 
 
 const { height } = Dimensions.get('screen');
@@ -38,18 +39,20 @@ export default function Home({ navigation }) {
   const theme = useTheme<Theme>();
   const queryClient = useQueryClient();
   const { isLoading, isError, data, refetch } = useWallets();
+  const [ver, setVer] = React.useState<VerificationModel | null>(null);
   // get verification
-  const { isLoading: verificationLoading } = useQuery(['getVerification'], () => Axios.get('/verification'), {
-    refetchOnMount: true,
+  const { isLoading: verificationLoading } = useQuery(['getVerificationHome'], () => Axios.get('/verification'), {
+    // refetchOnMount: true,
     onSuccess: (data) => {
       setVerificationUpload(true);
+      setVer(data.data.data);
     },
     onError: (error: any) => {
       setVerificationUpload(false);
     }
   });
-  const { isLoading: userLoading } = useQuery(['getUser'], () => Axios.get(`/user/profile/${user.id}`),{
-    refetchOnMount: true,
+  const { isLoading: userLoading } = useQuery(['getUserHome'], () => Axios.get(`/user/profile/${user.id}`),{
+    // refetchOnMount: true,
     onSuccess: (data) => {
       dispatch({ type: 'User/update', payload: data.data.data })
         if (data.data.data.bank === null) {
@@ -100,7 +103,7 @@ export default function Home({ navigation }) {
 
       <View style={{ backgroundColor: theme.textInput.backgroundColor, flex: 1 }}>
         {/* portfolio section */}
-        <View style={{ width: '100%', height: (height / 100) * 30, backgroundColor: theme.colors.primaryColor }}>
+        <View style={{ width: '100%', height: (height / 100) * 30, backgroundColor: theme.textInput.backgroundColor }}>
           <Portfolio currency={currency} open={() => setShowModal(true)} />
         </View>
 

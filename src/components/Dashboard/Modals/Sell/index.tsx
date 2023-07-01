@@ -18,7 +18,7 @@ import ModalWrapper from '../../../General/ModalWrapper';
 import useGetRate from '../../../../hooks/useGetRate';
 import useIcons, { Coin } from '../../../../hooks/useIcons';
 import useCoin from '../../../../hooks/useCoin';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import STAT from '../../../../utils/stats';
 import { IStat } from '../../../../models/Stat';
 import { Link, useNavigation } from '@react-navigation/native';
@@ -26,23 +26,24 @@ import { reducer, state as reducerState } from './state';
 import Axios from '../../../../utils/api';
 import useOpenWhatsapp from '../../../../hooks/useOpenWhatsapp';
 import { openURL } from 'expo-linking'
-import { View, Pressable, Alert, NativeEventEmitter, NativeModules } from 'react-native'
-import { MetaMapRNSdk} from 'react-native-metamap-sdk';
+import { View, Pressable, Alert, ActivityIndicator, BackHandler } from 'react-native'
 
 
 // svgs
 import CardEdit from '../../../../res/svg-output/CardEdit'
 import UserO from '../../../../res/svg-output/Usero'
+import { useModalState } from '../../../../pages/Dashboard/TransactionType/state';
+import { showMessage } from 'react-native-flash-message';
 
 
 
 
 interface IProps {
-    close: React.Dispatch<React.SetStateAction<boolean>>;
     coin: string;
 }
 
-const SellPage = ({ close, coin }: IProps) => {
+const SellPage = ({ coin }: IProps) => {
+    const { setOpenModal, setAll } = useModalState((state) => state);
   // STATES
     const [step, setStep] = React.useState(1)
     const [sellStep, setSellStep] = React.useState(1);
@@ -59,10 +60,69 @@ const SellPage = ({ close, coin }: IProps) => {
     const theme = useTheme<Theme>();
     const { getShortName } = useIcons();
     const { openwhatsapp } = useOpenWhatsapp()
+    const queryClient = useQueryClient();
+
+    // handle back press
+    React.useEffect(() => {
+      const handleBack = BackHandler.addEventListener('hardwareBackPress', () => {
+        if (initial) {
+          setAll({ openSell: false });
+          return true;
+        } else {
+          if (!initial && step === 1) {
+            if (sellStep === 1) {
+              setInital(true);
+              return true;
+            }
+            if (sellStep >  1 && sellStep < 4) {
+              setSellStep(prev => prev - 1);
+              return true;
+            }
+            if (sellStep === 4) {
+              showMessage({
+                message: `Transaction Processing`,
+              description: `Your transaction has already been created`,
+              type: 'info',
+              floating: false,
+              autoHide: true,
+              duration: 6000,
+              });
+              return true;
+            }
+          } 
+          if (!initial && step === 2) {
+            if (sendStep === 1) {
+              setInital(true);
+              return true;
+            }
+            if (sendStep >  1 && sendStep < 4) {
+              setSellStep(prev => prev - 1);
+              return true;
+            }
+            if (sendStep === 4) {
+              showMessage({
+                message: `Transaction Processing`,
+              description: `Your transaction has already been created`,
+              type: 'info',
+              floating: false,
+              autoHide: true,
+              duration: 6000,
+              });
+              return true;
+            }
+          }
+        }
+      });
+
+      return () => {
+        handleBack.remove();
+      }
+    }, [sellStep, sendStep, initial])
 
      // get verification
-    const { isLoading: verificationLoading } = useQuery(['getVerification'], () => Axios.get('/verification'), {
-      refetchOnMount: true,
+    const { isLoading: verificationLoading } = useQuery(['getVerificationSell'], () => Axios.get('/verification'), {
+      refetchOnMount: false,
+      retry: false,
       onSuccess: (data) => {
         setVerificationUpload(true);
       },
@@ -71,45 +131,36 @@ const SellPage = ({ close, coin }: IProps) => {
       }
     });
 
-    React.useEffect(() => {
-      const MetaMapVerifyResult = new NativeEventEmitter(NativeModules.MetaMapRNSdk)
-      MetaMapVerifyResult.addListener('verificationSuccess', () => {
-        console.log(data);
-            Alert.alert('Alert', 'You document has been uploaded successfully, This usually take about 1 - 2 business days');
-      })
-      MetaMapVerifyResult.addListener('verificationCanceled', (data) => Alert.alert('Alert', 'You can always verify your identity again'))
-
-      return () => {
-          MetaMapVerifyResult.removeAllListeners('verificationSuccess');
-          MetaMapVerifyResult.removeAllListeners('verificationCanceled');
-      }
-      
-  })
-
-    const handleMetaMapClickButton = () => {
-          //set 3 params clientId (cant be null), flowId, metadata
-
-          MetaMapRNSdk.showFlow("642be3a4547081001c4eb417", "642be3a4547081001c4eb416", { lastName: user.lastName, firstName: user.firstName, email: user.email, userId: user.id });
-    }
-
     const handleLink = async() => {
       await openURL('https://wa.me/message/LX3XCNXKYMVVK1');
-}
+    }
 
     // Custom hooks
     const { isLoading, data } = useGetRate({ currency: getShortName(coin as Coin), transactionType: 'buy' });
     const { getApiName } = useCoin(coin as Coin);
 
     // get the coin usd value from the coingecko api
-    const { isLoading: coinDataLoading, data: coinData, isError } = useQuery(['getCoinDetails'], () => STAT.get(`/coins/${getApiName()}`), {
+    const { isLoading: coinDataLoading, data: coinData, isError } = useQuery(['getCoinDetailsSell'], () => STAT.get(`/coins/${getApiName()}`), {
       refetchOnMount: true,
-      notifyOnChangeProps: 'all',
+      retryOnMount: true,
+      retry: true,
+      // notifyOnChangeProps: 'all',
       onSuccess: (data) => {
         const res = data.data as IStat
         setUsd(res.market_data.current_price.usd);
       },
-      onError: () => {
-        Alert.alert('Error', `Couldn\'t get ${coin} usd value`);
+      onError: (error) => {
+        console.log(error);
+        showMessage({
+          message: `Error`,
+          description: `Error, Couldn't get ${coin} USD value`,
+          type: 'danger',
+          floating: false,
+          autoHide: true,
+          duration: 6000,
+          statusBarHeight: 30,
+          
+        });
         bottomsheetRef.current?.close();
         navigation.goBack();
       }
@@ -120,22 +171,62 @@ const SellPage = ({ close, coin }: IProps) => {
    const { mutate: sellMutation, isLoading: sellIsLoading } = useMutation({
     mutationFn: (data: any) => Axios.post(`/transaction/sell`, data),
     onSuccess: (data) => {
-      Alert.alert('Success', data.data.message);
+      showMessage({
+        message: `Transaction Succcessful`,
+        description: data.data.message,
+        type: 'success',
+        floating: false,
+        autoHide: true,
+        duration: 6000,
+        statusBarHeight: 30,
+        
+      });
+      queryClient.invalidateQueries(['getCoin']);
+      queryClient.refetchQueries();
       setSellStep(4)
     },
     onError: (error: any) => {
-      Alert.alert('Error', error);
+      showMessage({
+        message: `An error occured while processing your transaction`,
+        description: error,
+        type: 'warning',
+        floating: false,
+        autoHide: true,
+        duration: 6000,
+        statusBarHeight: 30,
+       
+      });
     }
   })
 
   const { mutate: withdrawMutation, isLoading: withdrawIsLoading } = useMutation({
     mutationFn: (data: any) => Axios.post(`/transaction/withdraw`, data),
     onSuccess: (data) => {
-      Alert.alert('Success', data.data.message);
+      showMessage({
+        message: `Transaction successful`,
+        description: data.data.message,
+        type: 'success',
+        floating: false,
+        autoHide: true,
+        duration: 6000,
+        statusBarHeight: 30,
+        
+      });
+      queryClient.invalidateQueries(['getCoin']);
+      queryClient.refetchQueries();
       setSendStep(4)
     },
     onError: (error: any) => {
-      Alert.alert('Error', error);
+      showMessage({
+        message: `An error occured while processing your transaction`,
+        description: error,
+        type: 'warning',
+        floating: false,
+        autoHide: true,
+        duration: 6000,
+        statusBarHeight: 30,
+       
+      });
     }
   })
 
@@ -148,6 +239,12 @@ const SellPage = ({ close, coin }: IProps) => {
       bottomsheetRef.current?.present();
     }
   }, [coinData])
+
+  const handleMetaMapClickButton = () => {
+    //set 3 params clientId (cant be null), flowId, metadata
+
+    // MetaMapRNSdk.showFlow("642be3a4547081001c4eb417", "642be3a4547081001c4eb416", { lastName: user.lastName, firstName: user.firstName, email: user.email, userId: user.id });
+}
 
   // send transaction
   const createSellTransaction = React.useCallback(() => {
@@ -233,7 +330,7 @@ const SellPage = ({ close, coin }: IProps) => {
   return (
     <ModalWrapper
       ref={bottomsheetRef}
-      onClose={() => close(false)}
+      onClose={() => setAll({ openSell: false })}
     >
       {initial && (
                  <Box mt='m'>
@@ -252,6 +349,8 @@ const SellPage = ({ close, coin }: IProps) => {
                      <CustomText variant="bodylight" ml="m">Sell for FIAT</CustomText>
                  </Pressable>
 
+                
+
                 {
                   user.accountDisabled ?
                   (
@@ -265,7 +364,15 @@ const SellPage = ({ close, coin }: IProps) => {
                   (
                     <>
                      {
-                        !verificationLoading && verificationUploaded && user.KYCVerified && (
+                        verificationLoading && (
+                          <Box alignItems='center' width='100%' paddingVertical='s'>
+                            <ActivityIndicator color={theme.colors.primaryColor} size='small' />
+                            <CustomText variant="bodylight" ml="m">Checking verification</CustomText>
+                          </Box>
+                        )
+                      }
+                     {
+                        !verificationLoading && !verificationUploaded && !user.KYCVerified && (
                           <Pressable onPress={() => selectSell(2)} style={{ ...Style.conatiner, backgroundColor: theme.textInput.backgroundColor, marginTop: 20 }}>
                           <Box mt='s'>
                             <CardEdit width={30} height={30} />
@@ -275,7 +382,7 @@ const SellPage = ({ close, coin }: IProps) => {
                         )
                       }
                       {
-                        !verificationLoading && !verificationUploaded && !user.KYCVerified && (
+                        !verificationLoading && verificationUploaded && user.KYCVerified && (
                           <Pressable onPress={handleMetaMapClickButton} style={{ ...Style.conatiner, backgroundColor: theme.textInput.backgroundColor, marginTop: 20 }}>
                           <CustomText variant="bodylight" ml="m" textAlign='center'>Verify KYC to be able to withdraw</CustomText>
                           </Pressable>

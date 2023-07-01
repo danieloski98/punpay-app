@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Dimensions, Image } from 'react-native'
+import { View, Dimensions, Image, StatusBar, Platform } from 'react-native'
 import Box from '../../../components/General/Box'
 import Text from '../../../components/General/Text'
 import { Style } from './style'
@@ -25,12 +25,12 @@ const Onboarding = ({ navigation }: IProps) => {
   return (
       <Box backgroundColor="mainBackground" flex={1} style={Style.parent} paddingTop='m'>
         <View style={Style.imgContainer}>
-          <View>
+          <View style={{ paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight: 30 }}>
             <Image source={require('../../../res/logo2.png')} style={{ width: 80, height: 80 }} resizeMode='contain' />
           </View>
           <View style={{ paddingRight: 0, height: '60%', width: '100%' }}>
 
-          <PagerView style={{ flex: 1, alignItems: 'center' }} orientation='horizontal' initialPage={0} transitionStyle='scroll' onPageScroll={(e:PagerViewOnPageScrollEvent) =>  setPostion(e.nativeEvent.position)}>
+          <PagerView style={{ flex: 1, alignItems: 'center' }} orientation='horizontal' initialPage={0} onPageScroll={(e:PagerViewOnPageScrollEvent) =>  setPostion(e.nativeEvent.position)}>
             <View style={{ flex: 1, alignItems: 'center', width: '100%' }}>
               <Image source={require('../../../res/phone1.png')} resizeMode='contain' style={{ width: '80%', height: '100%'}} />
             </View>
@@ -60,7 +60,7 @@ const Onboarding = ({ navigation }: IProps) => {
             </View>
 
             <View style={{ width: '48%', }}>
-              <BorderButton text="Login" action={() => {navigation.navigate('login')}} />
+              <BorderButton text="Login" checkNetwork action={() => {navigation.navigate('login')}} />
             </View>
           </View>
         </View>

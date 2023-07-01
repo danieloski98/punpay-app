@@ -5,7 +5,7 @@ import AwaitingPaymentPage from './Pages/AwaitingPage';
 import ConfirmPaymentPage from './Pages/ConfirmPayment';
 import Bank from './Pages/Banks'
 import ModalWrapper from '../../../General/ModalWrapper';
-import { reducer, state as reducerState } from './State';
+import { initialState, useBuyState } from './State';
 import { IBank } from '../../../../models/bank';
 import useGetRate from '../../../../hooks/useGetRate';
 import useIcons, { Coin } from '../../../../hooks/useIcons';
@@ -19,21 +19,60 @@ import Axios from '../../../../utils/api';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../../state/Store';
 import { useToast } from 'react-native-toast-notifications';
+import { BackHandler, Platform } from 'react-native'
+import { Box } from '../../../General';
+import { Feather } from '@expo/vector-icons';
+import { useModalState } from '../../../../pages/Dashboard/TransactionType/state';
+import { useTheme } from '@shopify/restyle';
+import { Theme } from '../../../../style/theme';
+import { showMessage } from 'react-native-flash-message';
 
 
-
+const OS = Platform.OS;
 interface IProps {
-  close: React.Dispatch<React.SetStateAction<boolean>>;
   coin: string;
 }
 
-const BuyPage = ({ close, coin }: IProps) => {
-  const [stage, setStage] = React.useState(1)
+const BuyPage = ({ coin }: IProps) => {
+  const { setOpenModal, setAll } = useModalState((state) => state)
   const [usd, setUsd] = React.useState('0');
   const bottomsheetRef = React.useRef<BottomSheetModal>(null);
   const navigation = useNavigation()
   const user = useSelector((state: RootState) => state.User);
   const toast = useToast();
+  const transaction = useBuyState((state) => state)
+  const theme = useTheme<Theme>();
+
+  React.useEffect(() => {
+    const unsubscribe = BackHandler.addEventListener('hardwareBackPress', () => {
+      if (transaction.stage === 1) {
+        setAll({ openBuy: false });
+        return true;
+      } else {
+        if (transaction.stage === 2) {
+          transaction.setAll({ stage: transaction.stage - 1 })
+        }
+        if (transaction.stage === 3) {
+          showMessage({
+            message: 'Confirm transaction',
+            description: `You can't go back , your transaction has already been created`,
+            floating: false,
+            statusBarHeight: 20,
+            animated: true,
+            autoHide: true,
+            duration: 6000,
+            type: 'warning'
+          })
+          return true;
+        }
+
+        return true;
+      }
+      return true;
+    });
+
+    return () => unsubscribe.remove();
+  }, [transaction.stage])
 
   // CUSTOM HOOKS
   const { getShortName } = useIcons()
@@ -44,16 +83,14 @@ const BuyPage = ({ close, coin }: IProps) => {
     onSuccess: (data) => {
       toast.show('Transaction created', {
       })
-      dispatch({ type: 'id', payload: data.data.data.id });
-      setStage(3);
+      transaction.setAll({ transactionId: data.data.data.id });
+      transaction.setAll({ stage: 3 });
     },
     onError: (error: any) => {
       Alert.alert('Error', error)
     }
   })
   const { isLoading: coinDataLoading, data: coinData, isError } = useQuery(['getCoinDetails'], () => STAT.get(`/coins/${getApiName()}`), {
-    refetchOnMount: true,
-    notifyOnChangeProps: 'all',
     onSuccess: (data) => {
       const res = data.data as IStat
       setUsd(res.market_data.current_price.usd);
@@ -65,15 +102,12 @@ const BuyPage = ({ close, coin }: IProps) => {
     }
 });
 
-  // REDUCER FUNCTION
-  const [state, dispatch] = useReducer(reducer, reducerState);
-
   React.useEffect(() => {
     if (!coinDataLoading && !isError) {
-      dispatch({ type: 'usd', payload: (coinData?.data as IStat).market_data.current_price.usd });
+      transaction.setAll({ usd: (coinData?.data as IStat).market_data.current_price.usd })
     }
     if (!isLoading && data) {
-      dispatch({ type: 'rate', payload: data.data.rate });
+      transaction.setAll({ rate: data.data.rate })
       bottomsheetRef.current?.present();
     }
   }, [coinData])
@@ -81,49 +115,67 @@ const BuyPage = ({ close, coin }: IProps) => {
   
 
   const trade = React.useCallback((bank: IBank) => {
-    dispatch({ type: 'bank', payload: bank });
+    transaction.setAll({ bank: bank });
     
     //make api request
     const obj = {
       userId: user.id,
       bankId: bank.id.toString(),
       transactionCurrency: 'ngn',
-      transactionAmount: state.transactionAmount,
-      payoutCurrency: state.payoutCurrency,
-      payoutAmount: state.payoutAmount,
-      rate: state.rate,
-      transactionReference: state.referenceCode,
+      transactionAmount: parseInt(transaction.transactionAmount),
+      payoutCurrency: transaction.payoutCurrency,
+      payoutAmount: parseFloat(transaction.payoutAmount),
+      rate: transaction.rate,
+      transactionReference: transaction.referenceCode,
     }
+    // console.log(obj);
     mutate(obj);
-  }, [state])
+  }, [transaction]);
+
+  const handleBackButtonPro = React.useCallback(() => {
+    if (transaction.stage === 1) {
+      setOpenModal(false);
+      return;
+    } else {
+      transaction.setAll({ stage: transaction.stage - 1});
+    }
+  }, [transaction.stage]);
 
   const switchPages = React.useCallback(() => {
     if (isLoading || coinDataLoading) {
       return <ActivityIndicator size='large' />
     } else {
-      switch (stage) {
+      switch (transaction.stage) {
         case 1: {
-          return <AmountPage next={setStage} coin={coin} dispatch={dispatch} rate={isLoading ? '0' : data.data.rate} coinUSDValue={!coinData ? '0' : usd} />
+          return <AmountPage  coin={coin} />
         }
         case 2: {
           return <Bank action={trade} />
         }
         case 3: {
-          return <AwaitingPaymentPage next={setStage} state={state} />
+          return <AwaitingPaymentPage />
         }
         case 4: {
-          return <ConfirmPaymentPage state={state} />
+          return <ConfirmPaymentPage />
         }
       }
     }
    
-  }, [stage, isLoading, coinDataLoading, usd, state]);
+  }, [transaction.stage, transaction.transactionAmount, transaction.payoutAmount, isLoading, coinDataLoading, usd]);
 
   return (
     <ModalWrapper
       ref={bottomsheetRef}
-      onClose={() => close(false)}
+      onClose={() => {
+        transaction.setAll(initialState);
+        setAll({ openBuy: false });
+      }}
     >
+      {transaction.stage === 2 && (
+        <Box height={35} justifyContent='flex-end' marginBottom='m'>
+          <Feather name="chevron-left" onPress={handleBackButtonPro} size={30} color={theme.colors.text} />
+        </Box>
+      )}
       {switchPages()}
     </ModalWrapper>
   )

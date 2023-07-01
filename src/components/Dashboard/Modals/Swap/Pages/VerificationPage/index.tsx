@@ -12,6 +12,7 @@ import { useSelector } from 'react-redux'
 import { RootState } from '../../../../../../state/Store'
 import { State } from '../../../Sell/state'
 import { BooleanLocale } from 'yup/lib/locale'
+import { showMessage } from 'react-native-flash-message'
 
 
 interface IProps {
@@ -25,7 +26,7 @@ const VerificationPage = ({ changeStep, goBack, action, loading }: IProps) => {
     const theme = useTheme<Theme>();
     const [code, setCode] = React.useState('');
     const [pin, setPin] = React.useState('');
-    const [holder, setHolder] = React.useState([]);
+    const [pin2, setPin2] = React.useState('');
     const user = useSelector((state: RootState) => state.User);   
     
      // timer
@@ -36,6 +37,11 @@ const VerificationPage = ({ changeStep, goBack, action, loading }: IProps) => {
     // using ref 
     const second = React.useRef<number>(0)
     const min = React.useRef<number>(0);
+
+    React.useEffect(() => {
+      console.log(`${pin}`)
+      setPin2(pin);
+    }, [pin])
 
     // state Timeer
   const startTimer = React.useCallback(() => {
@@ -77,13 +83,29 @@ const VerificationPage = ({ changeStep, goBack, action, loading }: IProps) => {
 
     // Request for an otp
     const { isLoading, mutate } = useMutation({
-      retry: 4,
       mutationFn: () => Axios.get('/user/request-otp'),
       onSuccess: (data) => {
-        Alert.alert(data.data.message);
+        showMessage({
+          message: `Succcess`,
+          description: data.data.message,
+          type: 'success',
+          floating: false,
+          autoHide: true,
+          duration: 6000,
+          statusBarHeight: 30,
+        });
       },
       onError: (error: any) => {
         Alert.alert('Error', error);
+        showMessage({
+          message: `An error occured while requesting for OTP`,
+          description: error,
+          type: 'danger',
+          floating: false,
+          autoHide: true,
+          duration: 6000,
+          statusBarHeight: 30,
+        });
       }
     })
     // verify otp
@@ -95,35 +117,46 @@ const VerificationPage = ({ changeStep, goBack, action, loading }: IProps) => {
         action();
       },
       onError: (error: any) => {
-        Alert.alert('Error', error);
+        showMessage({
+          message: `An error occcurred while verifying OTP`,
+          description: error,
+          type: 'danger',
+          floating: false,
+          autoHide: true,
+          duration: 7000,
+          statusBarHeight: 30,
+        });
       }
     });
 
      // verify pin
      const verifyPin = useMutation({
-      mutationFn: (data: any) => Axios.put(`/user-auth/verify-pin`, data),
+      mutationFn: (data: any) => Axios.put(`/user-auth/pin/verify-pin`, data),
       onSuccess: () => {
         verifyOtp.mutate();
       },
       onError: (error: any) => {
-        Alert.alert('Error', error);
+        showMessage({
+          message: `An error occcurred while verifying you PIN`,
+          description: error,
+          type: 'danger',
+          floating: false,
+          autoHide: true,
+          duration: 7000,
+          statusBarHeight: 30,
+        });
       }
     });
 
 
-    const updatePin = React.useCallback((pin: string) => {
-      if (pin.length >= 4) {
-        setPin(pin);
-      } else {
-        setPin(pin);
-        setHolder([]);
-      }
-    }, []);
+   
 
-    const handlePress = React.useCallback(async() => {
-      // verify pin
-      verifyPin.mutate({ userId: user.id, pin });
-    }, [pin]);
+    const handlePress = React.useCallback(() => {
+      console.log(`this is pin: ${pin}`);
+      const obj = { userId: user.id, pin };
+      console.log(obj);
+      verifyPin.mutate(obj);
+    }, [pin])
   return (
     <View style={Style.parent}>
       <Pressable onPress={() => goBack() } style={{ height: 40, flexDirection: 'row', alignItems: 'center' }}>
@@ -146,12 +179,12 @@ const VerificationPage = ({ changeStep, goBack, action, loading }: IProps) => {
       <View style={{ marginTop: 30 }}>
         <CustomText variant="subheader" style={{ fontSize: 16 }}>PIN</CustomText>
         <View style={{ width: '100%', height: 55, backgroundColor: theme.textInput.backgroundColor, flexDirection: 'row', padding: 10, borderRadius: 10 }}>
-            <TextInput placeholder='Enter PIN' value={pin} onChange={(e) => updatePin(e.nativeEvent.text)} secureTextEntry keyboardType="number-pad" placeholderTextColor={theme.colors.text} style={{ flex: 1, color: theme.colors.text, fontSize: 16 }} />
+            <TextInput placeholder='Enter PIN' value={pin} onChangeText={(e) => setPin(e)} secureTextEntry keyboardType="number-pad" placeholderTextColor={theme.colors.text} style={{ flex: 1, color: theme.colors.text, fontSize: 16 }} />
         </View>
       </View>
 
       <View style={{ marginTop: 30 }}>
-        <PrimaryButton text='Continue' action={verifyOtp.isLoading || loading ? () => {} : handlePress} isLoading={verifyOtp.isLoading || loading}  />
+        <PrimaryButton text='Continue' action={handlePress} isLoading={verifyOtp.isLoading || loading || verifyPin.isLoading}  />
       </View>
     </View>
   )
