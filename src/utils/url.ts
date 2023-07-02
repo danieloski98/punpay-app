@@ -5,7 +5,7 @@ const liveurl = 'https://api.punpay.co'
 const smile = 'http://192.168.10.101:8080'
 const airtel = 'http://192.168.171.146:8000'
 
-export const url = liveurl;
+export const url = airtel;
 
 export default url;
 

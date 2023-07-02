@@ -94,7 +94,7 @@ export default function Portfolio({ open, currency }: IProps) {
        </Box>
       )}
       
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between', flex: 1, paddingHorizontal: 10, paddingTop: 10, alignItems: 'center', marginTop: 10, backgroundColor: theme.colors.modalBg, }}>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', flex: 1, paddingHorizontal: 10, paddingTop: 10, alignItems: 'center', marginTop: 10, backgroundColor: theme.textInput.backgroundColor , }}>
 
           {PortfolioActions.map((item, index) => (
             <ActionCard {...item} key={index} />

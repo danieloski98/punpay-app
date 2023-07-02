@@ -121,8 +121,8 @@ const SellPage = ({ coin }: IProps) => {
 
      // get verification
     const { isLoading: verificationLoading } = useQuery(['getVerificationSell'], () => Axios.get('/verification'), {
-      refetchOnMount: false,
-      retry: false,
+      refetchOnMount: true,
+      retry: true,
       onSuccess: (data) => {
         setVerificationUpload(true);
       },
@@ -372,7 +372,7 @@ const SellPage = ({ coin }: IProps) => {
                         )
                       }
                      {
-                        !verificationLoading && !verificationUploaded && !user.KYCVerified && (
+                        !verificationLoading && verificationUploaded && user.KYCVerified && (
                           <Pressable onPress={() => selectSell(2)} style={{ ...Style.conatiner, backgroundColor: theme.textInput.backgroundColor, marginTop: 20 }}>
                           <Box mt='s'>
                             <CardEdit width={30} height={30} />
@@ -382,7 +382,7 @@ const SellPage = ({ coin }: IProps) => {
                         )
                       }
                       {
-                        !verificationLoading && verificationUploaded && user.KYCVerified && (
+                        !verificationLoading && !verificationUploaded && (
                           <Pressable onPress={handleMetaMapClickButton} style={{ ...Style.conatiner, backgroundColor: theme.textInput.backgroundColor, marginTop: 20 }}>
                           <CustomText variant="bodylight" ml="m" textAlign='center'>Verify KYC to be able to withdraw</CustomText>
                           </Pressable>

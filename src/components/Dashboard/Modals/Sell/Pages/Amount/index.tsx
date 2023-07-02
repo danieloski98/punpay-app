@@ -82,16 +82,16 @@ const AmountPage = ({ change, dispatch, coinUSDValue }: IProps) => {
       <CustomText variant="subheader">Sell {getShortName(coin as any)} For FIAT</CustomText>
       <CustomText variant="bodylight">Get paid into your bank account for selling crypto</CustomText>
 
-      {!user.KYCVerified && (
+      {/* {!user.KYCVerified && (
         <View style={Style.upgradeContainer}>
             <CustomText variant="bodylight">Your account is currently limited so you cannot trade above 0.003BTC. Verify your account to remove limits</CustomText>
         </View>
-      )}
+      )} */}
 
       <View style={{ marginTop: 20 }}>
         <CustomText variant="subheader" style={{ fontSize: 18 }}>Enter Amount</CustomText>
         <View style={{...Style.input, backgroundColor: theme.textInput.backgroundColor, height: theme.textInput.height, marginTop: 10 }}>
-            <TextInput defaultValue='0.00' value={amount} onChangeText={(e) => setAmount(e)} style={{ flex: 1, fontSize: 16, color: theme.colors.text }} />
+            <TextInput defaultValue='0.00' value={amount} keyboardType='number-pad' onChangeText={(e) => setAmount(e)} style={{ flex: 1, fontSize: 16, color: theme.colors.text }} />
             <CustomText variant="subheader" style={{ fontSize: 16 }}>{getShortName(coin as any)}</CustomText>
         </View>
 

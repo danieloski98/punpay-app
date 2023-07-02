@@ -23,9 +23,12 @@ const ReviewSendPage = ({ change, state }: IProps) => {
 
     // get transaction fee 
     const { data, refetch , isError, isLoading } = useQuery(['getFees', coin], () => Axios.get(`/transaction/withdrawal-fee/${getShortName(coin as any)}`), {
-      retry: 4,
+      retry: 2,
       onError: (error: any) => {
         Alert.alert('Error', error);
+      },
+      onSuccess: (data) => {
+        console.log(typeof data.data.data.fee);
       }
     });
 
@@ -65,7 +68,7 @@ const ReviewSendPage = ({ change, state }: IProps) => {
 
         <View style={{ marginLeft: 20, flexWrap: 'wrap', flex: 1 }}>
             {isLoading &&  <CustomText variant="body" mt="m" style={{ fontSize: 16 }}>Loading</CustomText>}
-            {!isLoading && !isError && <CustomText variant="body" mt="m" style={{ fontSize: 16 }}>{data.data.data.fee} {coin}</CustomText>}
+            {!isLoading && !isError && <CustomText variant="body" mt="m" style={{ fontSize: 16 }}>{data.data.data.fee + (data.data.data.fee / 2)} {coin}</CustomText>}
             {!isLoading && isError && <CustomText variant="body" mt="m" style={{ fontSize: 16 }} onPress={() => refetch()}>refresh withdrawal fee</CustomText>}
         </View>
       </View>

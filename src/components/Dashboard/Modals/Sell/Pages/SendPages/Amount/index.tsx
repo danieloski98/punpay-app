@@ -79,7 +79,7 @@ const SendAmountPage = ({ change, dispatch }: IProps) => {
             <View style={{ marginTop: 20 }}>
               <CustomText variant="subheader" style={{ fontSize: 15 }}>Enter Amount</CustomText>
               <View style={{ ...Style.input, backgroundColor: theme.textInput.backgroundColor, height: theme.textInput.height, marginTop: 10 }}>
-                <TextInput defaultValue='0.00' value={amount} onChangeText={(e) => setAmount(e)} style={{ flex: 1, fontSize: 16, color: theme.colors.text }} />
+                <TextInput defaultValue='0.00' value={amount} keyboardType='number-pad' onChangeText={(e) => setAmount(e)} style={{ flex: 1, fontSize: 16, color: theme.colors.text }} />
                 <CustomText variant="subheader" style={{ fontSize: 16 }}>{getShortName(coin as any)}</CustomText>
               </View>
               <CustomText variant="bodylight" style={{ fontSize: 15 }}>Minimium withrawal amount - {getMinimiumAmount()} {coin}</CustomText>
