@@ -31,6 +31,7 @@ export default function KYC({ navigation }: { navigation: any }) {
   const { isLoading, data, isError, refetch } = useQuery(['getVerification'], () => Axios.get('/verification'), {
     onSuccess: (data) => {
       setVerificationUpload(true);
+      console.log(data.data.data);
     },
     onError: (error: any) => {
       setVerificationUpload(false);
@@ -41,11 +42,17 @@ export default function KYC({ navigation }: { navigation: any }) {
 
   if (!isLoading && isError) {
     return (
-      <Box flex={1}>
-        <CustomText variant='subheader'>Error occured</CustomText>
-        <CustomText variant='body' textAlign='center' marginTop='s'>An error occured while trying to get your verification Details, please try again</CustomText>
+      <Box backgroundColor="mainBackground" style={{...Style.parent }} flex={1}>
+        
+        <Pressable style={Style.header} onPress={() => { navigation.navigate('index') }}>
+          <Feather name="chevron-left" size={25} color={darkMode ? theme.colors.whiteText : theme.colors.blackText} />
+          <CustomText variant="body" marginLeft="s" style={{ marginBottom: 4 }}>Back</CustomText>
+        </Pressable>
 
-        <PrimaryButton action={() => refetch()} text="Retry" checkNetwork isLoading={isLoading} />
+        <CustomText variant='subheader' textAlign='center'>KYC Not Verified</CustomText>
+        <CustomText variant='body' textAlign='center' marginTop='s' marginBottom='xl'>You have not uploaded you verification document yet. Please upload it to continue.</CustomText>
+
+        <PrimaryButton action={() => navigation.navigate('verification')} text="Verify KYC to be able to withdraw" checkNetwork isLoading={isLoading} />
       </Box>
     )
   }
@@ -63,15 +70,7 @@ export default function KYC({ navigation }: { navigation: any }) {
 
       {/* IMAGES FOR VERIFICATION */}
 
-      {
-        !isLoading && !verificationUploaded && !user.KYCVerified && (
-          <Box alignItems='center'>
-            <Image source={ darkMode ? require('../../../../assets/verificationl.png'): require('../../../../assets/verification.png')} style={{ width: 70, height: 70 }}/>
-          </Box>
-            )
-      }
-
-{
+    {
         !isLoading && verificationUploaded && !user.KYCVerified && (
           <Box alignItems='center'>
             <Image source={ darkMode ? require('../../../../assets/verificationl.png'): require('../../../../assets/verification.png')} style={{ width: 70, height: 70 }} />
@@ -89,17 +88,6 @@ export default function KYC({ navigation }: { navigation: any }) {
         isLoading && (
           <Box justifyContent='center' alignItems='center'>
             <ActivityIndicator size='large' color={darkMode ? 'white': theme.colors.primaryColor} />
-          </Box>
-        )
-      }
-
-      {
-        !isLoading && !verificationUploaded && (
-          <Box style={{ backgroundColor:  'transparent' }} mt='m'>
-            <CustomText variant='bodylight'>You have not uploaded you verification document yet. Please upload it to continue.</CustomText>
-            <Pressable onPress={() => navigation.navigate('verification')} style={{ ...Style.conatiner, backgroundColor: theme.textInput.backgroundColor, marginTop: 20 }}>
-              <CustomText variant="bodylight" textAlign='center' style={{ color: 'black', width: '100%' }}>Verify KYC to be able to withdraw</CustomText>
-            </Pressable>
           </Box>
         )
       }

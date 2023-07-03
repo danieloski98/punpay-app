@@ -121,8 +121,6 @@ const SellPage = ({ coin }: IProps) => {
 
      // get verification
     const { isLoading: verificationLoading } = useQuery(['getVerificationSell'], () => Axios.get('/verification'), {
-      refetchOnMount: true,
-      retry: true,
       onSuccess: (data) => {
         setVerificationUpload(true);
       },
