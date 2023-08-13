@@ -47,7 +47,7 @@ const CryptoCard = ({ coin, type, setCoin }: IProps) => {
             <Box width={60} height={60} marginTop="m" >
               {getIcon(coin, 50)}
             </Box>
-            <CustomText marginLeft="m">{coin}</CustomText>
+            <CustomText marginLeft="m">{coin === 'Tether' ? 'USDT':coin}</CustomText>
         </Box>
 
         <Feather name="chevron-right" size={30} color={theme.colors.text} />

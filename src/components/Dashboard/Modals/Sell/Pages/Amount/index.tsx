@@ -39,7 +39,6 @@ const AmountPage = ({ change, dispatch, coinUSDValue }: IProps) => {
         const { isLoading: CoinDetailsLoading , data: coinData, isError } = useQuery(['getCoinSend'], () => Axios.get(`/user/wallet/${getShortName(coin as any)}`), {
           refetchOnMount: true,
           onSuccess: (data) => {
-            console.log(data.data)
           },
           onError: (error) => {
             Alert.alert('An error occured');
@@ -49,7 +48,6 @@ const AmountPage = ({ change, dispatch, coinUSDValue }: IProps) => {
         const { isLoading: feeLoading , data: feeData, isError: feeHasError } = useQuery(['getWithdrawalFeesSend'], () => Axios.get(`/transaction/withdrawal-fee/${getShortName(coin as any)}?quidax=${true}`), {
           refetchOnMount: true,
           onSuccess: (data) => {
-            console.log(data.data.data)
           },
           onError: (error) => {
             Alert.alert('An error occured');

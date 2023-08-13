@@ -39,7 +39,6 @@ const VerificationPage = ({ changeStep, goBack, action, loading }: IProps) => {
     const min = React.useRef<number>(0);
 
     React.useEffect(() => {
-      console.log(`${pin}`)
       setPin2(pin);
     }, [pin])
 
@@ -152,9 +151,7 @@ const VerificationPage = ({ changeStep, goBack, action, loading }: IProps) => {
    
 
     const handlePress = React.useCallback(() => {
-      console.log(`this is pin: ${pin}`);
       const obj = { userId: user.id, pin };
-      console.log(obj);
       verifyPin.mutate(obj);
     }, [pin])
   return (

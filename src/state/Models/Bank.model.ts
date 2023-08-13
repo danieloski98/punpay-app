@@ -16,7 +16,6 @@ export const Bank = createModel<RootModel>()({
     },
     reducers: {
         update(state, payload) {
-            console.log("this is the payload", payload)
             return {...state, ...payload};
         },
     },

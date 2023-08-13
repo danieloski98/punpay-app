@@ -68,7 +68,6 @@ const BuyPage = ({ coin }: IProps) => {
 
         return true;
       }
-      return true;
     });
 
     return () => unsubscribe.remove();
@@ -76,7 +75,7 @@ const BuyPage = ({ coin }: IProps) => {
 
   // CUSTOM HOOKS
   const { getShortName } = useIcons()
-  const { isLoading, data } = useGetRate({ currency: getShortName(coin as Coin), transactionType: 'buy' });
+  const { isLoading, data } = useGetRate({ currency: getShortName(coin as Coin), transactionType: 'sell' });
   const { getApiName } = useCoin(coin as Coin);
   const { isLoading: createTransactionMutation, mutate } = useMutation({
     mutationFn: (data: any) => Axios.post('/transaction/buy', data),
@@ -128,7 +127,6 @@ const BuyPage = ({ coin }: IProps) => {
       rate: transaction.rate,
       transactionReference: transaction.referenceCode,
     }
-    // console.log(obj);
     mutate(obj);
   }, [transaction]);
 

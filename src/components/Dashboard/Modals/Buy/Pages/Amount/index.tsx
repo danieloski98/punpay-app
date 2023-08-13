@@ -33,7 +33,6 @@ const AmountPage = ({ coin }: IProps) => {
 
     const handleAmountChange = (text: string) => {
       setAmount(text);
-      console.log(handleCalculation());
     };
   
     
@@ -76,7 +75,7 @@ const AmountPage = ({ coin }: IProps) => {
       <View style={Style.inputCointainer}>
         <TextInput value={transactionAmount} keyboardType='phone-pad' 
         onChangeText={(e) => handleAmountChange(e)}
-        style={[Style.input, {  fontSize: 35, fontFamily: theme.textVariants.subheader.fontFamily, fontWeight: theme.textVariants.subheader.fontWeight as any, color: theme.colors.text }]} />
+        style={[Style.input, {  fontSize: 35, fontFamily: theme.textVariants.subheader.fontFamily, color: theme.colors.text }]} />
         <CustomText variant="bodylight" ml="s">{'NGN'}</CustomText>
       </View>
 
@@ -87,7 +86,7 @@ const AmountPage = ({ coin }: IProps) => {
       </View>
 
       <CustomText variant="bodylight" textAlign="center" mt="m">{handleCalculation()} {getShortName(coin as any)}</CustomText>
-      <CustomText variant="bodylight" textAlign="center" mt="m">(RATE - {rate}/$)</CustomText>
+      <CustomText variant="bodylight" textAlign="center" mt="m">(RATE - NGN{rate}/$)</CustomText>
 
       <View style={{ marginTop: 40 }}>
         <PrimaryButton text='Continue' checkNetwork action={() =>  handlePress() } />

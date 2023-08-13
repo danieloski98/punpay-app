@@ -16,7 +16,9 @@ interface IProps {
 const useGetRate = ({ currency, transactionType }: IProps) => {
     const navigation = useNavigation()
     const dispatch = useDispatch<Dispatch>();
-    const { isLoading, data } = useQuery(['rate'], () => Axios.get(`/rate/usd/${transactionType}`), {
+    const { isLoading, data } = useQuery(['rate', transactionType], () => Axios.get(`/rate/usd/${transactionType}`), {
+      refetchOnMount: true,
+      refetchInterval: 50000,
         onError: async (error: any) => {
           const token = await AsyncStorage.getItem('token');
           if (token === null || token === '') {

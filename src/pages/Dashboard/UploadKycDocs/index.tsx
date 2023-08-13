@@ -29,17 +29,17 @@ const UploadKYCDoc = ({ navigation }: NativeStackScreenProps<any>) => {
   const setDoc = React.useCallback((type: number) => {
     switch (type) {
       case 1: {
-        setDocType('ID');
+        setDocType('NIN');
         setShowModal(true);
         break;
       }
       case 2: {
-        setDocType(`DL`);
+        setDocType(`Driver's Licencse`);
         setShowModal(true);
         break;
       }
       case 3: {
-        setDocType(`PP`);
+        setDocType(`Passport`);
         setShowModal(true);
         break;
       }
@@ -53,7 +53,6 @@ const UploadKYCDoc = ({ navigation }: NativeStackScreenProps<any>) => {
       }
     }),
     onError: (error) => {
-      console.log(`this is error ${error}`)
       showMessage({
         message: 'Error',
         description: `${error}`,
@@ -65,7 +64,6 @@ const UploadKYCDoc = ({ navigation }: NativeStackScreenProps<any>) => {
       });
     },
     onSuccess: (data) => {
-      console.log(data.data);
       showMessage({
         message: 'Success',
         description: `Doccument uploaded`,
@@ -83,20 +81,17 @@ const UploadKYCDoc = ({ navigation }: NativeStackScreenProps<any>) => {
       const str = data.uri.split('.jpg')[0].split('/');
       const request = await fetch(data.uri);
       const blob = await request.blob();
-      console.log(JSON.stringify(blob));
       const obj = {
         uri: data.uri,
         type: mimeType.getType(data.uri),  
         name: `${str[str.length - 1]}.jpg`
       }
-      console.log(obj);
       const formData = new FormData();
       formData.append('front', obj as any);
-      formData.append('doc_type', 'decfwednoednoei');
+      formData.append('doc_type', docType);
       setShowModal(false);
       mutate(formData);
     } catch (error) {
-      console.log(error);
     }
   }, [docType])
   return (

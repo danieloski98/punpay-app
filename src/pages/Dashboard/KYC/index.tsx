@@ -16,9 +16,6 @@ import { VerificationModel } from "../../../models/verification";
 // import { MetaMapRNSdk } from 'react-native-metamap-sdk';
 
 
-
-
-
 export default function KYC({ navigation }: { navigation: any }) {
   const user = useSelector((state: RootState) => state.User);
   const darkMode = useSelector((state: RootState) => state.isDarkMode);
@@ -31,7 +28,6 @@ export default function KYC({ navigation }: { navigation: any }) {
   const { isLoading, data, isError, refetch } = useQuery(['getVerification'], () => Axios.get('/verification'), {
     onSuccess: (data) => {
       setVerificationUpload(true);
-      console.log(data.data.data);
     },
     onError: (error: any) => {
       setVerificationUpload(false);
@@ -97,8 +93,8 @@ export default function KYC({ navigation }: { navigation: any }) {
           <Box style={{ backgroundColor:  'transparent' }} mt='m'>
             <CustomText variant='body'>Your document is currently undergoing review, you will be alert when it has been approved.</CustomText>
             <View style={{ ...Style.conatiner, backgroundColor: theme.colors.primaryColor, marginTop: 20, justifyContent: 'space-between' }}>
-              <CustomText variant="bodylight" ml="m" textAlign='center'> STATUS</CustomText>
-              <CustomText variant="bodylight" ml="m" textAlign='center'>{(data.data.data as VerificationModel).status}</CustomText>
+              <CustomText variant="bodylight" textAlign='center' style={{ color: 'white' }}> STATUS</CustomText>
+              <CustomText variant="bodylight" ml="m" textAlign='center' style={{ color: 'white' }} >{(data.data.data as VerificationModel).status}</CustomText>
             </View>
           </Box>
         )

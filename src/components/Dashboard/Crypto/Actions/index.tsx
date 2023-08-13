@@ -61,7 +61,7 @@ const Actions = () => {
 
         {coin !== 'Tether' && (
             <Pressable 
-            onPress={() => setAll({ openSwap: true })}
+            onPress={() => alert('Swap is coming soon!')}
             style={{ alignItems: 'center' }}>
                 <View style={{...Style.actionIconContainer, backgroundColor: isDrakmode ? theme.textInput.backgroundColor:'white', shadowColor: 'black' }}>
                     <Wallet width={25} height={25} />

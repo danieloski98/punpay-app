@@ -33,7 +33,7 @@ const CoinTypeModal = ({ close, select }: IProps) => {
        {COINSs.sort().map((item, index) => (
         <Pressable onPress={() => selectcoin(item)} key={index} style={{ flexDirection: 'row', alignItems: 'center', height: 70, borderBottomWidth: 2, borderBottomColor: theme.textInput.backgroundColor }}>
             {getIcon(item, 40)}
-            <CustomText variant='bodylight' ml='m'>{item}</CustomText>
+            <CustomText variant='bodylight' ml='m'>{item === 'Tether' ? 'USDT':item}</CustomText>
         </Pressable>
        ))}
     </ModalWrapper>

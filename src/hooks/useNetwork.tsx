@@ -11,7 +11,6 @@ const useNetwork = () => {
    
 React.useEffect(() => {
     const unsubscribe = NetInfo.addEventListener(state => {
-        console.log(state.isConnected);
         if (state.isConnected) {
             // showMessage({
             //     message: 'You are connected to the internet.',
@@ -56,8 +55,6 @@ React.useEffect(() => {
             });
             setIsConnected(state.isConnected);
         }
-        // console.log('Connection type', state.type);
-        // console.log('Is connected?', state.isConnected);
       });
     return () => unsubscribe();
 }, [])

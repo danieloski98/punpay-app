@@ -8,6 +8,7 @@ import ChangePin from '../pages/Dashboard/ChangePin';
 import TransactionHistory from '../pages/Dashboard/TransactionHistory';
 import NextOfKin from '../pages/Dashboard/NextOfKin'
 import AboutApp from '../pages/Dashboard/About';
+import EditDetail from '../pages/Dashboard/Edit';
 
 
 const {Navigator, Screen} = createDrawerNavigator();
@@ -20,6 +21,7 @@ const DashboardRoutes = () => {
         <Screen name="changepassword" component={ChangePassword} />
         <Screen name="changepin" component={ChangePin} />
         <Screen name='nextofkin' component={NextOfKin} />
+        <Screen name='edit' component={EditDetail} />
        <Screen name='about' component={AboutApp}  />
    </Navigator>
   )

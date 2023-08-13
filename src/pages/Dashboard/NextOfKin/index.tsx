@@ -9,21 +9,42 @@ import { Dispatch, RootState } from '../../../state/Store'
 import { Feather } from '@expo/vector-icons'
 import Checkbox from 'expo-checkbox'
 import { changePasswordSchema, nextofkinSchema } from '../../../models/validationSchema'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import Axios from '../../../utils/api'
+
+export type NextOfKin = {
+  firstName: string;
+  lastName: string;
+  phoneNumber: string;
+  email: string;
+  relationship: string;
+}
 
 
 export default function NextOfKin({ navigation }: any) {
   const [showPass, setShowPass] = React.useState(false);
   const [newp, setNewP] = React.useState(false);
   const [confirm, setConfirm] = React.useState(false);
+  const [nok, setNok] = React.useState<NextOfKin | null>(null);
   const user = useSelector((state: RootState) => state.User);
+  const queryClient = useQueryClient()
+
+  const { isLoading: nokLoading, } = useQuery(['getNoK', user.id], () => Axios.get(`/user/next-of-kin/${user.id}`), {
+    // refetchOnMount: true,
+    onSuccess: (data) => {
+      setNok(data.data.data);
+    },
+    onError: (error: any) => {
+      Alert.alert('Error', error);
+    }
+  })
 
   const { mutate, isLoading } = useMutation({
     mutationFn: (data: any) => Axios.put('/user/create-next-of-kin', data),
     onSuccess: (data) => {
       Alert.alert('Success', data.data.message);
-      navigation.navigate('settings')
+      queryClient.refetchQueries(['getNoK']);
+      // navigation.navigate('settings')
     },
     onError: (error: any) => {
       Alert.alert('Error', error);
@@ -50,11 +71,11 @@ export default function NextOfKin({ navigation }: any) {
       validationSchema={nextofkinSchema}
       onSubmit={submit}
       initialValues={{
-        firstName: '',
-        lastName: '',
-        email: '',
-        relationship: '',
-        phoneNumber: ''
+        firstName: nok === null ? '': nok.firstName,
+        lastName: nok  === null ? '': nok.lastName,
+        email: nok === null ? '': nok.email,
+        relationship: nok === null ? '': nok.relationship,
+        phoneNumber: nok === null ? '': nok.phoneNumber
       }}
     >
       <Box backgroundColor="mainBackground" flex={1} >

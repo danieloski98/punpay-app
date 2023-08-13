@@ -25,5 +25,10 @@ export const Style = StyleSheet.create({
         borderRadius: 10,
         paddingHorizontal: 10,
         alignItems: 'center'
-     }
+     },
+     conatiner2: {
+      flexDirection: 'column',
+      borderRadius: 10,
+      padding: 10,
+   }
 });

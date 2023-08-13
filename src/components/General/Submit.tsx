@@ -20,7 +20,6 @@ export default function Submit({ text, isLoading }: IProps) {
     const { handleSubmit } = useFormikContext();
 
     const onPress = React.useCallback(() => {
-        console.log(isConnected);
         if (isConnected) {
             if (isLoading) return;
             handleSubmit();

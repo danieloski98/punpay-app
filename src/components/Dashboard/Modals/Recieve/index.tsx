@@ -49,8 +49,9 @@ const RecieveModal = ({ coin }: IProps) => {
     return () => unsubscribe.remove();
   }, [])
 
-  const { isLoading, isError, refetch } = useQuery(['get_wallet_1'], () => Axios.get(`/user/wallet/${getShortName(coin as any)}`), {
+  const { isLoading, isError, refetch, data } = useQuery(['get_wallet_1'], () => Axios.get(`/user/wallet/${getShortName(coin as any)}`), {
     refetchOnMount: true,
+    refetchInterval: 10000,
     onSuccess: (data) => {
       setAddress(data.data.data.deposit_address);
     },
@@ -84,7 +85,7 @@ const RecieveModal = ({ coin }: IProps) => {
     } else {
       toast.show('Address loding');
     }
-  }, [address, isLoading])
+  }, [address, isLoading, data])
 
   React.useEffect(() => {
     bottomSheetRef.current?.present();
@@ -99,7 +100,7 @@ const RecieveModal = ({ coin }: IProps) => {
         title: `${getName(coin as any)} Address`
     }).then()
     }
-  }, [coin, address]);
+  }, [coin, address, data]);
 
   const handleRefresh = React.useCallback(async() => {
     await refetch({
@@ -111,6 +112,14 @@ const RecieveModal = ({ coin }: IProps) => {
     ref={bottomSheetRef}
     onClose={() => setAll({ openDeposit: false })}
    >
+      {
+        !isLoading && isError && (
+          <Box alignItems='center' height={150} justifyContent={'center'}>
+            <ActivityIndicator color={theme.colors.primaryColor} size='large' />
+            <CustomText variant='subheader' style={{ fontSize: 22 }}>An errorr occured</CustomText>
+          </Box>
+        )
+      }
       {
         isLoading && (
           <Box alignItems='center' height={150} justifyContent={'center'}>
@@ -137,7 +146,7 @@ const RecieveModal = ({ coin }: IProps) => {
             <View style={{ ...Style.addressCointainer, borderBottomColor: theme.textInput.backgroundColor }}>
                 {!isLoading && !isError && address !== '' && (
                   <CustomText variant="xs" selectable selectionColor={theme.colors.primaryColor} style={{ flex: 1 }}>
-                      {address}
+                      {data.data.data.deposit_address}
                   </CustomText>
                 )}
                 {
@@ -161,9 +170,9 @@ const RecieveModal = ({ coin }: IProps) => {
                 </CustomText>
             </View>
 
-            {!isLoading && !isError && address !== '' && (
+            {!isLoading && !isError && data.data.data.deposit_address !== '' && (
               <View style={Style.qrContainer}>
-                <QRCode value={address} size={130} color="black" getRef={(c) => setC(c)}  />
+                <QRCode value={data.data.data.deposit_address || ''} size={130} color="black" getRef={(c) => setC(c)}  />
               </View>
             )}
 

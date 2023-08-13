@@ -8,6 +8,7 @@ import { Theme } from '../../../style/theme'
 import { DrawerNavigationHelpers } from '@react-navigation/drawer/lib/typescript/src/types'
 import { openURL } from 'expo-linking'
 import { Ionicons } from '@expo/vector-icons'
+import { Share } from 'react-native'
 
 // svgs
 import User from '../../../res/svg-output/assets/User'
@@ -37,7 +38,15 @@ export const MenuItems: ISidebarButton[] = [
         text: "Share App",
         location: '',
         icon: <Upload width={25} height={25} />,
-        backgroundColor: '#61E0A1'
+        backgroundColor: '#61E0A1',
+        action: async() => {
+            Share.share({
+                message: `Punpay app link https://play.google.com/store/apps/details?id=com.dandolla98.Punpay`,
+                url: `https://play.google.com/store/apps/details?id=com.dandolla98.Punpay`,
+                title: 'Punpay'
+            })
+            //await openURL('https://play.google.com/store/apps/details?id=com.dandolla98.Punpay');
+        }
     },
     {
         text: "Contact Support",

@@ -48,7 +48,7 @@ const CryptoPageHeader = ({ coinName }) => {
             {getIcon(coinName, '70%')}
         </View>
         <View>
-            <CustomText variant="subheader" style={{ fontSize: 18 }}>{coinName}</CustomText>
+            <CustomText variant="subheader" style={{ fontSize: 18 }}>{coinName === 'Tether' ? 'USDT':coinName}</CustomText>
             {/* <CustomText variant="bodylight" style={{ fontWeight: '400', color: theme.colors.text }}>BTC</CustomText> */}
         </View>
       </View>

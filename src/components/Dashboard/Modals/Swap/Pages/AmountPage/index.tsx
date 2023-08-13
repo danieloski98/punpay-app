@@ -41,7 +41,6 @@ const AmountPage = ({ next, coin, dispatch, usd, state }: IProps) => {
       const { isLoading: CoinDetailsLoading , data, isError } = useQuery(['getCoin'], () => Axios.get(`/user/wallet/${getShortName(coin as any)}`), {
         refetchOnMount: true,
         onSuccess: (data) => {
-          console.log(data.data)
         },
         onError: (error) => {
           Alert.alert('An error occured');

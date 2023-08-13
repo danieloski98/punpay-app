@@ -28,7 +28,6 @@ const ReviewSellPage = ({ change, state }: IProps) => {
     const { isLoading: feeLoading , data: feeData, isError: feeHasError } = useQuery(['getWithdrawalFeesSend'], () => Axios.get(`/transaction/withdrawal-fee/${getShortName(coin as any)}?quidax=${true}`), {
       refetchOnMount: true,
       onSuccess: (data) => {
-        console.log(data.data.data)
       },
       onError: (error) => {
         Alert.alert('An error occured');

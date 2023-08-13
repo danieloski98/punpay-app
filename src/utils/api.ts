@@ -9,7 +9,6 @@ const Axios = axios.create({
 Axios.interceptors.request.use(async(config) => {
     const token = await AsyncStorage.getItem('token')
     if (config.data instanceof FormData) {
-        console.log('ITS FORMDATA');
         config.headers['Content-Type'] = 'multipart/form-data'
         if (token === null) {
             return config;
@@ -35,7 +34,6 @@ Axios.interceptors.request.use(async(config) => {
 Axios.interceptors.response.use((data) => {
     return data;
 }, async(error: AxiosError<any, any>) => {
-    console.log(error.message);
     // return Promise.reject('An Error occurred');
     if (!error.response) {
         return Promise.reject(error.message);

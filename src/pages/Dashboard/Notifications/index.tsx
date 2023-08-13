@@ -10,15 +10,33 @@ import { Theme } from '../../../style/theme';
 import { Feather } from '@expo/vector-icons';
 import { useSelector } from 'react-redux'
 import { RootState } from '../../../state/Store'
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import Axios from '../../../utils/api';
+import { showMessage } from 'react-native-flash-message';
 
 
 const NotificationCard = ({ title, userId, body, id }: INotification) => {
   const user = useSelector((state: RootState) => state.User);
+  const queryClient = useQueryClient();
   const [loading, setLoading] = React.useState(false);
   const { mutate, isLoading } = useMutation({
     mutationFn: (data: string) => Axios.delete(`/notification/${data}`),
+    onSuccess: () => {
+      queryClient.invalidateQueries(['getNotifications']);
+    },
+    onError: (error: string) => {
+      showMessage({
+        message: 'An error occured',
+        description: error,
+        statusBarHeight: 20,
+        floating: false,
+        autoHide: true,
+        duration: 6000,
+        type: 'danger',
+        animated: true,
+        hideOnPress: true,
+      })
+    }
   })
   const handleDelete = React.useCallback(() => {
     mutate(id)
@@ -48,7 +66,6 @@ const Notifications = () => {
     // refetchInterval: 1000,
     onSuccess: (data) => {
       setData(data.data.data);
-      console.log(data.data.data);
     }
   });
   

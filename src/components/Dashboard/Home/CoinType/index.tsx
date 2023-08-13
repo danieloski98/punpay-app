@@ -71,7 +71,7 @@ const CoinTypeChip = ({ currency, converted_balance, balance, countryCurrency }:
           </View>
 
           <View style={{ marginLeft: 10 }}>
-            <CustomText variant="body">{getName(currency as any)} {balance}</CustomText>
+            <CustomText variant="body">{getName(currency as any) === 'Tether' ? 'USDT': getName(currency as any)} {balance}</CustomText>
             {countryCurrency === 1 && (<CustomText variant="xs">NGN {currencyFormat(parseFloat(converted_balance))}</CustomText>)}
             {countryCurrency === 2 && (<CustomText variant="xs">USD {currencyFormat(parseFloat(balance)  * parseFloat(usd))}</CustomText>)}
           </View>

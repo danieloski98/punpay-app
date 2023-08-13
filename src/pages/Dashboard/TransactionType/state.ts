@@ -21,6 +21,6 @@ export const useModalState = create<State>((set) => ({
     openSell: false,
     openSwap: false,
     setOpenModal: (payload: boolean) => { set((state) => ({ ...state, openModal: payload }))}, 
-    setAll:(payload: Partial<State>) => { console.log(payload); set((state) => ({ ...state, ...payload }))},
+    setAll:(payload: Partial<State>) => { set((state) => ({ ...state, ...payload }))},
   }))
 

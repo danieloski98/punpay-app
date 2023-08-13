@@ -19,7 +19,6 @@ export default function HomeNavbar() {
       // refetchInterval: 1000,
       onSuccess: (data) => {
         setCount(data.data.data.length);
-        console.log(data.data);
       }
     });
 

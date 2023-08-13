@@ -56,4 +56,10 @@ const verificationSchema = yup.object().shape({
     identification_name: yup.string().required(),
 });
 
-export { VerifyEmailSchema, BankSchema, forgotPasswordSchema, resetPasswordSchema, changePasswordSchema, nextofkinSchema, verificationSchema };
+const editSchema = yup.object().shape({
+    phone: yup.string().required().min(11),
+    firstName: yup.string().required(),
+    lastName: yup.string().required(),
+});
+
+export { VerifyEmailSchema, BankSchema, forgotPasswordSchema, resetPasswordSchema, changePasswordSchema, nextofkinSchema, verificationSchema, editSchema };

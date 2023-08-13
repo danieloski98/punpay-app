@@ -22,6 +22,7 @@ const validationSchema = yup.object({
   firstName: yup.string().required(),
   lastName: yup.string().required(),
   password: yup.string().required().min(8),
+  phone: yup.string().required().min(11),
 });
 
 interface IProps {
@@ -46,13 +47,11 @@ export default function Signup({ navigation }: IProps) {
       });
     },
     onError: (error: any) => {
-      console.log(error);
       Alert.alert('Error', error);
     }
   })
 
   const submit = (data: any) => {
-    console.log(data);
     setEmail(data.email);
     mutate(data);
   };
@@ -66,6 +65,7 @@ export default function Signup({ navigation }: IProps) {
         lastName: "",
         email: "",
         password: "",
+        phone: ''
       }}
     >
       <Box
@@ -126,6 +126,20 @@ export default function Signup({ navigation }: IProps) {
               leftElement={
                 <Feather
                   name="mail"
+                  size={25}
+                  style={{ marginTop: 10, color: theme.colors.iconColor }}
+                />
+              }
+            />
+          </View>
+
+          <View style={Style.box}>
+            <TextInput
+              name="phone"
+              label="Phone Number"
+              leftElement={
+                <Feather
+                  name="phone"
                   size={25}
                   style={{ marginTop: 10, color: theme.colors.iconColor }}
                 />

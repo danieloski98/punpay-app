@@ -4,7 +4,7 @@
     "slug": "Punpay",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/logo2.png",
+    "icon": "./assets/logo.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",
@@ -24,10 +24,10 @@
       "buildNumber": "3"
     },
     "android": {
-      "icon": "./assets/logo2.png",
-      "versionCode": 36,
+      "icon": "./assets/logo.png",
+      "versionCode": 40,
       "adaptiveIcon": {
-        "foregroundImage": "./assets/logo2.png",
+        "foregroundImage": "./assets/logo.png",
         "backgroundColor": "#FFFFFF"
       },
       "package": "com.dandolla98.Punpay"

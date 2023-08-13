@@ -17,6 +17,10 @@ const ActionCard = ({title, icon, type, action = undefined}: IProps) => {
     const theme = useTheme<Theme>();
 
     const handlePress = React.useCallback(() => {
+        if (type === 'Swap') {
+            alert('Swap is Coming soon');
+            return;
+        }
         if (action === undefined) {
             navigation.navigate('transactiontype', {
                 type

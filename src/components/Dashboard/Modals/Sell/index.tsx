@@ -121,6 +121,7 @@ const SellPage = ({ coin }: IProps) => {
 
      // get verification
     const { isLoading: verificationLoading } = useQuery(['getVerificationSell'], () => Axios.get('/verification'), {
+      refetchOnMount: true,
       onSuccess: (data) => {
         setVerificationUpload(true);
       },
@@ -148,7 +149,6 @@ const SellPage = ({ coin }: IProps) => {
         setUsd(res.market_data.current_price.usd);
       },
       onError: (error) => {
-        console.log(error);
         showMessage({
           message: `Error`,
           description: `Error, Couldn't get ${coin} USD value`,
@@ -370,7 +370,7 @@ const SellPage = ({ coin }: IProps) => {
                         )
                       }
                      {
-                        !verificationLoading && verificationUploaded && user.KYCVerified && (
+                        !verificationLoading && user.KYCVerified && (
                           <Pressable onPress={() => selectSell(2)} style={{ ...Style.conatiner, backgroundColor: theme.textInput.backgroundColor, marginTop: 20 }}>
                           <Box mt='s'>
                             <CardEdit width={30} height={30} />
@@ -389,9 +389,10 @@ const SellPage = ({ coin }: IProps) => {
 
 {
                         !verificationLoading && verificationUploaded && !user.KYCVerified && (
-                          <Pressable style={{ ...Style.conatiner, backgroundColor: theme.textInput.backgroundColor, marginTop: 20 }}>
-                          <CustomText variant="bodylight" ml="m" textAlign='center'>KYC under review</CustomText>
-                          </Pressable>
+                          <View style={{ ...Style.conatiner2, backgroundColor: '#f94e4e81', marginTop: 20, flexDirection: 'column' }}>
+                          <CustomText variant="subheader" style={{ color: 'white', fontSize: 18 }}>KYC under review</CustomText>
+                          <CustomText variant='xs' mt='s'>Your KYC documents are still under review, once they have been approved you will be able to withdraw</CustomText>
+                          </View>
                         )
                     }
                     </>

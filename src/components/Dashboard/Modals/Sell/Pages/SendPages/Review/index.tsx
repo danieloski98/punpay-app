@@ -28,7 +28,6 @@ const ReviewSendPage = ({ change, state }: IProps) => {
         Alert.alert('Error', error);
       },
       onSuccess: (data) => {
-        console.log(typeof data.data.data.fee);
       }
     });
 
