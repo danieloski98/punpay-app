@@ -1,6 +1,7 @@
 {
   "name": "punpay",
   "version": "1.0.0",
+  "license": "MIT",
   "scripts": {
     "start": "yarn expo start",
     "android": "expo run:android",

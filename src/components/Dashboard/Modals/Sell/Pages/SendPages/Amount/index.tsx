@@ -11,6 +11,7 @@ import useIcons, { Coin } from '../../../../../../../hooks/useIcons'
 import { Action } from '../../../state'
 import { BarCodeScanner } from 'expo-barcode-scanner';
 import useMinimiumWithdrawal from '../../../../../../../hooks/useMinimiumWithdrawal'
+import { CRYPTO_NETWORKS } from '../../../../../../../utils/networks'
 
 interface IProps {
   change: React.Dispatch<React.SetStateAction<number>>;
@@ -28,6 +29,15 @@ const SendAmountPage = ({ change, dispatch }: IProps) => {
   const [hasPermission, setHasPermission] = React.useState(null);
   const [scanned, setScanned] = React.useState(false);
   const [showScanner, setShowScanner] = React.useState(false);
+  const [network, setNetwork] = React.useState('');
+  const [showNetworks, setShowNetworks] = React.useState(false);
+
+  React.useEffect(() => {
+     // setnetworrk
+     if (coin) {
+      setNetwork(networks()[0]);
+    }
+  }, [])
 
   // custom hooks
   const { getMinimiumAmount } = useMinimiumWithdrawal(coin as any);
@@ -65,7 +75,17 @@ const SendAmountPage = ({ change, dispatch }: IProps) => {
     setShowScanner(false);
   };
 
+  const networks = React.useCallback((): string[] => {
+    if (!coin) {
+      return []
+    }
+    return CRYPTO_NETWORKS[coin];
+  }, [coin])
 
+  const handleNetworkChange = React.useCallback((network: string) => {
+    setNetwork(network);
+    setShowNetworks(false);
+  }, []);
 
 
   return (
@@ -85,20 +105,34 @@ const SendAmountPage = ({ change, dispatch }: IProps) => {
               <CustomText variant="bodylight" style={{ fontSize: 15 }}>Minimium withrawal amount - {getMinimiumAmount()} {coin}</CustomText>
             </View>
 
-            <View style={{ marginTop: 20 }}>
+            <View style={{ marginTop: 20, zIndex: 10 }}>
               <CustomText variant="subheader" style={{ fontSize: 15 }}>Recipient Address</CustomText>
               <View style={{ ...Style.input, backgroundColor: theme.textInput.backgroundColor, height: theme.textInput.height, marginTop: 10 }}>
                 <TextInput defaultValue='' value={address} onChangeText={(e) => setAddress(e)} style={{ flex: 1, fontSize: 16, color: theme.colors.text }} />
                 <Ionicons name="scan-outline" size={25} color={theme.colors.text} onPress={() => setShowScanner(true)} />
               </View>
-              <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10, position: 'relative', }}>
                 <CustomText variant="body" style={{ fontSize: 15 }}>NETWORK - </CustomText>
-                <CustomText variant="subheader" style={{ fontSize: 14 }}>{getNetwork(coin as Coin)}</CustomText>
+                <View style={{ flexDirection: 'row' }}>
+                  <CustomText variant="subheader" style={{ fontSize: 14 }}>{network.toUpperCase()}</CustomText>
+                  { networks().length > 1 && (
+                    <Feather name={showNetworks ? 'chevron-up':'chevron-down'} size={25} color={theme.colors.text} style={{ marginTop: 5 }} onPress={() => setShowNetworks(prev => !prev)} />
+                  )}
+                </View>
+                { networks().length > 1 && showNetworks && (
+                  <View style={{ width: 130, minHeight: 80,  backgroundColor: theme.colors.modalBg, borderRadius: 10, position: 'absolute', bottom: -120, left: 130, zIndex: 10, elevation: 4 }}>
+                    { networks().map((network, index) => (
+                      <Box flex={1} height={40} justifyContent={'center'} borderBottomWidth={ index === networks().length - 1 ? 0:1} paddingHorizontal='s' style={{ borderBottomColor: theme.textInput.backgroundColor }}>
+                        <CustomText variant='subheader' fontSize={16} key={network} onPress={() => handleNetworkChange(network)}>{network.toUpperCase()}</CustomText>
+                      </Box>
+                    ))}
+                  </View>
+                )}
               </View>
             </View>
 
             <View style={Style.upgradeContainer}>
-              <CustomText variant="bodylight">Please insure the address is correct and is on the <CustomText variant='body'>{getNetwork(coin as Coin)}</CustomText> Netwrok, to avoid losing your funds.</CustomText>
+              <CustomText variant="bodylight">Please insure the address is correct and is on the <CustomText variant='body'>{network.toUpperCase() || ''}</CustomText> Netwrok, to avoid losing your funds.</CustomText>
             </View>
 
             <View style={{ marginTop: 40 }}>

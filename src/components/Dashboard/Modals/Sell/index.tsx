@@ -347,54 +347,26 @@ const SellPage = ({ coin }: IProps) => {
                      <CustomText variant="bodylight" ml="m">Sell for FIAT</CustomText>
                  </Pressable>
 
+                {
+                  !user.accountDisabled && (
+                    <Pressable onPress={() => selectSell(2)} style={{ ...Style.conatiner, backgroundColor: theme.textInput.backgroundColor, marginTop: 20 }}>
+                      <Box mt='s'>
+                        <CardEdit width={30} height={30} />
+                      </Box>
+                      <CustomText variant="bodylight" ml="m">Transfer to another wallet</CustomText>
+                    </Pressable>
+                  )
+                }
+
                 
 
                 {
-                  user.accountDisabled ?
+                  user.accountDisabled  &&
                   (
                     <>
                        <Pressable onPress={handleLink} style={{ ...Style.conatiner, backgroundColor: theme.textInput.backgroundColor, marginTop: 20 }}>
                           <CustomText variant="bodylight" ml="m" textAlign='center' style={{ color: '#790014' }}>Your account is locked. Contact Support</CustomText>
                       </Pressable>
-                    </>
-                  )
-                  : 
-                  (
-                    <>
-                     {
-                        verificationLoading && (
-                          <Box alignItems='center' width='100%' paddingVertical='s'>
-                            <ActivityIndicator color={theme.colors.primaryColor} size='small' />
-                            <CustomText variant="bodylight" ml="m">Checking verification</CustomText>
-                          </Box>
-                        )
-                      }
-                     {
-                        !verificationLoading && user.KYCVerified && (
-                          <Pressable onPress={() => selectSell(2)} style={{ ...Style.conatiner, backgroundColor: theme.textInput.backgroundColor, marginTop: 20 }}>
-                          <Box mt='s'>
-                            <CardEdit width={30} height={30} />
-                          </Box>
-                          <CustomText variant="bodylight" ml="m">Transfer to another wallet</CustomText>
-                          </Pressable>
-                        )
-                      }
-                      {
-                        !verificationLoading && !verificationUploaded && (
-                          <Pressable onPress={handleMetaMapClickButton} style={{ ...Style.conatiner, backgroundColor: theme.textInput.backgroundColor, marginTop: 20 }}>
-                          <CustomText variant="bodylight" ml="m" textAlign='center'>Verify KYC to be able to withdraw</CustomText>
-                          </Pressable>
-                        )
-                    }
-
-{
-                        !verificationLoading && verificationUploaded && !user.KYCVerified && (
-                          <View style={{ ...Style.conatiner2, backgroundColor: '#f94e4e81', marginTop: 20, flexDirection: 'column' }}>
-                          <CustomText variant="subheader" style={{ color: 'white', fontSize: 18 }}>KYC under review</CustomText>
-                          <CustomText variant='xs' mt='s'>Your KYC documents are still under review, once they have been approved you will be able to withdraw</CustomText>
-                          </View>
-                        )
-                    }
                     </>
                   )
                 }

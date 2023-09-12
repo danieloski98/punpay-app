@@ -7,7 +7,8 @@ export const Style = StyleSheet.create({
     upgradeContainer: {
         padding: 10,
         backgroundColor: '#ff886049',
-        borderRadius: 10, marginTop: 20
+        borderRadius: 10, marginTop: 20,
+        zIndex: 0,
     },
     input: {
         flexDirection: 'row',

@@ -166,7 +166,7 @@ export default function Home({ navigation }) {
       </View>
 
     {showModal && <CurrencyModal currency={currency} change={setCurrency} close={() => setShowModal(false)} />}
-    {!verificationUploaded && !verificationLoading && <KycModal close={() => setVm(false)} />}
+    {/* {!verificationUploaded && !verificationLoading && <KycModal close={() => setVm(false)} />} */}
     </Box>
   )
 }

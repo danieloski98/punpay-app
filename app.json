@@ -25,7 +25,7 @@
     },
     "android": {
       "icon": "./assets/logo.png",
-      "versionCode": 40,
+      "versionCode": 42,
       "adaptiveIcon": {
         "foregroundImage": "./assets/logo.png",
         "backgroundColor": "#FFFFFF"
