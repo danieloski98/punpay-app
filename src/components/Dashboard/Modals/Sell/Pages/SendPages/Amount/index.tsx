@@ -78,11 +78,17 @@ const SendAmountPage = ({ change, dispatch }: IProps) => {
   const networks = React.useCallback((): string[] => {
     if (!coin) {
       return []
-    }
+    } else {
+      if (coin === 'Tether') {
+        return CRYPTO_NETWORKS[coin];
+      }
     return CRYPTO_NETWORKS[coin];
+    }
+    
   }, [coin])
 
   const handleNetworkChange = React.useCallback((network: string) => {
+    dispatch({ type: 'network', payload: network });
     setNetwork(network);
     setShowNetworks(false);
   }, []);
@@ -114,15 +120,15 @@ const SendAmountPage = ({ change, dispatch }: IProps) => {
               <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10, position: 'relative', }}>
                 <CustomText variant="body" style={{ fontSize: 15 }}>NETWORK - </CustomText>
                 <View style={{ flexDirection: 'row' }}>
-                  <CustomText variant="subheader" style={{ fontSize: 14 }}>{network.toUpperCase()}</CustomText>
+                  <CustomText variant="subheader" onPress={() => setShowNetworks(prev => !prev)} style={{ fontSize: 14, marginTop: 3 }}>{network.toUpperCase()}</CustomText>
                   { networks().length > 1 && (
                     <Feather name={showNetworks ? 'chevron-up':'chevron-down'} size={25} color={theme.colors.text} style={{ marginTop: 5 }} onPress={() => setShowNetworks(prev => !prev)} />
                   )}
                 </View>
                 { networks().length > 1 && showNetworks && (
-                  <View style={{ width: 130, minHeight: 80,  backgroundColor: theme.colors.modalBg, borderRadius: 10, position: 'absolute', bottom: -120, left: 130, zIndex: 10, elevation: 4 }}>
+                  <View style={{ width: 130, minHeight: 80,  backgroundColor: theme.colors.modalBg, borderRadius: 10, position: 'absolute', bottom: -72, left: 130, zIndex: 10, elevation: 4 }}>
                     { networks().map((network, index) => (
-                      <Box flex={1} height={40} justifyContent={'center'} borderBottomWidth={ index === networks().length - 1 ? 0:1} paddingHorizontal='s' style={{ borderBottomColor: theme.textInput.backgroundColor }}>
+                      <Box key={index.toString()} flex={1} height={40} justifyContent={'center'} borderBottomWidth={ index === networks().length - 1 ? 0:1} paddingHorizontal='s' style={{ borderBottomColor: theme.textInput.backgroundColor }}>
                         <CustomText variant='subheader' fontSize={16} key={network} onPress={() => handleNetworkChange(network)}>{network.toUpperCase()}</CustomText>
                       </Box>
                     ))}

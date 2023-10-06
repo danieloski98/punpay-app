@@ -181,7 +181,11 @@ const VerificationPage = ({ changeStep, goBack, action, loading }: IProps) => {
       </View>
 
       <View style={{ marginTop: 30 }}>
-        <PrimaryButton text='Continue' action={handlePress} isLoading={verifyOtp.isLoading || loading || verifyPin.isLoading}  />
+        { verifyOtp.isLoading && <PrimaryButton text='Continue' action={() => null} isLoading={true}  /> }
+        { loading && <PrimaryButton text='Continue' action={() => null} isLoading={true}  /> }
+        { verifyPin.isLoading && <PrimaryButton text='Continue' action={() => null} isLoading={true}  /> }
+        { !verifyOtp.isLoading && !loading && !verifyPin.isLoading &&  <PrimaryButton text='Continue' action={handlePress} isLoading={verifyOtp.isLoading || loading || verifyPin.isLoading}  /> }
+       
       </View>
     </View>
   )

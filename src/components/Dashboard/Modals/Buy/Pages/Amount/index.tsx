@@ -69,7 +69,7 @@ const AmountPage = ({ coin }: IProps) => {
 
   return (
     <View style={Style.parent}>
-      <CustomText variant="subheader" style={Style.header}>Buy {getShortName(coin as any).toUpperCase()}</CustomText>
+      <CustomText variant="subheader" style={Style.header}>Buy {getShortName(coin as any)?.toUpperCase()}</CustomText>
       <CustomText variant="bodylight">Enter the amount of {getShortName(coin as any)} you want to buy</CustomText>
 
       <View style={Style.inputCointainer}>

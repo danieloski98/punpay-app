@@ -11,9 +11,10 @@ export type State = {
     usd: string;
     transactionId: string;
     wallet: string;
+    network?: string;
 } 
 
-type ACTION_TYPES = 'payout_amount' | 'payout_currency' | 'transaction_amount' | 'transaction_currency' | 'rate' | 'bank' | 'reference' | 'usd' | 'id' | 'wallet';
+type ACTION_TYPES = 'payout_amount' | 'payout_currency' | 'transaction_amount' | 'transaction_currency' | 'rate' | 'bank' | 'reference' | 'usd' | 'id' | 'wallet' | 'network';
 
 export type Action = {
     type: ACTION_TYPES;
@@ -30,6 +31,7 @@ export const state: State = {
     referenceCode: '',
     transactionId: '',
     wallet: '',
+    network: '',
 }
 
 export function reducer(state: State, action: Action) {
@@ -68,6 +70,10 @@ export function reducer(state: State, action: Action) {
         }
         case "wallet": {
             state = { ...state, wallet: action.payload };
+            break;
+        }
+        case 'network': {
+            state = { ...state, network: action.payload };
             break;
         }
     }

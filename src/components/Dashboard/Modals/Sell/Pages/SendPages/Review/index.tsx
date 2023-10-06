@@ -62,6 +62,17 @@ const ReviewSendPage = ({ change, state }: IProps) => {
 
       <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 10, borderBottomWidth: 2, borderBottomColor: theme.textInput.backgroundColor }}>
         <View style={{ flex: 1 }}>
+            <CustomText variant="subheader" mt="m" style={{ fontSize: 16 }}>Network</CustomText>
+        </View>
+
+        <View style={{ marginLeft: 20, flexWrap: 'wrap', flex: 1 }}>
+            {isLoading &&  <CustomText variant="body" mt="m" style={{ fontSize: 16 }}>Loading</CustomText>}
+            <CustomText variant="body" mt="m" style={{ fontSize: 16 }}>{state.network.toUpperCase()}</CustomText>
+        </View>
+      </View>
+
+      <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 10, borderBottomWidth: 2, borderBottomColor: theme.textInput.backgroundColor }}>
+        <View style={{ flex: 1 }}>
             <CustomText variant="subheader" mt="m" style={{ fontSize: 16 }}>TransactionFee</CustomText>
         </View>
 

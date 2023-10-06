@@ -163,7 +163,7 @@ const RecieveModal = ({ coin }: IProps) => {
             </Box>
             <View style={Style.writeupContainer}>
                 <CustomText variant="bodylight">
-                Only send <CustomText fontWeight='bold' variant='body'>{ coin } for network { network }</CustomText> to this Address, Sending any other coin will misplace your funds. Punpay cannot assist with recovering misplaced funds
+                Only send <CustomText  variant='subheader'fontSize={14} >{ coin } for network { network }</CustomText> to this Address, Sending any other coin will misplace your funds. Punpay cannot assist with recovering misplaced funds
                 </CustomText>
             </View>
 

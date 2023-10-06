@@ -264,6 +264,7 @@ const SellPage = ({ coin }: IProps) => {
       transactionCurrency: state.transactionCurrency,
       transactionAmount: state.transactionAmount,
       withdrawalAddress: state.wallet,
+      network: state.network
     }
     withdrawMutation(obj);
   }, [state, user]);
@@ -287,7 +288,7 @@ const SellPage = ({ coin }: IProps) => {
                 return <VerificationPage changeStep={() => setSellStep(4)} goBack={() => setSellStep(prev => prev - 1)} loading={sellIsLoading} action={createSellTransaction} />
             }
             case 4: {
-                return <ProcessingPage state={state} close={close} transactionType='Sell' />
+                return <ProcessingPage state={state} transactionType='Sell' />
             }
         }
     }, [sellStep, usd]);
@@ -304,7 +305,7 @@ const SellPage = ({ coin }: IProps) => {
           return <VerificationPage changeStep={() => setSendStep(4)} goBack={() => setSendStep(prev => prev - 1)} loading={withdrawIsLoading} action={withdrawTransaction} />
       }
       case 4: {
-          return <ProcessingPage state={state} close={close} transactionType='Send' />
+          return <ProcessingPage state={state} transactionType='Send' />
       }
       }
     }, [sendStep]);

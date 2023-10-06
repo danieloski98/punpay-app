@@ -52,7 +52,7 @@ const theme = createTheme({
     subheader: {
       fontFamily: "Axiforma-Bold",
       fontSize: 28,
-      lineHeight: 36,
+      lineHeight: 24,
       color: 'blackText',
     },
     body: {
