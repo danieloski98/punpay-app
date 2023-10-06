@@ -5,15 +5,18 @@ import { Theme } from '../../../../../../style/theme';
 import { Text as CustomText, PrimaryButton } from '../../../../../General'
 import { State } from '../../state';
 import { currencyFormat } from '../../../../../../utils/currencyconverter';
+import { useModalState } from '../../../../../../pages/Dashboard/TransactionType/state';
 
 interface IProps {
     state: State;
-    close: (a: boolean) => void;
+    close?: (a: boolean) => void;
     transactionType: 'Sell' | 'Send'
 }
 
 const ProcessingPage = ({ state, close, transactionType }: IProps) => {
     const theme = useTheme<Theme>()
+    const { setOpenModal, setAll } = useModalState((state) => state);
+
     return (
         <View style={{ flex: 1, paddingTop: 20 }}>
             <CustomText variant="subheader" style={{ fontSize: 20 }}>Transaction Processing</CustomText>
@@ -73,7 +76,7 @@ const ProcessingPage = ({ state, close, transactionType }: IProps) => {
             </View> */}
 
             <View>
-                <PrimaryButton text="Done" action={() => close(false)} />
+                <PrimaryButton text="Done" action={() => setAll({ openSell: false })} />
             </View>
         </View>
     )

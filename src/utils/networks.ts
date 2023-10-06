@@ -5,6 +5,6 @@ export const CRYPTO_NETWORKS = {
     Bitcoin: ["bep20", "btc"],
     Ethereum: ["erc20"],
     DOGE: ["doge"],
-    XRP: ["xrp"],
-    Litecoin: ["bep20"],
+    XRP: ["ripple"],
+    Litecoin: ["ltc"],
 }
