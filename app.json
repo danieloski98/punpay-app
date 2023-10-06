@@ -21,11 +21,11 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.dandolla98.Punpay",
-      "buildNumber": "3"
+      "buildNumber": "8"
     },
     "android": {
       "icon": "./assets/logo.png",
-      "versionCode": 46,
+      "versionCode": 47,
       "adaptiveIcon": {
         "foregroundImage": "./assets/logo.png",
         "backgroundColor": "#FFFFFF"
